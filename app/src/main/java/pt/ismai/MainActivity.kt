@@ -59,9 +59,3 @@ fun GreetingPreview() {
         ProgramaPrincipal()
     }
 }
-
-/*
-var initialHours = rememberSaveable { mutableStateOf(0) }
-var initialMinutes = rememberSaveable { mutableStateOf(0) }
-var initialSeconds = rememberSaveable { mutableStateOf(0) }
-SmartTimer( "Timer",initialHours, initialMinutes, initialSeconds)*/

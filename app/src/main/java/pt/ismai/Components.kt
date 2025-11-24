@@ -1,6 +1,5 @@
 package pt.ismai
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -41,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import pt.ismai.ui.theme.Home
 
 enum class Ecras {
     Home,
@@ -58,7 +57,7 @@ fun MainContent(ecra: Ecras, modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         when (ecra) {
-            Ecras.Home -> Text("🏠 Home Screen", fontSize = 24.sp)
+            Ecras.Home -> Home() //Text("🏠 Home Screen", fontSize = 24.sp)
             Ecras.Statistic -> Text("📊 Statistics Screen", fontSize = 24.sp)
             Ecras.Workout -> Text("💪 Workout Screen", fontSize = 24.sp)
             Ecras.Setting -> Text("⚙️ Settings Screen", fontSize = 24.sp)
