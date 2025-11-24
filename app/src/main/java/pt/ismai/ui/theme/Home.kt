@@ -7,8 +7,8 @@ import pt.ismai.SmartTimer
 
 @Composable
 fun Home () {
-    var initialHours = rememberSaveable { mutableStateOf(0) }
-    var initialMinutes = rememberSaveable { mutableStateOf(0) }
-    var initialSeconds = rememberSaveable { mutableStateOf(0) }
+    val initialHours = rememberSaveable { mutableStateOf(0) }
+    val initialMinutes = rememberSaveable { mutableStateOf(0) }
+    val initialSeconds = rememberSaveable { mutableStateOf(0) }
     SmartTimer( "Timer",initialHours, initialMinutes, initialSeconds)
 }
