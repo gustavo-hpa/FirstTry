@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun Setting () {
+fun Login() {
     Column {
-        Text("⚙️ Settings Screen", fontSize = 24.sp)
+        Text("⚙️ Login Screen", fontSize = 24.sp)
     }
 }

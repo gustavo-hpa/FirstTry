@@ -58,9 +58,11 @@ fun MainContent(ecra: Ecras, modifier: Modifier = Modifier) {
     ) {
         when (ecra) {
             Ecras.Home -> Home() //Text("🏠 Home Screen", fontSize = 24.sp)
-            Ecras.Statistic -> Text("📊 Statistics Screen", fontSize = 24.sp)
-            Ecras.Workout -> Text("💪 Workout Screen", fontSize = 24.sp)
-            Ecras.Setting -> Text("⚙️ Settings Screen", fontSize = 24.sp)
+            Ecras.Statistic -> Statistics()
+            Ecras.Workout -> Workout()
+            Ecras.Setting -> Setting()
+            Ecras.Login -> Login()
+            Ecras.Signup -> Signup()
         }
     }
 }
@@ -79,7 +81,7 @@ fun Bottombar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconTextButton(
-            icon = painterResource(id = R.drawable.outline_add_24),
+            icon = painterResource(id = R.drawable.home),
             text = "Home",
             screen = Ecras.Home,
             currentScreen = currentScreen,
@@ -88,7 +90,7 @@ fun Bottombar(
         )
 
         IconTextButton(
-            icon = painterResource(id = R.drawable.outline_add_24),
+            icon = painterResource(id = R.drawable.statistics),
             text = "Statistics",
             screen = Ecras.Statistic,
             currentScreen = currentScreen,
@@ -97,7 +99,7 @@ fun Bottombar(
         )
 
         IconTextButton(
-            icon = painterResource(id = R.drawable.outline_add_24),
+            icon = painterResource(id = R.drawable.workout),
             text = "Workout",
             screen = Ecras.Workout,
             currentScreen = currentScreen,
@@ -106,7 +108,7 @@ fun Bottombar(
         )
 
         IconTextButton(
-            icon = painterResource(id = R.drawable.outline_add_24),
+            icon = painterResource(id = R.drawable.settings),
             text = "Setting",
             screen = Ecras.Setting,
             currentScreen = currentScreen,
@@ -124,6 +126,8 @@ fun Topbar(ecraAtual: Ecras) {
         Ecras.Statistic -> "Statistics"
         Ecras.Workout -> "Workout"
         Ecras.Setting -> "Settings"
+        Ecras.Login -> "Login"
+        Ecras.Signup -> "Signup"
     }
 
     Row(
@@ -136,7 +140,7 @@ fun Topbar(ecraAtual: Ecras) {
     ) {
         IconButton(onClick = {}) {
             Icon(
-                painter = painterResource(id = R.drawable.outline_add_24),
+                painter = painterResource(id = R.drawable.menu),
                 contentDescription = "Voltar"
             )
         }
@@ -151,7 +155,7 @@ fun Topbar(ecraAtual: Ecras) {
 
         IconButton(onClick = {}) {
             Icon(
-                painter = painterResource(id = R.drawable.outline_add_24),
+                painter = painterResource(id = R.drawable.profile),
                 contentDescription = "Menu"
             )
         }

@@ -16,7 +16,7 @@ fun Home() {
         val opcoes = listOf("Eletrônicos", "Roupas", "Livros", "Casa", "Esportes", "paraleolipicoibeubfaibi")
         CustomDropdown("titulo", opcoes, selecionada)*/
         SmartTimer("titulo", h, m, s,false)
-        SmartCounter("titulo")
+        SmartCounter("titulo",100)
         SmartCounter("titulo", clikable = false)
 
     }
