@@ -1,7 +1,7 @@
-package pt.ismai.ui.theme
+package pt.ismai
 
 import androidx.compose.runtime.Composable
 
 @Composable
-fun Workout () {
+fun Statistics () {
 }
