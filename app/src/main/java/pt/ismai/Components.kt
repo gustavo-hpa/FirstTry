@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MainContent(ecra: Ecras, modifier: Modifier = Modifier) {
+fun MainContent(ecra: Ecras, onScreenSelected: (Ecras) -> Unit, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -57,12 +57,13 @@ fun MainContent(ecra: Ecras, modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
     ) {
         when (ecra) {
-            Ecras.Home -> Home() //Text("🏠 Home Screen", fontSize = 24.sp)
+            Ecras.Home -> Home(onScreenSelected)  //Text("🏠 Home Screen", fontSize = 24.sp)
             Ecras.Statistic -> Statistics()
             Ecras.Workout -> Workout()
             Ecras.Setting -> Setting()
-            Ecras.Login -> Login()
-            Ecras.Signup -> Signup()
+            Ecras.Login -> Login(onScreenSelected)
+            Ecras.Signup -> Signup(onScreenSelected)
+            Ecras.Profile -> Profile()
         }
     }
 }
@@ -119,7 +120,7 @@ fun Bottombar(
 }
 
 @Composable
-fun Topbar(ecraAtual: Ecras) {
+fun Topbar(ecraAtual: Ecras, onScreenSelected: (Ecras) -> Unit) {
     // Define o título de acordo com a tela atual
     val titulo = when (ecraAtual) {
         Ecras.Home -> "Home"
@@ -128,6 +129,7 @@ fun Topbar(ecraAtual: Ecras) {
         Ecras.Setting -> "Settings"
         Ecras.Login -> "Login"
         Ecras.Signup -> "Signup"
+        Ecras.Profile -> "Profile"
     }
 
     Row(
@@ -153,7 +155,7 @@ fun Topbar(ecraAtual: Ecras) {
             )
         }
 
-        IconButton(onClick = {}) {
+        IconButton(onClick = { onScreenSelected(Ecras.Profile) }) {
             Icon(
                 painter = painterResource(id = R.drawable.profile),
                 contentDescription = "Menu"

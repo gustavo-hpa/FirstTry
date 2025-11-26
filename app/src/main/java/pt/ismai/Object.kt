@@ -9,7 +9,8 @@ enum class Ecras {
     Setting,
     Workout,
     Login,
-    Signup
+    Signup,
+    Profile
 }
 
 enum class MetodoAvalicao {

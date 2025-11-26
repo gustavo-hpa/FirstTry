@@ -43,8 +43,8 @@ fun ProgramaPrincipal(modifier: Modifier = Modifier) {
         modifier = Modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Topbar(ecraAtual = currentScreen)
-        MainContent(currentScreen, modifier = Modifier.weight(1f))
+        Topbar(ecraAtual = currentScreen, onScreenSelected = { newScreen -> currentScreen = newScreen })
+        MainContent(currentScreen, onScreenSelected = { newScreen -> currentScreen = newScreen }, modifier = Modifier.weight(1f))
         Bottombar(
             currentScreen = currentScreen,
             onScreenSelected = { newScreen -> currentScreen = newScreen }

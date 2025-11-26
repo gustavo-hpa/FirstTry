@@ -2,12 +2,41 @@ package pt.ismai
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun Signup () {
+fun Signup (onScreenSelected: (Ecras) -> Unit) {
     Column {
-        Text("⚙️ Signup Screen", fontSize = 24.sp)
+        Text("⚙️ Email", fontSize = 24.sp)
+        val valorDoCampo = rememberSaveable { mutableStateOf("") }
+        TextField(
+            value = valorDoCampo.value,
+            onValueChange = { valorDoCampo.value = it },
+            label = { Text("Email") })
+        Text("⚙️ Password", fontSize = 24.sp)
+        val valorPassword = rememberSaveable { mutableStateOf("") }
+        TextField(
+            value = valorPassword.value,
+            onValueChange = { valorPassword.value = it },
+            label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            singleLine = true
+        )
+        Text("⚙️ Same password", fontSize = 24.sp)
+        val valorPassword2 = rememberSaveable { mutableStateOf("") }
+        TextField(
+            value = valorPassword2.value,
+            onValueChange = { valorPassword2.value = it },
+            label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            singleLine = true
+        )
+        TextButton(onClick = {onScreenSelected(Ecras.Login)}) { Text("Login") }
     }
 }
