@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import pt.ismai.ui.theme.FirstTryTheme
 
@@ -39,16 +40,36 @@ class MainActivity : ComponentActivity() {
 fun ProgramaPrincipal(modifier: Modifier = Modifier) {
     var currentScreen by rememberSaveable { mutableStateOf(Ecras.Home) }
 
+    val fullScreenScreens = listOf(
+        Ecras.Login,
+        Ecras.Signup
+    )
+
+    val isFullScreen = currentScreen in fullScreenScreens
+
     Column(
         modifier = Modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Topbar(ecraAtual = currentScreen, onScreenSelected = { newScreen -> currentScreen = newScreen })
+        if (!isFullScreen) {
+            Topbar(
+                ecraAtual = currentScreen,
+                onScreenSelected = { newScreen -> currentScreen = newScreen },
+                containerColor = DarkBackgroundEnd, // Fundo Vinho Escuro (igual à Bottombar)
+                contentColor = Color.White          // Texto e Ícones brancos para contraste
+            )
+        }
         MainContent(currentScreen, onScreenSelected = { newScreen -> currentScreen = newScreen }, modifier = Modifier.weight(1f))
-        Bottombar(
-            currentScreen = currentScreen,
-            onScreenSelected = { newScreen -> currentScreen = newScreen }
-        )
+        if (!isFullScreen) {
+            Bottombar(
+                currentScreen = currentScreen,
+                onScreenSelected = { newScreen -> currentScreen = newScreen },
+                // Configuração do Tema Basquete:
+                containerColor = DarkBackgroundEnd,      // Fundo Vinho Escuro
+                indicatorColor = BasketballOrange,       // Botão selecionado Laranja
+                contentColor = Color.White               // Ícones/Texto Brancos
+            )
+        }
     }
 }
 

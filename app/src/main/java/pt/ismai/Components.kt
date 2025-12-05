@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -26,6 +27,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,11 +46,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+val BasketballOrange = Color(0xFFC94C24) // Cor da bola (Vinho/Laranja escuro)
+val WarmYellow = Color(0xFFFFB300)      // Amarelo quente
+val DarkBackgroundStart = Color(0xFF1A1A1A)
+val DarkBackgroundEnd = Color(0xFF4E1810) // Vinho escuro
+val LightBackgroundStart = Color(0xFFFFF5E6)
+val LightBackgroundEnd = Color(0xFFFFCCBC)
 
 @Composable
 fun MainContent(ecra: Ecras, onScreenSelected: (Ecras) -> Unit, modifier: Modifier = Modifier) {
@@ -71,56 +85,54 @@ fun MainContent(ecra: Ecras, onScreenSelected: (Ecras) -> Unit, modifier: Modifi
 @Composable
 fun Bottombar(
     currentScreen: Ecras,
-    onScreenSelected: (Ecras) -> Unit
+    onScreenSelected: (Ecras) -> Unit,
+    // Novos parâmetros de personalização com valores padrão (compatibilidade)
+    containerColor: Color = Color(0xFF3A86FF),
+    contentColor: Color = Color.White,
+    indicatorColor: Color = Color(0xFF265DAB)
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF3A86FF))
+            .background(containerColor) // Usa a cor parametrizada
             .navigationBarsPadding(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconTextButton(
-            icon = painterResource(id = R.drawable.home),
-            text = "Home",
-            screen = Ecras.Home,
-            currentScreen = currentScreen,
-            onClick = onScreenSelected,
-            modifier = Modifier.weight(1f)
+        // Lista de itens para evitar repetição de código
+        val items = listOf(
+            Triple(Ecras.Home, "Home", R.drawable.home),
+            Triple(Ecras.Statistic, "Statistics", R.drawable.statistics),
+            Triple(Ecras.Workout, "Workout", R.drawable.workout),
+            Triple(Ecras.Setting, "Setting", R.drawable.settings)
         )
 
-        IconTextButton(
-            icon = painterResource(id = R.drawable.statistics),
-            text = "Statistics",
-            screen = Ecras.Statistic,
-            currentScreen = currentScreen,
-            onClick = onScreenSelected,
-            modifier = Modifier.weight(1f)
-        )
-
-        IconTextButton(
-            icon = painterResource(id = R.drawable.workout),
-            text = "Workout",
-            screen = Ecras.Workout,
-            currentScreen = currentScreen,
-            onClick = onScreenSelected,
-            modifier = Modifier.weight(1f)
-        )
-
-        IconTextButton(
-            icon = painterResource(id = R.drawable.settings),
-            text = "Setting",
-            screen = Ecras.Setting,
-            currentScreen = currentScreen,
-            onClick = onScreenSelected,
-            modifier = Modifier.weight(1f)
-        )
+        items.forEach { (screen, title, iconId) ->
+            IconTextButton(
+                icon = painterResource(id = iconId),
+                text = title,
+                screen = screen,
+                currentScreen = currentScreen,
+                onClick = onScreenSelected,
+                modifier = Modifier.weight(1f),
+                // Passando as cores personalizadas
+                selectedColor = indicatorColor,
+                unselectedColor = Color.Transparent,
+                selectedContentColor = contentColor,
+                unselectedContentColor = contentColor.copy(alpha = 0.6f)
+            )
+        }
     }
 }
 
 @Composable
-fun Topbar(ecraAtual: Ecras, onScreenSelected: (Ecras) -> Unit) {
+fun Topbar(
+    ecraAtual: Ecras,
+    onScreenSelected: (Ecras) -> Unit,
+    // Novos parâmetros de personalização com valores padrão
+    containerColor: Color = Color.Transparent,
+    contentColor: Color = Color.Black
+) {
     // Define o título de acordo com a tela atual
     val titulo = when (ecraAtual) {
         Ecras.Home -> "Home"
@@ -135,30 +147,37 @@ fun Topbar(ecraAtual: Ecras, onScreenSelected: (Ecras) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-            .statusBarsPadding(),
+            .background(containerColor) // 1. Aplica a cor de fundo recebida
+            .statusBarsPadding()        // 2. Garante que o conteúdo não fique atrás da barra de status
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Ícone da Esquerda (Menu)
         IconButton(onClick = {}) {
             Icon(
                 painter = painterResource(id = R.drawable.menu),
-                contentDescription = "Voltar"
-            )
-        }
-        TextButton (onClick = {}) {
-            Text(
-                text = titulo,
-                fontSize = 22.sp,           // fonte maior
-                fontWeight = FontWeight.Bold, // negrito
-                color = Color.Black          // cor do título
+                contentDescription = "Voltar",
+                tint = contentColor // 3. Aplica a cor do ícone
             )
         }
 
+        // Título Central
+        TextButton(onClick = {}) {
+            Text(
+                text = titulo,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = contentColor // 4. Aplica a cor do texto
+            )
+        }
+
+        // Ícone da Direita (Profile)
         IconButton(onClick = { onScreenSelected(Ecras.Profile) }) {
             Icon(
                 painter = painterResource(id = R.drawable.profile),
-                contentDescription = "Menu"
+                contentDescription = "Perfil",
+                tint = contentColor // 5. Aplica a cor do ícone
             )
         }
     }
@@ -171,35 +190,46 @@ fun IconTextButton(
     screen: Ecras,
     currentScreen: Ecras,
     onClick: (Ecras) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    // Novos parâmetros de cor
+    selectedColor: Color,
+    unselectedColor: Color,
+    selectedContentColor: Color,
+    unselectedContentColor: Color
 ) {
     val selected = currentScreen == screen
 
-    val backgroundColor = if (selected) Color(0xFF265DAB) else Color(0xFF3A86FF)
-    val textColor = Color.White
-    val iconTint = if (selected) Color.White else Color.Black // 👈 muda a cor do ícone
+    // Decide as cores com base no estado (selecionado ou não)
+    val backgroundColor = if (selected) selectedColor else unselectedColor
+    val contentColor = if (selected) selectedContentColor else unselectedContentColor
+
+    // Animação opcional de cor (pode ser simples sem animateColorAsState se preferir)
 
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
+            .padding(4.dp) // Um pequeno respiro externo
+            .clip(RoundedCornerShape(12.dp)) // Arredondamento mais suave
             .background(backgroundColor)
             .clickable { onClick(screen) }
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .padding(vertical = 8.dp, horizontal = 4.dp), // Padding interno
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 painter = icon,
                 contentDescription = text,
-                tint = iconTint,        // 👈 aplica a cor
+                tint = contentColor,
                 modifier = Modifier.size(24.dp)
             )
-            Spacer(modifier = Modifier.height(1.dp))
+            // Mostra o texto apenas se houver espaço ou se desejar,
+            // aqui mantivemos a lógica original
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = text,
-                color = textColor,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
+                color = contentColor,
+                fontSize = 12.sp, // Levemente menor para caber melhor
+                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+                maxLines = 1
             )
         }
     }
@@ -587,5 +617,61 @@ fun SmartCounter(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun BasketballTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    icon: ImageVector,
+    isDark: Boolean,
+    isPassword: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Text
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        leadingIcon = { Icon(icon, contentDescription = null) },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = BasketballOrange,
+            unfocusedBorderColor = if (isDark) Color.Gray else Color.LightGray,
+            focusedLabelColor = BasketballOrange,
+            cursorColor = BasketballOrange
+        )
+    )
+}
+
+@Composable
+fun SocialButton(
+    text: String,
+    isDark: Boolean,
+    icon: ImageVector,
+    onClick: () -> Unit
+) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = if (isDark) Color.White else Color.Black
+        )
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = "Entrar com $text")
     }
 }

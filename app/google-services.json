@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "738736037748",
+    "project_id": "baskte-app",
+    "storage_bucket": "baskte-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:738736037748:android:ceee18a844a05c51451621",
+        "android_client_info": {
+          "package_name": "pt.ismai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl_uWr9SN1nJ6DL10GZ0RfX2zwSU4kC08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
