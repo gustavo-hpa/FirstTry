@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -43,17 +44,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.util.Locale
 
 val BasketballOrange = Color(0xFFC94C24) // Cor da bola (Vinho/Laranja escuro)
 val WarmYellow = Color(0xFFFFB300)      // Amarelo quente
@@ -63,21 +67,38 @@ val LightBackgroundStart = Color(0xFFFFF5E6)
 val LightBackgroundEnd = Color(0xFFFFCCBC)
 
 @Composable
-fun MainContent(ecra: Ecras, onScreenSelected: (Ecras) -> Unit, modifier: Modifier = Modifier) {
+fun MainContent(
+    ecra: Ecras, 
+    onScreenSelected: (Ecras) -> Unit, 
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean,
+    onThemeToggle: () -> Unit,
+    onLocaleChange: (Locale) -> Unit
+) {
+    val backgroundBrush = if (isDarkTheme) {
+        Brush.verticalGradient(listOf(DarkBackgroundStart, DarkBackgroundEnd))
+    } else {
+        Brush.verticalGradient(listOf(LightBackgroundStart, LightBackgroundEnd))
+    }
+
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .background(Color(0xFFF5F5F5)),
+            .fillMaxSize()
+            .background(backgroundBrush),
         contentAlignment = Alignment.Center,
     ) {
         when (ecra) {
-            Ecras.Home -> Home(onScreenSelected)  //Text("🏠 Home Screen", fontSize = 24.sp)
+            Ecras.Home -> Home(onScreenSelected)
             Ecras.Statistic -> Statistics()
             Ecras.Workout -> Workout()
-            Ecras.Setting -> Setting()
+            Ecras.Setting -> Setting(onScreenSelected, isDarkTheme, onThemeToggle, onLocaleChange)
             Ecras.Login -> Login(onScreenSelected)
             Ecras.Signup -> Signup(onScreenSelected)
             Ecras.Profile -> Profile()
+            Ecras.AccountManagement -> AccountManagement()
+            Ecras.NotificationsAndSounds -> NotificationsAndSounds()
+            Ecras.PrivacyAndSecurity -> PrivacyAndSecurity()
+            Ecras.HelpAndAbout -> HelpAndAbout()
         }
     }
 }
@@ -86,7 +107,6 @@ fun MainContent(ecra: Ecras, onScreenSelected: (Ecras) -> Unit, modifier: Modifi
 fun Bottombar(
     currentScreen: Ecras,
     onScreenSelected: (Ecras) -> Unit,
-    // Novos parâmetros de personalização com valores padrão (compatibilidade)
     containerColor: Color = Color(0xFF3A86FF),
     contentColor: Color = Color.White,
     indicatorColor: Color = Color(0xFF265DAB)
@@ -94,17 +114,16 @@ fun Bottombar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(containerColor) // Usa a cor parametrizada
+            .background(containerColor)
             .navigationBarsPadding(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Lista de itens para evitar repetição de código
         val items = listOf(
-            Triple(Ecras.Home, "Home", R.drawable.home),
-            Triple(Ecras.Statistic, "Statistics", R.drawable.statistics),
-            Triple(Ecras.Workout, "Workout", R.drawable.workout),
-            Triple(Ecras.Setting, "Setting", R.drawable.settings)
+            Triple(Ecras.Home, stringResource(id = R.string.home), R.drawable.home),
+            Triple(Ecras.Statistic, stringResource(id = R.string.statistics), R.drawable.statistics),
+            Triple(Ecras.Workout, stringResource(id = R.string.workout), R.drawable.workout),
+            Triple(Ecras.Setting, stringResource(id = R.string.setting), R.drawable.settings)
         )
 
         items.forEach { (screen, title, iconId) ->
@@ -115,7 +134,6 @@ fun Bottombar(
                 currentScreen = currentScreen,
                 onClick = onScreenSelected,
                 modifier = Modifier.weight(1f),
-                // Passando as cores personalizadas
                 selectedColor = indicatorColor,
                 unselectedColor = Color.Transparent,
                 selectedContentColor = contentColor,
@@ -129,56 +147,69 @@ fun Bottombar(
 fun Topbar(
     ecraAtual: Ecras,
     onScreenSelected: (Ecras) -> Unit,
-    // Novos parâmetros de personalização com valores padrão
     containerColor: Color = Color.Transparent,
-    contentColor: Color = Color.Black
+    contentColor: Color = Color.Black,
+    isDarkTheme: Boolean = false,
+    onThemeToggle: () -> Unit = {}
 ) {
-    // Define o título de acordo com a tela atual
     val titulo = when (ecraAtual) {
-        Ecras.Home -> "Home"
-        Ecras.Statistic -> "Statistics"
-        Ecras.Workout -> "Workout"
-        Ecras.Setting -> "Settings"
-        Ecras.Login -> "Login"
-        Ecras.Signup -> "Signup"
-        Ecras.Profile -> "Profile"
+        Ecras.Home -> stringResource(id = R.string.home)
+        Ecras.Statistic -> stringResource(id = R.string.statistics)
+        Ecras.Workout -> stringResource(id = R.string.workout)
+        Ecras.Setting -> stringResource(id = R.string.settings)
+        Ecras.Login -> stringResource(id = R.string.login)
+        Ecras.Signup -> stringResource(id = R.string.signup)
+        Ecras.Profile -> stringResource(id = R.string.profile)
+        Ecras.AccountManagement -> stringResource(id = R.string.settings_account_management)
+        Ecras.NotificationsAndSounds -> stringResource(id = R.string.settings_notifications_and_sounds)
+        Ecras.PrivacyAndSecurity -> stringResource(id = R.string.settings_privacy_and_security)
+        Ecras.HelpAndAbout -> stringResource(id = R.string.settings_help_and_about)
     }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(containerColor) // 1. Aplica a cor de fundo recebida
-            .statusBarsPadding()        // 2. Garante que o conteúdo não fique atrás da barra de status
+            .background(containerColor)
+            .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Ícone da Esquerda (Menu)
         IconButton(onClick = {}) {
             Icon(
                 painter = painterResource(id = R.drawable.menu),
-                contentDescription = "Voltar",
-                tint = contentColor // 3. Aplica a cor do ícone
+                contentDescription = stringResource(id = R.string.menu),
+                tint = contentColor
             )
         }
 
-        // Título Central
         TextButton(onClick = {}) {
             Text(
                 text = titulo,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = contentColor // 4. Aplica a cor do texto
+                color = contentColor
             )
         }
 
-        // Ícone da Direita (Profile)
-        IconButton(onClick = { onScreenSelected(Ecras.Profile) }) {
-            Icon(
-                painter = painterResource(id = R.drawable.profile),
-                contentDescription = "Perfil",
-                tint = contentColor // 5. Aplica a cor do ícone
-            )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+
+            IconButton(onClick = onThemeToggle) {
+                Icon(
+                    painter = painterResource(id = if (isDarkTheme) R.drawable.sun else R.drawable.moon),
+                    contentDescription = stringResource(id = R.string.toggle_theme),
+                    tint = contentColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            IconButton(onClick = { onScreenSelected(Ecras.Profile) }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.profile),
+                    contentDescription = stringResource(id = R.string.profile),
+                    tint = contentColor
+                )
+            }
         }
     }
 }
@@ -191,7 +222,6 @@ fun IconTextButton(
     currentScreen: Ecras,
     onClick: (Ecras) -> Unit,
     modifier: Modifier = Modifier,
-    // Novos parâmetros de cor
     selectedColor: Color,
     unselectedColor: Color,
     selectedContentColor: Color,
@@ -199,19 +229,16 @@ fun IconTextButton(
 ) {
     val selected = currentScreen == screen
 
-    // Decide as cores com base no estado (selecionado ou não)
     val backgroundColor = if (selected) selectedColor else unselectedColor
     val contentColor = if (selected) selectedContentColor else unselectedContentColor
 
-    // Animação opcional de cor (pode ser simples sem animateColorAsState se preferir)
-
     Box(
         modifier = modifier
-            .padding(4.dp) // Um pequeno respiro externo
-            .clip(RoundedCornerShape(12.dp)) // Arredondamento mais suave
+            .padding(4.dp)
+            .clip(RoundedCornerShape(12.dp))
             .background(backgroundColor)
             .clickable { onClick(screen) }
-            .padding(vertical = 8.dp, horizontal = 4.dp), // Padding interno
+            .padding(vertical = 8.dp, horizontal = 4.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -221,13 +248,11 @@ fun IconTextButton(
                 tint = contentColor,
                 modifier = Modifier.size(24.dp)
             )
-            // Mostra o texto apenas se houver espaço ou se desejar,
-            // aqui mantivemos a lógica original
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = text,
                 color = contentColor,
-                fontSize = 12.sp, // Levemente menor para caber melhor
+                fontSize = 12.sp,
                 fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                 maxLines = 1
             )
@@ -336,10 +361,10 @@ fun SmartTimer(
                         onClick = { totalSeconds -= 3600 },
                         enabled = totalSeconds >= 3600
                     ) {
-                        Text("-1h")
+                        Text(stringResource(id = R.string.minus_1_hour))
                     }
                     TextButton(onClick = { totalSeconds += 3600 }) {
-                        Text("+1h")
+                        Text(stringResource(id = R.string.plus_1_hour))
                     }
                 }
 
@@ -348,16 +373,16 @@ fun SmartTimer(
                         onClick = { totalSeconds -= 600 },
                         enabled = totalSeconds >= 600
                     ) {
-                        Text("-10m")
+                        Text(stringResource(id = R.string.minus_10_minutes))
                     }
                     TextButton(
                         onClick = { totalSeconds -= 60 },
                         enabled = totalSeconds >= 60
                     ) {
-                        Text("-1m")
+                        Text(stringResource(id = R.string.minus_1_minute))
                     }
-                    TextButton(onClick = { totalSeconds += 60 }) { Text("+1m") }
-                    TextButton(onClick = { totalSeconds += 600 }) { Text("+10m") }
+                    TextButton(onClick = { totalSeconds += 60 }) { Text(stringResource(id = R.string.plus_1_minute)) }
+                    TextButton(onClick = { totalSeconds += 600 }) { Text(stringResource(id = R.string.plus_10_minutes)) }
                 }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -365,20 +390,20 @@ fun SmartTimer(
                         onClick = { totalSeconds -= 10 },
                         enabled = totalSeconds >= 10
                     ) {
-                        Text("-10s")
+                        Text(stringResource(id = R.string.minus_10_seconds))
                     }
                     TextButton(
                         onClick = { totalSeconds-- },
                         enabled = totalSeconds > 0
                     ) {
-                        Text("-1s")
+                        Text(stringResource(id = R.string.minus_1_second))
                     }
-                    TextButton(onClick = { totalSeconds++ }) { Text("+1s") }
-                    TextButton(onClick = { totalSeconds += 10 }) { Text("+10s") }
+                    TextButton(onClick = { totalSeconds++ }) { Text(stringResource(id = R.string.plus_1_second)) }
+                    TextButton(onClick = { totalSeconds += 10 }) { Text(stringResource(id = R.string.plus_10_seconds)) }
                 }
 
                 TextButton(onClick = { totalSeconds = 0 }, enabled = totalSeconds > 0) {
-                    Text("Reset")
+                    Text(stringResource(id = R.string.reset))
                 }
             }
         }
@@ -411,7 +436,6 @@ fun CustomDropdown(
             modifier = modifierTitle.padding(start = 4.dp)
         )
 
-        // Campo do dropdown
         Surface(
             onClick = { expanded = !expanded },
             modifier = modifierSurface,
@@ -426,7 +450,7 @@ fun CustomDropdown(
                     .padding(8.dp)
             ) {
                 Text(
-                    text = selectedOption.value.ifEmpty { "Selecione..." },
+                    text = selectedOption.value.ifEmpty { stringResource(id = R.string.select) },
                     style = MaterialTheme.typography.bodyLarge,
                     color = if (selectedOption.value.isEmpty()) {
                         MaterialTheme.colorScheme.onSurfaceVariant
@@ -440,14 +464,13 @@ fun CustomDropdown(
                     painter = painterResource(
                         id = if (expanded) R.drawable.outline_add_24 else R.drawable.outline_add_24
                     ),
-                    contentDescription = if (expanded) "Recolher" else "Expandir",
+                    contentDescription = if (expanded) stringResource(id = R.string.collapse) else stringResource(id = R.string.expand),
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
                     modifier = modifierImage.size(24.dp)
                 )
             }
         }
 
-        // Menu como parte do fluxo normal do layout
         if (expanded) {
             Spacer(modifier = Modifier.height(8.dp))
             DropdownMenuCustom(
@@ -473,7 +496,6 @@ private fun DropdownMenuCustom(
     modifierSurface: Modifier = Modifier,
     modifierOptionText: Modifier = Modifier,
 ) {
-    // Altura máxima para 5 itens (aproximadamente 48.dp cada)
     val maxHeight = 5 * 48
 
     Card(
@@ -570,7 +592,6 @@ fun SmartCounter(
                 verticalAlignment = Alignment.CenterVertically, modifier = modifierRow
             ) {
                 if (isEditing) {
-                    // Botão -
                     TextButton(
                         onClick = { if (numeroAtual > 0) numeroAtual-- },
                         colors = ButtonDefaults.textButtonColors(
@@ -579,7 +600,7 @@ fun SmartCounter(
                         modifier = modifierButtons
                     ) {
                         Text(
-                            text = "-",
+                            text = stringResource(id = R.string.minus),
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = modifierTextButtons
@@ -599,7 +620,6 @@ fun SmartCounter(
                 )
 
                 if (isEditing) {
-                    // Botão +
                     TextButton(
                         onClick = { numeroAtual++ },
                         colors = ButtonDefaults.textButtonColors(
@@ -608,7 +628,7 @@ fun SmartCounter(
                         modifier = modifierButtons
                     ) {
                         Text(
-                            text = "+",
+                            text = stringResource(id = R.string.plus),
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = modifierTextButtons
@@ -672,6 +692,6 @@ fun SocialButton(
             modifier = Modifier.size(20.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "Entrar com $text")
+        Text(text = stringResource(id = R.string.login_with, text))
     }
 }

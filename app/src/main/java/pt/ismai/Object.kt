@@ -6,11 +6,16 @@ import kotlin.time.Duration
 enum class Ecras {
     Home,
     Statistic,
-    Setting,
     Workout,
+    Setting, // This will be the main settings screen
     Login,
     Signup,
-    Profile
+    Profile,
+    // New settings screens
+    AccountManagement,
+    NotificationsAndSounds,
+    PrivacyAndSecurity,
+    HelpAndAbout
 }
 
 enum class MetodoAvalicao {

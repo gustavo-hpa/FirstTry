@@ -1,51 +1,84 @@
 package pt.ismai
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import pt.ismai.ui.theme.FirstTryTheme
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FirstTryTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ProgramaPrincipal(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            val systemDark = isSystemInDarkTheme()
+            var isDarkTheme by rememberSaveable { mutableStateOf(systemDark) }
+
+            // Language state management
+            var currentLocale by remember { mutableStateOf(getSystemLocale()) }
+
+            LocaleWrapper(locale = currentLocale) {
+                FirstTryTheme(darkTheme = isDarkTheme) {
+                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                        ProgramaPrincipal(
+                            modifier = Modifier.padding(innerPadding),
+                            isDarkTheme = isDarkTheme,
+                            onThemeToggle = { isDarkTheme = !isDarkTheme },
+                            onLocaleChange = { newLocale -> currentLocale = newLocale }
+                        )
+                    }
                 }
             }
         }
     }
+
+    private fun getSystemLocale(): Locale {
+        return resources.configuration.locales.get(0) ?: Locale.getDefault()
+    }
 }
 
 @Composable
-fun ProgramaPrincipal(modifier: Modifier = Modifier) {
+fun LocaleWrapper(locale: Locale, content: @Composable () -> Unit) {
+    val context = LocalContext.current
+    val configuration = Configuration(context.resources.configuration)
+    configuration.setLocale(locale)
+    
+    // Create a new context with the updated configuration
+    val localizedContext = context.createConfigurationContext(configuration)
+    
+    // Provide this new context to the composable tree, which forces a recomposition 
+    // of any composable that uses resources, like stringResource()
+    CompositionLocalProvider(LocalContext provides localizedContext) {
+        content()
+    }
+}
+
+@Composable
+fun ProgramaPrincipal(
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onThemeToggle: () -> Unit = {},
+    onLocaleChange: (Locale) -> Unit = {}
+) {
     var currentScreen by rememberSaveable { mutableStateOf(Ecras.Home) }
 
-    val fullScreenScreens = listOf(
-        Ecras.Login,
-        Ecras.Signup
-    )
-
+    val fullScreenScreens = listOf(Ecras.Login, Ecras.Signup)
     val isFullScreen = currentScreen in fullScreenScreens
+
+    val barColor = if (isDarkTheme) Color(0xFF4E1810) else Color(0xFFC94C24)
+    val contentColor = Color.White
 
     Column(
         modifier = Modifier.fillMaxHeight(),
@@ -55,19 +88,29 @@ fun ProgramaPrincipal(modifier: Modifier = Modifier) {
             Topbar(
                 ecraAtual = currentScreen,
                 onScreenSelected = { newScreen -> currentScreen = newScreen },
-                containerColor = DarkBackgroundEnd, // Fundo Vinho Escuro (igual à Bottombar)
-                contentColor = Color.White          // Texto e Ícones brancos para contraste
+                containerColor = barColor,
+                contentColor = contentColor,
+                isDarkTheme = isDarkTheme,
+                onThemeToggle = onThemeToggle
             )
         }
-        MainContent(currentScreen, onScreenSelected = { newScreen -> currentScreen = newScreen }, modifier = Modifier.weight(1f))
+
+        MainContent(
+            ecra = currentScreen,
+            onScreenSelected = { newScreen -> currentScreen = newScreen },
+            modifier = Modifier.weight(1f),
+            isDarkTheme = isDarkTheme,
+            onThemeToggle = onThemeToggle,
+            onLocaleChange = onLocaleChange
+        )
+
         if (!isFullScreen) {
             Bottombar(
                 currentScreen = currentScreen,
                 onScreenSelected = { newScreen -> currentScreen = newScreen },
-                // Configuração do Tema Basquete:
-                containerColor = DarkBackgroundEnd,      // Fundo Vinho Escuro
-                indicatorColor = BasketballOrange,       // Botão selecionado Laranja
-                contentColor = Color.White               // Ícones/Texto Brancos
+                containerColor = barColor,
+                indicatorColor = if(isDarkTheme) Color(0xFFC94C24) else Color.White,
+                contentColor = if(isDarkTheme) Color.White else Color(0xFF4E1810)
             )
         }
     }
