@@ -77,8 +77,8 @@ fun ProgramaPrincipal(
     val fullScreenScreens = listOf(Ecras.Login, Ecras.Signup)
     val isFullScreen = currentScreen in fullScreenScreens
 
-    val barColor = if (isDarkTheme) Color(0xFF4E1810) else Color(0xFFC94C24)
-    val contentColor = Color.White
+    val barColor = if (isDarkTheme) DarkBackgroundStart else Color(0xFFC94C24)
+    val contentColor = if (isDarkTheme) Color.White else Color(0xFF4E1810)
 
     Column(
         modifier = Modifier.fillMaxHeight(),
@@ -109,7 +109,7 @@ fun ProgramaPrincipal(
                 currentScreen = currentScreen,
                 onScreenSelected = { newScreen -> currentScreen = newScreen },
                 containerColor = barColor,
-                indicatorColor = if(isDarkTheme) Color(0xFFC94C24) else Color.White,
+                indicatorColor = if(isDarkTheme) BasketballOrange else Color.White,
                 contentColor = if(isDarkTheme) Color.White else Color(0xFF4E1810)
             )
         }

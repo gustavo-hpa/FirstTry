@@ -59,12 +59,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Locale
 
+// light theme
 val BasketballOrange = Color(0xFFC94C24) // Cor da bola (Vinho/Laranja escuro)
-val WarmYellow = Color(0xFFFFB300)      // Amarelo quente
 val DarkBackgroundStart = Color(0xFF1A1A1A)
 val DarkBackgroundEnd = Color(0xFF4E1810) // Vinho escuro
 val LightBackgroundStart = Color(0xFFFFF5E6)
 val LightBackgroundEnd = Color(0xFFFFCCBC)
+
+// dark theme
+val BackgroundDark = Color(0xFF1C1C1E) // Fundo geral da tela
+val SurfaceDark = Color(0xFF2C2C2E)    // Fundo dos elementos (cards)
+val TextPrimaryOnDark = Color(0xFFE5E5EA) // Branco suave para texto principal
+val SoftBasketballOrange = Color(0xFFD87451) // Para elementos ativos (switches) e ícones '+'
+val MutedWarmGold = Color(0xFFE8B350) // Para títulos de seção e ícones de navegação
 
 @Composable
 fun MainContent(
@@ -88,7 +95,7 @@ fun MainContent(
         contentAlignment = Alignment.Center,
     ) {
         when (ecra) {
-            Ecras.Home -> Home(onScreenSelected)
+            Ecras.Home -> Home(onScreenSelected, isDarkTheme)
             Ecras.Statistic -> Statistics()
             Ecras.Workout -> Workout()
             Ecras.Setting -> Setting(onScreenSelected, isDarkTheme, onThemeToggle, onLocaleChange)
@@ -137,7 +144,7 @@ fun Bottombar(
                 selectedColor = indicatorColor,
                 unselectedColor = Color.Transparent,
                 selectedContentColor = contentColor,
-                unselectedContentColor = contentColor.copy(alpha = 0.6f)
+                unselectedContentColor = contentColor
             )
         }
     }
@@ -267,6 +274,7 @@ fun SmartTimer(
     initialMinutes: MutableState<Int>,
     initialSeconds: MutableState<Int>,
     clikable: Boolean = true,
+    isDarkTheme: Boolean,
     modifierInitialCard: Modifier = Modifier,
     modifierTitle: Modifier = Modifier,
     modifierTime: Modifier = Modifier,
@@ -310,19 +318,39 @@ fun SmartTimer(
         }
     }
 
+    val cardColors = if (isDarkTheme) {
+        CardDefaults.cardColors(
+            containerColor = SurfaceDark.copy(alpha = 0.5f),
+            contentColor = TextPrimaryOnDark
+        )
+    } else {
+        CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.6f),
+            contentColor = Color(0xFF4E1810)
+        )
+    }
+
+    val buttonColors = if (isDarkTheme) {
+        ButtonDefaults.textButtonColors(
+            contentColor = MutedWarmGold
+        )
+    } else {
+        ButtonDefaults.textButtonColors(
+            contentColor = BasketballOrange
+        )
+    }
+
     Card(
         modifier = if (clikable) {
             modifier.clickable { isEditing = !isEditing }
         } else modifier,
+        // ALTERAÇÃO AQUI: Mudamos a elevação para 0.dp para tirar a sombra/borda escura
         elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isEditing) 8.dp else 4.dp
+            defaultElevation = 0.dp
         ),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isEditing)
-                MaterialTheme.colorScheme.primaryContainer
-            else
-                MaterialTheme.colorScheme.surfaceVariant
-        )
+        // OPCIONAL: Adiciona uma borda sutil apenas quando está editando, para substituir a elevação
+        border = if (isEditing && isDarkTheme) androidx.compose.foundation.BorderStroke(1.dp, BasketballOrange) else null,
+        colors = cardColors
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -331,10 +359,6 @@ fun SmartTimer(
             Text(
                 text = titulo,
                 style = MaterialTheme.typography.titleMedium,
-                color = if (isEditing)
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = modifierTitle.padding(top = 8.dp, end = 8.dp, start = 8.dp)
             )
 
@@ -347,10 +371,6 @@ fun SmartTimer(
                 ),
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
-                color = if (isEditing)
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
                 modifier = modifierTime.padding(bottom = 8.dp, end = 8.dp, start = 8.dp)
             )
@@ -359,11 +379,12 @@ fun SmartTimer(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(
                         onClick = { totalSeconds -= 3600 },
-                        enabled = totalSeconds >= 3600
+                        enabled = totalSeconds >= 3600,
+                        colors = buttonColors
                     ) {
                         Text(stringResource(id = R.string.minus_1_hour))
                     }
-                    TextButton(onClick = { totalSeconds += 3600 }) {
+                    TextButton(onClick = { totalSeconds += 3600 }, colors = buttonColors) {
                         Text(stringResource(id = R.string.plus_1_hour))
                     }
                 }
@@ -371,38 +392,42 @@ fun SmartTimer(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(
                         onClick = { totalSeconds -= 600 },
-                        enabled = totalSeconds >= 600
+                        enabled = totalSeconds >= 600,
+                        colors = buttonColors
                     ) {
                         Text(stringResource(id = R.string.minus_10_minutes))
                     }
                     TextButton(
                         onClick = { totalSeconds -= 60 },
-                        enabled = totalSeconds >= 60
+                        enabled = totalSeconds >= 60,
+                        colors = buttonColors
                     ) {
                         Text(stringResource(id = R.string.minus_1_minute))
                     }
-                    TextButton(onClick = { totalSeconds += 60 }) { Text(stringResource(id = R.string.plus_1_minute)) }
-                    TextButton(onClick = { totalSeconds += 600 }) { Text(stringResource(id = R.string.plus_10_minutes)) }
+                    TextButton(onClick = { totalSeconds += 60 }, colors = buttonColors) { Text(stringResource(id = R.string.plus_1_minute)) }
+                    TextButton(onClick = { totalSeconds += 600 }, colors = buttonColors) { Text(stringResource(id = R.string.plus_10_minutes)) }
                 }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(
                         onClick = { totalSeconds -= 10 },
-                        enabled = totalSeconds >= 10
+                        enabled = totalSeconds >= 10,
+                        colors = buttonColors
                     ) {
                         Text(stringResource(id = R.string.minus_10_seconds))
                     }
                     TextButton(
                         onClick = { totalSeconds-- },
-                        enabled = totalSeconds > 0
+                        enabled = totalSeconds > 0,
+                        colors = buttonColors
                     ) {
                         Text(stringResource(id = R.string.minus_1_second))
                     }
-                    TextButton(onClick = { totalSeconds++ }) { Text(stringResource(id = R.string.plus_1_second)) }
-                    TextButton(onClick = { totalSeconds += 10 }) { Text(stringResource(id = R.string.plus_10_seconds)) }
+                    TextButton(onClick = { totalSeconds++ }, colors = buttonColors) { Text(stringResource(id = R.string.plus_1_second)) }
+                    TextButton(onClick = { totalSeconds += 10 }, colors = buttonColors) { Text(stringResource(id = R.string.plus_10_seconds)) }
                 }
 
-                TextButton(onClick = { totalSeconds = 0 }, enabled = totalSeconds > 0) {
+                TextButton(onClick = { totalSeconds = 0 }, enabled = totalSeconds > 0, colors = buttonColors) {
                     Text(stringResource(id = R.string.reset))
                 }
             }
@@ -415,6 +440,7 @@ fun CustomDropdown(
     titulo: String,
     opcoes: List<String>,
     selectedOption: MutableState<String>,
+    isDarkTheme: Boolean,
     modifierColumn: Modifier = Modifier,
     modifierTitle: Modifier = Modifier,
     modifierSurface: Modifier = Modifier,
@@ -428,20 +454,23 @@ fun CustomDropdown(
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
+    val textColor = if (isDarkTheme) TextPrimaryOnDark else Color(0xFF4E1810)
+    val backgroundColor = if (isDarkTheme) SurfaceDark.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.6f)
+
     Column(modifier = modifierColumn.padding(8.dp)) {
         Text(
             text = titulo,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = textColor.copy(alpha = 0.8f),
             modifier = modifierTitle.padding(start = 4.dp)
         )
 
         Surface(
             onClick = { expanded = !expanded },
             modifier = modifierSurface,
-            color = MaterialTheme.colorScheme.surface,
+            color = backgroundColor,
             shape = MaterialTheme.shapes.medium,
-            tonalElevation = 2.dp
+            tonalElevation = 0.dp // ALTERAÇÃO AQUI: Era 2.dp, mudamos para 0.dp
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -453,9 +482,9 @@ fun CustomDropdown(
                     text = selectedOption.value.ifEmpty { stringResource(id = R.string.select) },
                     style = MaterialTheme.typography.bodyLarge,
                     color = if (selectedOption.value.isEmpty()) {
-                        MaterialTheme.colorScheme.onSurfaceVariant
+                        textColor.copy(alpha = 0.6f)
                     } else {
-                        MaterialTheme.colorScheme.onSurface
+                        textColor
                     },
                     modifier = modifierSelectText.padding(8.dp)
                 )
@@ -465,7 +494,7 @@ fun CustomDropdown(
                         id = if (expanded) R.drawable.outline_add_24 else R.drawable.outline_add_24
                     ),
                     contentDescription = if (expanded) stringResource(id = R.string.collapse) else stringResource(id = R.string.expand),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+                    colorFilter = ColorFilter.tint(textColor),
                     modifier = modifierImage.size(24.dp)
                 )
             }
@@ -477,6 +506,7 @@ fun CustomDropdown(
                 opcoes = opcoes,
                 selectedOption = selectedOption,
                 onDismiss = { expanded = false },
+                isDarkTheme = isDarkTheme,
                 modifierCard = modifierOptionCard,
                 modifierColumn = modifierOptionColumn,
                 modifierSurface = modifierOptionSurface,
@@ -491,6 +521,7 @@ private fun DropdownMenuCustom(
     opcoes: List<String>,
     selectedOption: MutableState<String>,
     onDismiss: () -> Unit,
+    isDarkTheme: Boolean,
     modifierCard: Modifier = Modifier,
     modifierColumn: Modifier = Modifier,
     modifierSurface: Modifier = Modifier,
@@ -498,16 +529,22 @@ private fun DropdownMenuCustom(
 ) {
     val maxHeight = 5 * 48
 
+    val textColor = if (isDarkTheme) TextPrimaryOnDark else Color(0xFF4E1810)
+    val backgroundColor = if (isDarkTheme) SurfaceDark else Color.White
+    val selectedBackgroundColor = if (isDarkTheme) MutedWarmGold else BasketballOrange
+    val selectedTextColor = if (isDarkTheme) Color.Black else Color.White
+
     Card(
         modifier = modifierCard
             .heightIn(max = maxHeight.dp),
         elevation = CardDefaults.cardElevation(8.dp),
-        shape = MaterialTheme.shapes.medium
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column(
             modifier = modifierColumn
                 .width(IntrinsicSize.Max)
-                .background(MaterialTheme.colorScheme.surface)
+                .background(backgroundColor)
                 .verticalScroll(rememberScrollState())
         ) {
             opcoes.forEach { opcao ->
@@ -516,20 +553,20 @@ private fun DropdownMenuCustom(
                         selectedOption.value = opcao
                         onDismiss()
                     },
-                    modifier = modifierSurface. fillMaxWidth(),
+                    modifier = modifierSurface.fillMaxWidth(),
                     color = if (opcao == selectedOption.value) {
-                        MaterialTheme.colorScheme.primaryContainer
+                        selectedBackgroundColor
                     } else {
-                        MaterialTheme.colorScheme.surface
+                        backgroundColor
                     }
                 ) {
                     Text(
                         text = opcao,
                         style = MaterialTheme.typography.bodyLarge,
                         color = if (opcao == selectedOption.value) {
-                            MaterialTheme.colorScheme.onPrimaryContainer
+                            selectedTextColor
                         } else {
-                            MaterialTheme.colorScheme.onSurface
+                            textColor
                         },
                         modifier = modifierOptionText
                             .padding(16.dp)
@@ -540,12 +577,12 @@ private fun DropdownMenuCustom(
     }
 }
 
-
 @Composable
 fun SmartCounter(
     titulo: String,
     numeroAtual: Int = 0,
     clikable: Boolean = true,
+    isDarkTheme: Boolean,
     modifierCard: Modifier = Modifier,
     modifierColumn: Modifier = Modifier,
     modifierTitle: Modifier = Modifier,
@@ -555,23 +592,42 @@ fun SmartCounter(
     modifierTextButtons: Modifier = Modifier,
 ) {
     var isEditing by rememberSaveable { mutableStateOf(false) }
-    var numeroAtual by rememberSaveable { mutableStateOf(numeroAtual) }
+    var numeroAtualState by rememberSaveable { mutableStateOf(numeroAtual) }
 
+    val cardColors = if (isDarkTheme) {
+        CardDefaults.cardColors(
+            containerColor = SurfaceDark.copy(alpha = 0.5f),
+            contentColor = TextPrimaryOnDark
+        )
+    } else {
+        CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.6f),
+            contentColor = Color(0xFF4E1810)
+        )
+    }
+
+    val buttonColors = if (isDarkTheme) {
+        ButtonDefaults.textButtonColors(
+            contentColor = MutedWarmGold
+        )
+    } else {
+        ButtonDefaults.textButtonColors(
+            contentColor = BasketballOrange
+        )
+    }
     Card(
         modifier = if (clikable) {
             modifierCard.clickable { isEditing = !isEditing }
         } else {
             modifierCard
         },
+        // ALTERAÇÃO AQUI: Elevação 0.dp para ficar flat igual ao Settings
         elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isEditing) 8.dp else 4.dp
+            defaultElevation = 0.dp
         ),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isEditing)
-                MaterialTheme.colorScheme.primaryContainer
-            else
-                MaterialTheme.colorScheme.surfaceVariant
-        )
+        // OPCIONAL: Borda ao editar
+        border = if (isEditing && isDarkTheme) androidx.compose.foundation.BorderStroke(1.dp, BasketballOrange) else null,
+        colors = cardColors
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -581,10 +637,6 @@ fun SmartCounter(
             Text(
                 text = titulo,
                 style = MaterialTheme.typography.titleMedium,
-                color = if (isEditing)
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = modifierTitle
             )
 
@@ -593,10 +645,8 @@ fun SmartCounter(
             ) {
                 if (isEditing) {
                     TextButton(
-                        onClick = { if (numeroAtual > 0) numeroAtual-- },
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        ),
+                        onClick = { if (numeroAtualState > 0) numeroAtualState-- },
+                        colors = buttonColors,
                         modifier = modifierButtons
                     ) {
                         Text(
@@ -609,22 +659,16 @@ fun SmartCounter(
                 }
 
                 Text(
-                    text = "$numeroAtual",
+                    text = "$numeroAtualState",
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
-                    color = if (isEditing)
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    else
-                        MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = modifierNumber
                 )
 
                 if (isEditing) {
                     TextButton(
-                        onClick = { numeroAtual++ },
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        ),
+                        onClick = { numeroAtualState++ },
+                        colors = buttonColors,
                         modifier = modifierButtons
                     ) {
                         Text(
