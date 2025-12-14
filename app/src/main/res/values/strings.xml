@@ -46,4 +46,23 @@
     <string name="information_and_support">Information and Support</string>
     <string name="logout">Logout</string>
     <string name="app_version">App Version v1.0.2</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="account">Account</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="change_password">Change Password</string>
+    <string name="workouts_completed">Workouts</string>
+    <string name="hours_trained">Hours</string>
+    <string name="points_scored">Points</string>
+    <string name="athlete">Athlete</string>
+    <string name="player_card">Player Card</string>
+    <string name="position">Position</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="jersey_number">Jersey #</string>
+    <string name="dominant_hand">Dominant Hand</string>
+    <string name="performance_summary">Performance Summary</string>
+    <string name="favorite_exercise">Favorite Exercise</string>
+    <string name="social">Social</string>
+    <string name="friends">Friends (%s)</string>
+    <string name="groups">Groups (%s)</string>
 </resources>

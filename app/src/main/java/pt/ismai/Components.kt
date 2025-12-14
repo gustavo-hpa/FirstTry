@@ -101,11 +101,11 @@ fun MainContent(
             Ecras.Setting -> Setting(onScreenSelected, isDarkTheme, onThemeToggle, onLocaleChange)
             Ecras.Login -> Login(onScreenSelected)
             Ecras.Signup -> Signup(onScreenSelected)
-            Ecras.Profile -> Profile()
-            Ecras.AccountManagement -> AccountManagement()
-            Ecras.NotificationsAndSounds -> NotificationsAndSounds()
-            Ecras.PrivacyAndSecurity -> PrivacyAndSecurity()
-            Ecras.HelpAndAbout -> HelpAndAbout()
+            Ecras.Profile -> Profile(isDarkTheme)
+            Ecras.AccountManagement -> AccountManagement(isDarkTheme)
+            Ecras.NotificationsAndSounds -> NotificationsAndSounds(isDarkTheme)
+            Ecras.PrivacyAndSecurity -> PrivacyAndSecurity(isDarkTheme)
+            Ecras.HelpAndAbout -> HelpAndAbout(isDarkTheme)
         }
     }
 }

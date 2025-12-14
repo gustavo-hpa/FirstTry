@@ -11,7 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AccountManagement() {
+fun AccountManagement(isDarkTheme: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -21,7 +21,7 @@ fun AccountManagement() {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Perfil Público
-        SettingsGroup("Perfil Público") {
+        SettingsGroup("Perfil Público", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Editar Perfil (Foto, Nome, Bio)",
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -30,7 +30,7 @@ fun AccountManagement() {
         }
 
         // Dados da Conta
-        SettingsGroup("Dados da Conta") {
+        SettingsGroup("Dados da Conta", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Dados Pessoais (E-mail, Telefone, Nascimento)",
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -45,7 +45,7 @@ fun AccountManagement() {
         }
 
         // Financeiro
-        SettingsGroup("Financeiro") {
+        SettingsGroup("Financeiro", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Assinatura/Planos (Status, Pagamento, Histórico)",
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -54,7 +54,7 @@ fun AccountManagement() {
         }
 
         // Zona de Perigo
-        SettingsGroup("Zona de Perigo") {
+        SettingsGroup("Zona de Perigo", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Excluir Conta",
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder

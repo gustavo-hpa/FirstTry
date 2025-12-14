@@ -46,4 +46,23 @@
     <string name="information_and_support">Informação e Suporte</string>
     <string name="logout">Sair</string>
     <string name="app_version">Versão da App v1.0.2</string>
+    <string name="profile_picture">Foto de Perfil</string>
+    <string name="account">Conta</string>
+    <string name="edit_profile">Editar Perfil</string>
+    <string name="change_password">Mudar Palavra-passe</string>
+    <string name="workouts_completed">Treinos</string>
+    <string name="hours_trained">Horas</string>
+    <string name="points_scored">Pontos</string>
+    <string name="athlete">Atleta</string>
+    <string name="player_card">Ficha de Atleta</string>
+    <string name="position">Posição</string>
+    <string name="height">Altura</string>
+    <string name="weight">Peso</string>
+    <string name="jersey_number">Camisola nº</string>
+    <string name="dominant_hand">Mão Dominante</string>
+    <string name="performance_summary">Resumo de Desempenho</string>
+    <string name="favorite_exercise">Exercício Favorito</string>
+    <string name="social">Social</string>
+    <string name="friends">Amigos (%s)</string>
+    <string name="groups">Grupos (%s)</string>
 </resources>

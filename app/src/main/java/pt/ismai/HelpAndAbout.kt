@@ -11,7 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HelpAndAbout() {
+fun HelpAndAbout(isDarkTheme: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -21,7 +21,7 @@ fun HelpAndAbout() {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Suporte
-        SettingsGroup("Suporte") {
+        SettingsGroup("Suporte", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "FAQ (Perguntas Frequentes)",
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -42,7 +42,7 @@ fun HelpAndAbout() {
         }
 
         // Legal
-        SettingsGroup("Legal") {
+        SettingsGroup("Legal", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Política de Privacidade",
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -63,7 +63,7 @@ fun HelpAndAbout() {
         }
 
         // Engajamento
-        SettingsGroup("Engajamento") {
+        SettingsGroup("Engajamento", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Avalie a App",
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder

@@ -64,7 +64,7 @@ fun Setting(
         SettingsProfileCard(onNavigate = { onScreenSelected(Ecras.AccountManagement) })
 
         // Seção 2: Preferências do App
-        SettingsGroup(title = stringResource(id = R.string.app_preferences)) {
+        SettingsGroup(title = stringResource(id = R.string.app_preferences), isDarkTheme = isDarkTheme) {
             SettingsSwitchItem(
                 title = stringResource(id = R.string.dark_theme),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -80,7 +80,7 @@ fun Setting(
         }
 
         // Seção 3: Geral
-        SettingsGroup(title = stringResource(id = R.string.general)) {
+        SettingsGroup(title = stringResource(id = R.string.general), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.settings_notifications_and_sounds),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -95,7 +95,7 @@ fun Setting(
         }
 
         // Seção 4: Informações e Suporte
-        SettingsGroup(title = stringResource(id = R.string.information_and_support)) {
+        SettingsGroup(title = stringResource(id = R.string.information_and_support), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.settings_help_and_about),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder

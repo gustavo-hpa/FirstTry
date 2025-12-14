@@ -1,6 +1,5 @@
 package pt.ismai
 
-import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity

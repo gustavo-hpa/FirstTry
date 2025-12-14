@@ -23,12 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SettingsGroup(title: String, content: @Composable ColumnScope.() -> Unit) {
+fun SettingsGroup(title: String, isDarkTheme: Boolean,content: @Composable ColumnScope.() -> Unit) {
     Column {
         Text(
             text = title.uppercase(),
             style = MaterialTheme.typography.labelMedium,
-            color = BasketballOrange,
+            color = if (isDarkTheme) MutedWarmGold else BasketballOrange,
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
         )
         Card(

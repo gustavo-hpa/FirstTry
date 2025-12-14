@@ -1,0 +1,21 @@
+ForgotPasswordScreen: Recuperação de senha (implícito em sistemas de login).
+MapScreen: O mapa global para visualizar quadras e fazer Check-in.
+SocialHubScreen: Lista de conversas (chats privados e grupos) e lista de amigos.
+WorkoutDetailScreen: Ao clicar num treino da lista, mostra os detalhes (duração, dificuldade, lista de exercícios) antes de começar.
+ActiveWorkoutScreen: O ecrã de execução. Inclui o Timer Tabata, input de dados (reps/tempo) e instruções de áudio.
+WorkoutSummaryScreen: Resumo pós-treino com os dados recolhidos (BPM, calorias, tempo total) para salvar no histórico.
+CreateExerciseScreen: Formulário para criar um novo exercício (Nome, Categoria, Método de Avaliação, etc.).
+CreateWorkoutScreen: Construtor de treinos onde o utilizador seleciona exercícios da lista e define séries/tempo.
+ChatScreen: A janela de conversa em si (texto, voz, mídia, partilha de treino).
+GroupDetailScreen: Gestão do grupo, lista de membros e media partilhada.
+CourtDetailScreen: Ao clicar num pino no mapa, mostra detalhes da quadra, fotos e botão de "Check-in".
+SuggestCourtScreen: Formulário para enviar sugestão de nova quadra ao suporte.
+TacticalBoardScreen: A prancheta digital para desenhar jogadas e exportar para o chat.
+CoachDashboardScreen: (Apenas para perfil Treinador) Lista de atletas e acesso aos gráficos de desempenho deles.
+
+
+
+
+
+
+

@@ -11,7 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PrivacyAndSecurity() {
+fun PrivacyAndSecurity(isDarkTheme: Boolean) {
     var twoFactorAuthEnabled by remember { mutableStateOf(false) }
     var biometricAuthEnabled by remember { mutableStateOf(true) }
 
@@ -24,7 +24,7 @@ fun PrivacyAndSecurity() {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Login e Acesso
-        SettingsGroup("Login e Acesso") {
+        SettingsGroup("Login e Acesso", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Alterar Senha", 
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -47,7 +47,7 @@ fun PrivacyAndSecurity() {
         }
 
         // Sessões
-        SettingsGroup("Sessões") {
+        SettingsGroup("Sessões", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Dispositivos Conectados", 
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -56,7 +56,7 @@ fun PrivacyAndSecurity() {
         }
 
         // Privacidade Social
-        SettingsGroup("Privacidade Social") {
+        SettingsGroup("Privacidade Social", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Visibilidade do Perfil (Público/Privado)", 
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -71,7 +71,7 @@ fun PrivacyAndSecurity() {
         }
 
         // Permissões do Sistema
-        SettingsGroup("Permissões do Sistema") {
+        SettingsGroup("Permissões do Sistema", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Gerir permissões", 
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder

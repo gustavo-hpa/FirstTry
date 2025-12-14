@@ -9,7 +9,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun NotificationsAndSounds() {
+fun NotificationsAndSounds(isDarkTheme: Boolean) {
     var pushNotificationsEnabled by remember { mutableStateOf(true) }
 
     Column(
@@ -21,7 +21,7 @@ fun NotificationsAndSounds() {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Alertas
-        SettingsGroup("Alertas") {
+        SettingsGroup("Alertas", isDarkTheme = isDarkTheme) {
             SettingsSwitchItem(
                 title = "Push Notifications",
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -31,7 +31,7 @@ fun NotificationsAndSounds() {
         }
 
         // Preferências
-        SettingsGroup("Preferências") {
+        SettingsGroup("Preferências", isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = "Sons e Vibração",
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
