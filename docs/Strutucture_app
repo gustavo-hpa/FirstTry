@@ -1,0 +1,438 @@
+Este documento + os documentos mainActivyt.tk + components.kt
+
+Nome da aplicação:
+	Basket app
+
+Objetivo:
+	A aplicação será uma plataforma completa destinada a facilitar o treino de basquete, oferecendo inicialmente uma vasta biblioteca de exercícios e treinos pré-configurados. Além disso, o sistema permitirá total liberdade para o usuário criar seus próprios exercícios e rotinas de treino personalizadas, associando todos esses dados à sua conta para garantir que nenhuma informação se perca caso o aplicativo seja desinstalado. Dentro desses treinos, sejam eles criados ou nativos, o usuário poderá registrar entradas detalhadas, inserindo valores e tempos de execução, o que alimentará um histórico completo com data e hora, além de gerar uma ampla coleção de dashboards para o acompanhamento visual do progresso. Para auxiliar a execução sem interrupções, haverá um Timer Tabata/Intervalado integrado que dita os exercícios por áudio, e também uma Prancheta Tática Digital para desenhar e compartilhar estratégias dentro do app.
+No aspecto de saúde e tecnologia, o aplicativo terá integração avançada com smartwatches (como Apple Watch e Garmin) para recolher dados vitais, incluindo passos, cálculo preciso de calorias e leitura de batimentos cardíacos e zonas de esforço durante a prática. Haverá também um perfil diferenciado chamado "Modo Treinador", que permite a técnicos criar treinos, enviá-los para grupos de atletas e monitorar os gráficos de progresso dos alunos remotamente.
+Para conectar o mundo digital ao físico, o aplicativo contará com um mapa global de quadras. A adição oficial de novos locais no mapa será restrita aos administradores (embora usuários possam enviar sugestões de novas quadras via mensagem ao suporte), mas a comunidade poderá interagir ativamente avaliando a qualidade dos locais (se tem rede, iluminação, bom piso), postando fotos e utilizando a função de "Check-in" para notificar amigos de que chegaram à quadra. Além disso, existirá um organizador de "Rachas" (Matchmaking) para criar eventos de jogos públicos ou privados com confirmação de presença. A experiência social será completada por uma lista de amigos, criação de grupos e um chat privado de curta duração — suportando texto, voz, mídia e compartilhamento de treinos — onde as mensagens são apagadas automaticamente após 7 dias, tudo isso somado a uma aba de notícias que agrega automaticamente conteúdos exclusivos sobre basquete de outros sites.
+Questões tecnicas:
+	App feita no android studio, com kotlin e jetpack compose.
+	A autenticação e base de dados será feita com firebase.
+Suportará tema escuro e claro.
+Terá suporte a dois idiomas portugues e inglês.
+Não serão usados recursos deprecated ou experimental resoucer, nem havera mistura entre material e material3
+
+Objetos:
+Os objetos dentro da app terão exatamente a mesma composição que os objetos da base de dados, para evitar quaisquer problemas de perda de informação.
+Segue aq a lista de objetos atual:
+data class Exercicio(
+    val id: Int,
+    val nome: String,
+    val descricao: String,
+    val categoria: Categorias,
+    val metodoAvaliacao: MetodoAvalicao,
+    val nivelDificuldade: NivelDificuldade,
+    val fotoUrl: String? = null,
+    val criadoPorUsuario: Boolean = false,
+    val dataCriacao: Date = Date(),
+
+    // Campos opcionais para os diferentes métodos de avaliação
+    val tempoDefinido: Duration? = null,      // Para POR_TEMPO e POR_ACERTOS_TEMPO
+    val tempoFeito: Duration? = null,         // Para POR_TEMPO_MAXIMO, POR_TEMPO, POR_TEMPO_MINIMO, POR_ACERTOS_TEMPO
+    val objetivo: Int? = null,           // Para POR_TEMPO_MINIMO
+    val acertos: Int? = null,            // Para POR_TENTATIVA, POR_ACERTOS_TEMPO, POR_PRECISAO
+    val tentativas: Int? = null,         // Para POR_TENTATIVA
+    val series: Int? = null,             // Para POR_REPETICOES
+    val repeticoes: Int? = null,         // Para POR_REPETICOES
+    val distanciaDefinida: Double? = null, // Para POR_DISTANCIA
+    val distanciaFeita: Double? = null     // Para POR_DISTANCIA
+)
+
+data class Treino(
+    val id: Int,
+    val nome: String,
+    val descricao: String,
+    val categorias: List<Categorias>,
+    val nivelDificuldade: NivelDificuldade,
+    val duracao: Duration,
+    val exercicios: List<Exercicio>,
+    val dataCriacao: Date = Date()
+)
+
+// User,"Armazena dados do usuário, autenticação e preferências."
+"data class User(
+	val id: Int,
+	val username: String,
+	val email: String,
+	val nomeCompleto: String? = null,
+	val tipoPerfil: TipoPerfil = TipoPerfil.ATLETA,
+	val dataRegistro: Date = Date()
+)"
+
+// Conexao,Gerencia a lista de amigos do usuário.
+"data class Conexao(
+	val userId: Int,
+	val amigoId: Int,
+	val dataConexao: Date = Date()
+)"
+
+// HistoricoTreino,Guarda a instância de um treino que foi realizado.
+"data class HistoricoTreino(
+	val id: Int,
+	val userId: Int,
+	val treinoId: Int,
+	val dataExecucao: Date = Date(),
+	val duracaoReal: Duration,
+	val historicoExercicios: List<HistoricoExercicio>
+)"
+
+// HistoricoExercicio,Guarda os resultados brutos de um exercício específico realizado.
+"data class HistoricoExercicio(
+	val id: Int,
+	val exercicioId: Int,
+	val seriesFeitas: Int,
+	val acertosFeitos: Int? = null,
+	val tentativasFeitas: Int? = null,
+	val tempoRealizado: Duration? = null,
+	val observacoes: String? = null
+)"
+
+// DadosSmartwatch,Armazena dados biométricos coletados durante o treino (ligado ao HistoricoTreino).
+"data class DadosSmartwatch(
+	val historicoTreinoId: Int,
+	val bpmMedio: Int,
+	val calorias: Double,
+	val tempoZonaEsforco: Duration? = null  )"
+
+// Quadra,Define uma quadra de basquete no mapa.
+"data class Quadra(
+	val id: Int,
+	val nome: String,
+	val latitude: Double,
+	val longitude: Double,
+	val iluminacao: Boolean,
+	val rede: Boolean,
+	val piso: QualidadePiso,
+	val adicionadaPorAdmin: Boolean = false
+)"
+
+// Checkin,"Registra quando um usuário está na quadra (para a funcionalidade ""Quem está na quadra?"")."
+"data class Checkin(
+	val id: Int,
+	val userId: Int,
+	val quadraId: Int,
+	val dataCheckin: Date = Date(),
+	val ativoAte: Date // TTL de algumas horas
+)"
+
+// RachaEvento,Objeto principal para organizar jogos.
+"data class RachaEvento(
+	val id: Int,
+	val nome: String,
+	val quadraId: Int,
+	val organizadorId: Int,
+	val dataHora: Date,
+	val publico: Boolean,
+	val participantes: List<Int> // Lista de IDs de usuários
+)"
+
+// Grupo,Define um grupo de chat.
+"data class Grupo(
+	val id: Int,
+	val nome: String,
+	val membros: List<Int>,
+	val administradorId: Int
+)"
+
+// Mensagem,Objeto genérico para mensagens de chat (individual ou grupo).
+"data class Mensagem(
+	val id: Int,
+	val remetenteId: Int,
+	val chatId: Int, // ID da conversa privada ou do Grupo
+	val tipo: TipoMensagem,
+	val conteudo: String,
+	val dataEnvio: Date = Date(),
+	val dataExpiracao: Date // 7 dias depois
+)"
+
+// Noticia,Armazena dados do feed de notícias.
+"data class Noticia(
+	val id: Int,
+	val titulo: String,
+	val urlFonte: String,
+	val dataPublicacao: Date = Date(),
+	val snippet: String? = null
+)"
+
+----------------------------------------------------------------------------------------------------------------------------------
+// ENUMS
+
+enum class Ecras {
+    Home,
+    Statistic,
+    Workout,
+    Setting, // This will be the main settings screen
+    Login,
+    Signup,
+    Profile,
+    // New settings screens
+    AccountManagement,
+    NotificationsAndSounds,
+    PrivacyAndSecurity,
+    HelpAndAbout
+}
+
+enum class MetodoAvalicao {
+    POR_TEMPO_MAXIMO, // tempoFeito
+    POR_TEMPO_ACERTOS, // acertos"definidos", tempoFeito
+    POR_TEMPO_DISTANCIA, // distanciaDefinida, tempoFeito
+    POR_TEMPO_MINIMO, // tempoDefinido, tempoFeito
+    POR_TENTATIVA, //acertos, tentativas
+    POR_PRECISAO, // acertos
+    POR_REPETICOES, // series e repetiçoes
+    POR_DISTANCIA_MAXIMA, // distanciaFeita
+    POR_ACERTOS_TEMPO, // acertos, tempoDefinido
+    POR_DISTANCIA_TEMPO, // tempoDefinido, distanciaFeita
+}
+
+enum class NivelDificuldade {
+    DIFICIO,
+    MEDIA,
+    FACIL,
+}
+
+enum class Categorias {
+    CARDIO,
+    FISICO,
+    PASSE,
+    DRIBLE_DOMINIO,
+    ARREMESSO
+}
+
+// TipoMensagem,Enumeração para o conteúdo da mensagem.
+"enum class TipoMensagem {
+	TEXTO,
+	AUDIO,
+	IMAGEM,
+	VIDEO,
+	TREINO_COMPARTILHADO
+}"
+
+// QualidadePiso,Enum para avaliação do piso da quadra.
+"enum class QualidadePiso {
+	EXCELENTE,
+	BOM,
+	REGULAR,
+	RUIM
+}"
+
+// TipoPerfil,Enumeração para diferenciar o usuário (para o Modo Treinador).
+"enum class TipoPerfil {
+	ATLETA,
+	TREINADOR
+}"
+Arremessos:
+2 pontos:
+0 graus: esquerda
+0 graus: direita
+45 graus: direita
+45 graus: esquerda
+90 graus: esquerda
+90 graus: direita
+Lance livre
+	3 pontos:
+0 graus: esquerda
+0 graus: direita
+45 graus: direita
+45 graus: esquerda
+90 graus: esquerda
+90 graus: direita
+Direto
+	De baixo do cesto:
+Direcionado para o cesto:
+Gancho de direita
+Gancho de esqueda
+Tabelada de esqueda, com mão esquerda
+Tabelada de direita, com mao direita
+De costas para o cesto:
+Gancho de direita
+Gancho de esqueda
+De lado para o cesto:
+Gancho de direita
+Gancho de esqueda
+
+	Variaçoes com step back,
+	Variaçoes com step side direita,
+	Variaçoes com step side esquerda,
+	Variaçoes com giro lateral,
+	Variaçoes com fake pass
+	Variaçoes com receber e chutar
+Fisico:
+	Peito:
+Flexoes
+flexoes de joelhos
+flexoes diamante
+flexoes diamante de joelhos
+flexoes arqueiro
+flexoes com palma
+flexoes unilaterais
+flexoes isometricas
+	Costas:
+pull-up
+pull-up pronada
+	Biceps:
+rosca com mochila
+rosca pronada com mochila
+rosca com toalha + peso
+rosca pronada com toalha + peso
+Australian pull-up
+	Triceps:
+bench dips
+paralelas
+	Perna:
+agachamento livre
+agachamento isometrico
+agachamento com salto
+agachamento com uma perna
+agachamento bulgaro
+afunda / tesoura
+afunda lateral
+afunda com salto
+step-up
+pular degrais grandes de pes juntos
+elevação de panturilha
+elevação de panturilha unilateral
+	Abdominais:
+abdominais classico
+abdominais curtos
+abdominais infra (pernas levantadas)
+abdominal bicicletas
+abdominal obliquo
+abdominal cruzado
+prancha frontal
+prancha lateral
+prancha dinamica troca entre maoes e ombros
+prancha dinamica toca com mãos aos ombros
+leg raise (elevação de pernas)
+	Ombro:
+Wall walk
+Elevação lateral com mochila
+Elevação frontal com mochila
+Press militar com mochila
+Flexão declinada
+Cardio:
+	Corrida:
+Sprint
+Longa duração
+Trote
+Corrida com salto unilateral
+Suicidas
+Corrida lateral
+Zigui zagui
+Caminhada
+	Outros:
+Polichinelos
+Alpinista
+Burpees
+Bicicleta
+Pular corda
+Drible_Dominio:
+Baixo (Altura do tornozelo):
+Mão direita (rápido e forte)
+Mão esquerda (rápido e forte)
+Médio (Altura da cintura):
+Mão direita (controle e ritmo)
+Mão esquerda (controle e ritmo)
+Alto (Altura do ombro):
+Mão direita (força máxima)
+Mão esquerda (força máxima)
+
+Manipulação Corporal (Ball Wraps):
+Ao redor da cabeça:
+Sentido horário
+Sentido anti-horário
+Ao redor da cintura:
+Sentido horário
+Sentido anti-horário
+Ao redor das pernas (juntas):
+Sentido horário
+Sentido anti-horário
+Ao redor de uma perna (Lunge):
+Perna direita (ambos os sentidos)
+Perna esquerda (ambos os sentidos)
+"Oito" (Figure 8) sem drible:
+De frente para trás
+De trás para frente
+
+Dribles de Mudança de Direção (Crossovers)
+Básicos (1 drible de preparação + movimento):
+Crossover (Pela frente):
+Direita para esquerda
+Esquerda para direita
+Between the Legs (Entre as pernas):
+Direita para esquerda
+Esquerda para direita
+Behind the Back (Por trás das costas):
+Direita para esquerda (Wrap)
+Esquerda para direita (Wrap)
+
+Avançados (Combinações):
+In & Out (Dentro e Fora):
+Mão direita
+Mão esquerda
+In & Out + Crossover:
+Começando na direita
+Começando na esquerda
+Between the Legs + Behind the Back:
+Direita > Esquerda > Direita
+Esquerda > Direita > Esquerda
+Double Crossover (Rápido):
+Frente baixa (Direita > Esquerda > Direita)
+
+Drible em Movimento (Quadra inteira ou Meia quadra)
+Velocidade e Controle:
+Speed Dribble (Velocidade máxima):
+Mão direita (empurrando a bola à frente)
+Mão esquerda (empurrando a bola à frente)
+Retreat Dribble (Drible de recuo/proteção):
+Recuar com mão direita (protegendo com o corpo)
+Recuar com mão esquerda (protegendo com o corpo)
+
+Ziguezague (Cones ou Imaginário):
+Mudança com Crossover:
+Foco na explosão pós-troca
+Mudança com Between the Legs:
+Foco em baixar o quadril
+Mudança com Behind the Back:
+Foco em proteger a bola
+Mudança com Spin Move (Giro):
+Giro com mão direita
+Giro com mão esquerda
+
+Domínio e Finalização (Simulando contato)
+Pocket Dribble (Esconder a bola no "bolso"):
+Lateral:
+Mão direita (puxar para o quadril direito)
+Mão esquerda (puxar para o quadril esquerdo)
+Com passo lateral (Jab Step):
+Drible + Jab step oposto
+
+Hesitation (Hesitação):
+Stutter Step (Passos curtos e rápidos):
+Mão direita
+Mão esquerda
+Freeze (Parada total momentânea):
+Levantar o tronco sem parar o drible
+
+Variações de Dificuldade (Aplicável a todos acima
+Com duas bolas:
+Drible simultâneo (mesmo ritmo)
+Drible alternado (ritmo trocado)
+Com bola de tênis (Coordenação):
+Drible com uma mão + jogar/pegar bola de tênis com a outra
+Olhos fechados:
+Foco total na sensibilidade tátil
+Com luvas ou saco plástico na bola:
+Reduz a aderência para forçar o controle
+Passe:
+	Passe alto
+	De peito
+	Picado
+	Cruzado de esquerda
+	Cruazado de direita
+	Por tras das costas
+	Pick and pass
+	Fake pass and pass
+	Fake shot and pass
