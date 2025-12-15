@@ -1,11 +1,13 @@
 package pt.ismai
 
+import android.app.Activity
 import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.OAuthProvider
 import kotlinx.coroutines.tasks.await
 
 class FirebaseManager {
@@ -56,6 +58,22 @@ class FirebaseManager {
             auth.signInWithCredential(credential).await()
         } catch (e: Exception) {
             // Handle exceptions
+            e.printStackTrace()
+            null
+        }
+    }
+
+    suspend fun githubSignIn(activity: Activity): AuthResult? {
+        val provider = OAuthProvider.newBuilder("github.com")
+        // Opcional: Pedir acesso ao email mesmo que seja privado no GitHub
+        provider.addCustomParameter("allow_signup", "false")
+        val scopes = listOf("user:email")
+        provider.setScopes(scopes)
+
+        return try {
+            // O Firebase gere a Activity (WebView) automaticamente
+            auth.startActivityForSignInWithProvider(activity, provider.build()).await()
+        } catch (e: Exception) {
             e.printStackTrace()
             null
         }

@@ -45,6 +45,9 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
     val context = LocalContext.current
     val firebaseManager = remember { FirebaseManager() }
 
+    // 🔥 NOVIDADE: Pegamos a Activity diretamente aqui
+    val activity = LocalActivity.current
+
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = { result ->
@@ -55,9 +58,8 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
                     coroutineScope.launch {
                         val authResult = firebaseManager.googleSignIn(account.idToken!!)
                         if (authResult != null) {
-                            onScreenSelected(Ecras.Home) // Navigate to home on success
+                            onScreenSelected(Ecras.Home)
                         } else {
-                            // Handle Google sign-in failure
                             Log.e("Signup", "Google sign-in failed")
                         }
                     }
@@ -99,9 +101,10 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
                         coroutineScope.launch {
                             val result = firebaseManager.signUp(valorEmail.value, valorPassword.value)
                             if (result != null) {
-                                onScreenSelected(Ecras.Home) // Navigate to home
+                                onScreenSelected(Ecras.Home)
                             } else {
-                                // Handle error
+                                // Podes adicionar um Log aqui também se falhar
+                                Log.e("Signup", "Falha ao criar conta")
                             }
                         }
                     } else {
@@ -133,7 +136,23 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            SocialButton("GitHub", isDark, Icons.Default.Person) { /* Lógica GitHub Signup */ }
+
+            // 🔥 BOTÃO GITHUB ATUALIZADO
+            SocialButton("GitHub", isDark, Icons.Default.Person) {
+                // Verificação limpa e direta
+                if (activity != null) {
+                    coroutineScope.launch {
+                        val result = firebaseManager.githubSignIn(activity)
+                        if (result != null) {
+                            onScreenSelected(Ecras.Home)
+                        } else {
+                            Log.e("GithubLogin", "Falha ao iniciar sessão com GitHub")
+                        }
+                    }
+                } else {
+                    Log.e("GithubLogin", "Activity não encontrada!")
+                }
+            }
             Spacer(modifier = Modifier.weight(1f))
 
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 24.dp)) {

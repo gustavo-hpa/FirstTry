@@ -1,6 +1,8 @@
 package pt.ismai
 
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -43,6 +45,7 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val firebaseManager = remember { FirebaseManager() }
+    val activity = LocalActivity.current
 
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -132,7 +135,22 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            SocialButton("GitHub", isDark, Icons.Default.Person) { /* Lógica GitHub */ }
+            SocialButton("GitHub", isDark, Icons.Default.Person) {
+                // Já não precisamos do 'context' nem do 'findActivity'
+                if (activity != null) {
+                    coroutineScope.launch {
+                        val result = firebaseManager.githubSignIn(activity)
+                        if (result != null) {
+                            onScreenSelected(Ecras.Home)
+                        } else {
+                            Log.e("GithubLogin", "Falha ao iniciar sessão")
+                        }
+                    }
+                } else {
+                    // Isto agora é quase impossível de acontecer
+                    Log.e("GithubLogin", "Activity não encontrada!")
+                }
+            }
             Spacer(modifier = Modifier.weight(1f))
 
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 24.dp)) {

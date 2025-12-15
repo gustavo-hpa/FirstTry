@@ -1,5 +1,6 @@
 package pt.ismai
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -26,21 +27,25 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            // ... as tuas variáveis de tema e idioma mantêm-se aqui ...
             val systemDark = isSystemInDarkTheme()
             var isDarkTheme by rememberSaveable { mutableStateOf(systemDark) }
-
-            // Language state management
             var currentLocale by remember { mutableStateOf(getSystemLocale()) }
 
-            LocaleWrapper(locale = currentLocale) {
-                FirstTryTheme(darkTheme = isDarkTheme) {
-                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        ProgramaPrincipal(
-                            modifier = Modifier.padding(innerPadding),
-                            isDarkTheme = isDarkTheme,
-                            onThemeToggle = { isDarkTheme = !isDarkTheme },
-                            onLocaleChange = { newLocale -> currentLocale = newLocale }
-                        )
+            // 🔥 AQUI ESTÁ A MUDANÇA: Envolvemos tudo com o LocalActivity
+            CompositionLocalProvider(LocalActivity provides this) {
+
+                // O teu LocaleWrapper continua aqui dentro como estava
+                LocaleWrapper(locale = currentLocale) {
+                    FirstTryTheme(darkTheme = isDarkTheme) {
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            ProgramaPrincipal(
+                                modifier = Modifier.padding(innerPadding),
+                                isDarkTheme = isDarkTheme,
+                                onThemeToggle = { isDarkTheme = !isDarkTheme },
+                                onLocaleChange = { newLocale -> currentLocale = newLocale }
+                            )
+                        }
                     }
                 }
             }
@@ -141,6 +146,8 @@ fun ProgramaPrincipal(
         }
     }
 }
+
+val LocalActivity = staticCompositionLocalOf<Activity?> { null }
 
 @Preview(showBackground = true)
 @Composable
