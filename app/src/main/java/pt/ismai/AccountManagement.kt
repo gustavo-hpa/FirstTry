@@ -3,15 +3,47 @@ package pt.ismai
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 @Composable
-fun AccountManagement(isDarkTheme: Boolean) {
+fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
+    val coroutineScope = rememberCoroutineScope()
+    val firebaseManager = remember { FirebaseManager() }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Excluir Conta") },
+            text = { Text("Tem certeza de que deseja excluir sua conta permanentemente? Esta ação não pode ser desfeita.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            firebaseManager.deleteAccount()
+                            showDeleteDialog = false
+                            onScreenSelected(Ecras.Login)
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text("Excluir")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +90,7 @@ fun AccountManagement(isDarkTheme: Boolean) {
             SettingsMenuItem(
                 title = "Excluir Conta",
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
-                onClick = { /* TODO */ }
+                onClick = { showDeleteDialog = true }
             )
         }
         

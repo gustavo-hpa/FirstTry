@@ -3,6 +3,8 @@ package pt.ismai
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivityResultRegistryOwner
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -13,7 +15,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import pt.ismai.ui.theme.FirstTryTheme
 import java.util.Locale
 
@@ -53,13 +57,24 @@ fun LocaleWrapper(locale: Locale, content: @Composable () -> Unit) {
     val context = LocalContext.current
     val configuration = Configuration(context.resources.configuration)
     configuration.setLocale(locale)
-    
-    // Create a new context with the updated configuration
+
     val localizedContext = context.createConfigurationContext(configuration)
-    
-    // Provide this new context to the composable tree, which forces a recomposition 
-    // of any composable that uses resources, like stringResource()
-    CompositionLocalProvider(LocalContext provides localizedContext) {
+
+    // 1. CAPTURAR OS OWNERS DO CONTEXTO ORIGINAL (A MainActivity)
+    // Isto garante que, mesmo mudando o Contexto, as funcionalidades da Activity se mantêm.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val savedStateRegistryOwner = LocalSavedStateRegistryOwner.current
+    val activityResultRegistryOwner = LocalActivityResultRegistryOwner.current!!
+    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current!!
+
+    // 2. FORNECER O NOVO CONTEXTO + OS OWNERS ORIGINAIS
+    CompositionLocalProvider(
+        LocalContext provides localizedContext,
+        LocalLifecycleOwner provides lifecycleOwner,
+        LocalSavedStateRegistryOwner provides savedStateRegistryOwner,
+        LocalActivityResultRegistryOwner provides activityResultRegistryOwner,
+        LocalOnBackPressedDispatcherOwner provides onBackPressedDispatcherOwner
+    ) {
         content()
     }
 }
@@ -71,9 +86,21 @@ fun ProgramaPrincipal(
     onThemeToggle: () -> Unit = {},
     onLocaleChange: (Locale) -> Unit = {}
 ) {
-    var currentScreen by rememberSaveable { mutableStateOf(Ecras.Home) }
+    var currentScreen by rememberSaveable { mutableStateOf(Ecras.Loading) }
 
-    val fullScreenScreens = listOf(Ecras.Login, Ecras.Signup)
+    LaunchedEffect(Unit) {
+        val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+        // Pequeno delay artificial opcional se quiseres mostrar o logo (ex: 500ms)
+        // kotlinx.coroutines.delay(500)
+
+        if (user != null) {
+            currentScreen = Ecras.Home // Sessão existe -> Vai para Home
+        } else {
+            currentScreen = Ecras.Login // Ninguém logado -> Vai para Login
+        }
+    }
+
+    val fullScreenScreens = listOf(Ecras.Login, Ecras.Signup, Ecras.Loading)
     val isFullScreen = currentScreen in fullScreenScreens
 
     val barColor = if (isDarkTheme) DarkBackgroundStart else Color(0xFFC94C24)

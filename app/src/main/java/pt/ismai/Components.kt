@@ -102,10 +102,11 @@ fun MainContent(
             Ecras.Login -> Login(onScreenSelected)
             Ecras.Signup -> Signup(onScreenSelected)
             Ecras.Profile -> Profile(isDarkTheme)
-            Ecras.AccountManagement -> AccountManagement(isDarkTheme)
+            Ecras.AccountManagement -> AccountManagement(isDarkTheme, onScreenSelected)
             Ecras.NotificationsAndSounds -> NotificationsAndSounds(isDarkTheme)
             Ecras.PrivacyAndSecurity -> PrivacyAndSecurity(isDarkTheme)
             Ecras.HelpAndAbout -> HelpAndAbout(isDarkTheme)
+            Ecras.Loading -> Loading()
         }
     }
 }
@@ -171,6 +172,7 @@ fun Topbar(
         Ecras.NotificationsAndSounds -> stringResource(id = R.string.settings_notifications_and_sounds)
         Ecras.PrivacyAndSecurity -> stringResource(id = R.string.settings_privacy_and_security)
         Ecras.HelpAndAbout -> stringResource(id = R.string.settings_help_and_about)
+        Ecras.Loading -> stringResource(id = R.string.loading)
     }
 
     Row(

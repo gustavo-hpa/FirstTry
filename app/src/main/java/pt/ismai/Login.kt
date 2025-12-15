@@ -1,5 +1,9 @@
 package pt.ismai
 
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -11,37 +15,58 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import kotlinx.coroutines.launch
 
 @Composable
 fun Login(onScreenSelected: (Ecras) -> Unit) {
-    // Detecta se está em modo escuro ou claro
     val isDark = isSystemInDarkTheme()
-
-    // Configura o Gradiente de Fundo
     val backgroundBrush = Brush.verticalGradient(
-        colors = if (isDark) {
-            listOf(DarkBackgroundStart, DarkBackgroundEnd)
-        } else {
-            listOf(LightBackgroundStart, LightBackgroundEnd)
+        colors = if (isDark) listOf(DarkBackgroundStart, DarkBackgroundEnd) else listOf(LightBackgroundStart, LightBackgroundEnd)
+    )
+    val contentColor = if (isDark) Color.White else Color(0xFF4E1810)
+    val valorEmail = rememberSaveable { mutableStateOf("") }
+    val valorPassword = rememberSaveable { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val firebaseManager = remember { FirebaseManager() }
+
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)!!
+                    coroutineScope.launch {
+                        val authResult = firebaseManager.googleSignIn(account.idToken!!)
+                        if (authResult != null) {
+                            onScreenSelected(Ecras.Home) // Navigate to home on success
+                        } else {
+                            // Handle Google sign-in failure
+                            Log.e("Login", "Google sign-in failed")
+                        }
+                    }
+                } catch (e: ApiException) {
+                    Log.w("Login", "Google sign in failed", e)
+                }
+            }
         }
     )
 
-    val contentColor = if (isDark) Color.White else Color(0xFF4E1810)
-
-    // Container Principal com o Gradiente
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -51,120 +76,71 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp)
-                .verticalScroll(rememberScrollState()), // Permite scroll em telas pequenas
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
 
-            // 1. Título / Boas-vindas
-            Text(
-                text = "Bem-vindo",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = contentColor,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = "Entre na sua conta para continuar",
-                fontSize = 16.sp,
-                color = contentColor.copy(alpha = 0.7f),
-                modifier = Modifier.padding(bottom = 32.dp)
-            )
+            Text("Bem-vindo", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = contentColor, modifier = Modifier.padding(bottom = 8.dp))
+            Text("Entre na sua conta para continuar", fontSize = 16.sp, color = contentColor.copy(alpha = 0.7f), modifier = Modifier.padding(bottom = 32.dp))
 
-            // 2. Campos de Texto
-            val valorEmail = rememberSaveable { mutableStateOf("") }
-            BasketballTextField(
-                value = valorEmail.value,
-                onValueChange = { valorEmail.value = it },
-                label = "Email",
-                icon = Icons.Default.Email,
-                isDark = isDark,
-                keyboardType = KeyboardType.Email
-            )
-
+            BasketballTextField(valorEmail.value, { valorEmail.value = it }, "Email", Icons.Default.Email, isDark, keyboardType = KeyboardType.Email)
             Spacer(modifier = Modifier.height(16.dp))
-
-            val valorPassword = rememberSaveable { mutableStateOf("") }
-            BasketballTextField(
-                value = valorPassword.value,
-                onValueChange = { valorPassword.value = it },
-                label = "Password",
-                icon = Icons.Default.Lock,
-                isDark = isDark,
-                isPassword = true
-            )
+            BasketballTextField(valorPassword.value, { valorPassword.value = it }, "Password", Icons.Default.Lock, isDark, isPassword = true)
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 3. Botão de Login Principal (Firebase Email/Senha)
             Button(
-                onClick = { /* Lógica de Login Firebase Email */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = BasketballOrange
-                ),
+                onClick = {
+                    coroutineScope.launch {
+                        try {
+                            val result = firebaseManager.login(valorEmail.value, valorPassword.value)
+                            if (result != null) {
+                                onScreenSelected(Ecras.Home)
+                            } else {
+                                // ADICIONA ISTO PARA VERES O ERRO
+                                Log.e("LoginError", "Login retornou null. Verifique o FirebaseManager.")
+                                // Podes adicionar um Toast aqui se quiseres feedback visual
+                            }
+                        } catch (e: Exception) {
+                            Log.e("LoginError", "Exceção ao logar: ${e.message}")
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("ENTRAR", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-
-            // Divisor "Ou"
             Row(verticalAlignment = Alignment.CenterVertically) {
                 HorizontalDivider(modifier = Modifier.weight(1f), color = contentColor.copy(alpha = 0.3f))
-                Text(
-                    text = "ou continue com",
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    fontSize = 14.sp,
-                    color = contentColor.copy(alpha = 0.6f)
-                )
+                Text("ou continue com", modifier = Modifier.padding(horizontal = 8.dp), fontSize = 14.sp, color = contentColor.copy(alpha = 0.6f))
                 HorizontalDivider(modifier = Modifier.weight(1f), color = contentColor.copy(alpha = 0.3f))
             }
-
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 4. Botões Sociais (Google e Github)
-            SocialButton(
-                text = "Google",
-                isDark = isDark,
-                // Nota: Substitua pelo ícone real do Google depois
-                icon = Icons.Default.Person
-            ) { /* Lógica Google */ }
+            SocialButton("Google", isDark, Icons.Default.Person) {
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(context.getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build()
+                val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                googleSignInLauncher.launch(googleSignInClient.signInIntent)
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
+            SocialButton("GitHub", isDark, Icons.Default.Person) { /* Lógica GitHub */ }
+            Spacer(modifier = Modifier.weight(1f))
 
-            SocialButton(
-                text = "GitHub",
-                isDark = isDark,
-                // Nota: Substitua pelo ícone real do GitHub depois
-                icon = Icons.Default.Person
-            ) { /* Lógica GitHub */ }
-
-            Spacer(modifier = Modifier.weight(1f)) // Empurra o rodapé para baixo
-
-            // 5. Rodapé: Cadastre-se
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 24.dp)
-            ) {
-                Text(
-                    "Não tem conta? ",
-                    color = contentColor.copy(alpha = 0.8f)
-                )
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 24.dp)) {
+                Text("Não tem conta? ", color = contentColor.copy(alpha = 0.8f))
                 TextButton(onClick = { onScreenSelected(Ecras.Signup) }) {
-                    Text(
-                        "Cadastre-se",
-                        color = BasketballOrange,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("Cadastre-se", color = BasketballOrange, fontWeight = FontWeight.Bold)
                 }
             }
         }
     }
 }
-
-// --- Componentes Reutilizáveis para limpar o código principal ---
-

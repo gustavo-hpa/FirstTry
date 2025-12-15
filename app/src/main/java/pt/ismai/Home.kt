@@ -21,8 +21,5 @@ fun Home(onScreenSelected: (Ecras) -> Unit, isDarkTheme: Boolean) {
         SmartTimer("titulo", h, m, s,false, isDarkTheme = isDarkTheme)
         SmartCounter("titulo",100, isDarkTheme = isDarkTheme)
         SmartCounter("titulo", clikable = false, isDarkTheme = isDarkTheme)
-        Button(onClick = { onScreenSelected(Ecras.Login) }, colors = ButtonDefaults.buttonColors(containerColor = MutedWarmGold)) {
-            Text("Ir para Login")
-        }
     }
 }

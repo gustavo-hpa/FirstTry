@@ -65,4 +65,6 @@
     <string name="social">Social</string>
     <string name="friends">Friends (%s)</string>
     <string name="groups">Groups (%s)</string>
+    <string name="default_web_client_id">738736037748</string>
+    <string name="loading">Loading</string>
 </resources>

@@ -177,7 +177,9 @@ enum class Ecras {
     AccountManagement,
     NotificationsAndSounds,
     PrivacyAndSecurity,
-    HelpAndAbout
+    HelpAndAbout,
+
+    Loading
 }
 
 

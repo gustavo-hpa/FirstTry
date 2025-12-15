@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,8 @@ fun Setting(
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var showLanguageDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val firebaseManager = remember { FirebaseManager() }
 
     if (showLanguageDialog) {
         LanguageSelectionDialog(
@@ -106,7 +109,10 @@ fun Setting(
         Spacer(modifier = Modifier.weight(1f))
 
         // Rodapé
-        LogoutAndVersion(onLogout = { /* TODO: Logout logic */ })
+        LogoutAndVersion(onLogout = { 
+            firebaseManager.logout(context, context.getString(R.string.default_web_client_id))
+            onScreenSelected(Ecras.Login)
+        })
         Spacer(modifier = Modifier.height(16.dp))
     }
 }

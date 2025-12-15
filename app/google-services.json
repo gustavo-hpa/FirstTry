@@ -12,7 +12,20 @@
           "package_name": "pt.ismai"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "738736037748-kvi1vg8l6h07f7tr257qae4gdms5nn6n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pt.ismai",
+            "certificate_hash": "41d458c60bae6dfa0ee012826d9ff3cdca1c4dcb"
+          }
+        },
+        {
+          "client_id": "738736037748-2hm6qhmillklk7gcgj5rvbvbomu6enm7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCl_uWr9SN1nJ6DL10GZ0RfX2zwSU4kC08"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "738736037748-2hm6qhmillklk7gcgj5rvbvbomu6enm7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
