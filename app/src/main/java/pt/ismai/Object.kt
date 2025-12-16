@@ -39,7 +39,7 @@ data class Treino(
 
 // User,"Armazena dados do usuário, autenticação e preferências."
 data class User(
-val id: Int,
+val id: String,
 val username: String,
 val email: String,
 val nomeCompleto: String? = null,

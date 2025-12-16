@@ -6,6 +6,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -21,9 +22,9 @@ fun NotificationsAndSounds(isDarkTheme: Boolean) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Alertas
-        SettingsGroup("Alertas", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.alerts), isDarkTheme = isDarkTheme) {
             SettingsSwitchItem(
-                title = "Push Notifications",
+                title = stringResource(id = R.string.push_notifications),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 checked = pushNotificationsEnabled,
                 onCheckedChange = { pushNotificationsEnabled = it }
@@ -31,9 +32,9 @@ fun NotificationsAndSounds(isDarkTheme: Boolean) {
         }
 
         // Preferências
-        SettingsGroup("Preferências", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.preferences), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Sons e Vibração",
+                title = stringResource(id = R.string.sound_and_vibration),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )

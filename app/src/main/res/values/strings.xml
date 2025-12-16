@@ -67,4 +67,66 @@
     <string name="groups">Groups (%s)</string>
     <string name="default_web_client_id">738736037748</string>
     <string name="loading">Loading</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="join_the_game_now">Join the game right now</string>
+    <string name="full_name">Full Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">REGISTER</string>
+    <string name="or_register_with">or register with</string>
+    <string name="google">Google</string>
+    <string name="github">GitHub</string>
+    <string name="already_have_an_account">Already have an account? </string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="login_to_continue">Login to your account to continue</string>
+    <string name="login_button">LOGIN</string>
+    <string name="or_continue_with">or continue with</string>
+    <string name="no_account">Don\'t have an account? </string>
+    <string name="sign_up_now">Sign up</string>
+    <string name="system_default">System Default</string>
+
+    <!-- Help and About -->
+    <string name="support">Support</string>
+    <string name="faq">FAQ (Frequently Asked Questions)</string>
+    <string name="contact_us">Contact Us / Chat</string>
+    <string name="report_a_problem">Report a Problem (Bug Report)</string>
+    <string name="legal">Legal</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="open_source_licenses">Open Source Licenses</string>
+    <string name="engagement">Engagement</string>
+    <string name="rate_the_app">Rate the App</string>
+    <string name="social_media">Social Media</string>
+
+    <!-- Account Management -->
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_account_confirmation">Are you sure you want to permanently delete your account? This action cannot be undone.</string>
+    <string name="delete">Delete</string>
+    <string name="public_profile">Public Profile</string>
+    <string name="edit_profile_photo_name_bio">Edit Profile (Photo, Name, Bio)</string>
+    <string name="account_data">Account Data</string>
+    <string name="personal_data_email_phone_birth">Personal Data (Email, Phone, Birth)</string>
+    <string name="linked_accounts_google_apple_fb">Linked Accounts (Google, Apple, FB)</string>
+    <string name="financial">Financial</string>
+    <string name="subscription_plans">Subscription/Plans (Status, Payment, History)</string>
+    <string name="danger_zone">Danger Zone</string>
+
+    <!-- Notifications and Sounds -->
+    <string name="alerts">Alerts</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="preferences">Preferences</string>
+    <string name="sound_and_vibration">Sound and Vibration</string>
+
+    <!-- Privacy and Security -->
+    <string name="login_and_access">Login and Access</string>
+    <string name="two_factor_authentication">Two-Factor Authentication (2FA)</string>
+    <string name="biometric_authentication">Biometric Authentication (FaceID/TouchID)</string>
+    <string name="sessions">Sessions</string>
+    <string name="connected_devices">Connected Devices</string>
+    <string name="social_privacy">Social Privacy</string>
+    <string name="profile_visibility">Profile Visibility (Public/Private)</string>
+    <string name="blocked_users">Blocked Users</string>
+    <string name="system_permissions">System Permissions</string>
+    <string name="manage_permissions">Manage permissions</string>
 </resources>

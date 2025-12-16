@@ -8,18 +8,49 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.OAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+
+
 
 class FirebaseManager {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
-    suspend fun signUp(email: String, password: String): AuthResult? {
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    suspend fun signUp(email: String, password: String, username: String, nomeCompleto: String? = null): AuthResult? {
         return try {
-            auth.createUserWithEmailAndPassword(email, password).await()
+            // 1. Criar a conta na Autenticação (Email/Password)
+            val result = auth.createUserWithEmailAndPassword(email, password).await()
+            val uid = result.user?.uid
+
+            if (uid != null) {
+                // 2. Se correu bem, cria o objeto User
+                val novoUsuario = User(
+                    id = uid, // O ID do documento é o mesmo da Auth
+                    username = username,
+                    email = email,
+                    nomeCompleto = nomeCompleto,
+                    tipoPerfil = TipoPerfil.ATLETA // Default
+                )
+
+                // 3. Gravar no Firestore na coleção "users"
+                createUserProfile(novoUsuario)
+            }
+            result
         } catch (e: Exception) {
-            // Handle exceptions
             e.printStackTrace()
             null
+        }
+    }
+
+    // Função auxiliar para gravar no Firestore
+    private suspend fun createUserProfile(user: User) {
+        try {
+            // Caminho: users -> UID
+            db.collection("users").document(user.id).set(user).await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // Aqui podes decidir se queres apagar a conta de Auth se a criação do perfil falhar
+            // para evitar "utilizadores fantasmas" sem dados.
         }
     }
 

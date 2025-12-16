@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,8 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
         colors = if (isDark) listOf(DarkBackgroundStart, DarkBackgroundEnd) else listOf(LightBackgroundStart, LightBackgroundEnd)
     )
     val contentColor = if (isDark) Color.White else Color(0xFF4E1810)
+    val valorUserName = rememberSaveable { mutableStateOf("") }
+    val valorFullName = rememberSaveable { mutableStateOf("") }
     val valorEmail = rememberSaveable { mutableStateOf("") }
     val valorPassword = rememberSaveable { mutableStateOf("") }
     val valorConfirmPassword = rememberSaveable { mutableStateOf("") }
@@ -84,22 +87,26 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
             verticalArrangement = Arrangement.Center
         ) {
 
-            Text("Crie sua conta", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = contentColor, modifier = Modifier.padding(bottom = 8.dp))
-            Text("Junte-se ao jogo agora mesmo", fontSize = 16.sp, color = contentColor.copy(alpha = 0.7f), modifier = Modifier.padding(bottom = 32.dp))
+            Text(stringResource(R.string.create_your_account), fontSize = 32.sp, fontWeight = FontWeight.Bold, color = contentColor, modifier = Modifier.padding(bottom = 8.dp))
+            Text(stringResource(R.string.join_the_game_now), fontSize = 16.sp, color = contentColor.copy(alpha = 0.7f), modifier = Modifier.padding(bottom = 32.dp))
 
-            BasketballTextField(valorEmail.value, { valorEmail.value = it }, "Email", Icons.Default.Email, isDark, keyboardType = KeyboardType.Email)
+            BasketballTextField(valorUserName.value, { valorUserName.value = it }, stringResource(R.string.user_name_placeholder), Icons.Default.Email, isDark, keyboardType = KeyboardType.Email)
             Spacer(modifier = Modifier.height(16.dp))
-            BasketballTextField(valorPassword.value, { valorPassword.value = it }, "Password", Icons.Default.Lock, isDark, isPassword = true)
+            BasketballTextField(valorFullName.value, { valorFullName.value = it }, stringResource(R.string.full_name), Icons.Default.Email, isDark, keyboardType = KeyboardType.Email)
             Spacer(modifier = Modifier.height(16.dp))
-            BasketballTextField(valorConfirmPassword.value, { valorConfirmPassword.value = it }, "Confirmar Password", Icons.Default.Lock, isDark, isPassword = true)
+            BasketballTextField(valorEmail.value, { valorEmail.value = it }, stringResource(R.string.email), Icons.Default.Email, isDark, keyboardType = KeyboardType.Email)
+            Spacer(modifier = Modifier.height(16.dp))
+            BasketballTextField(valorPassword.value, { valorPassword.value = it }, stringResource(R.string.password), Icons.Default.Lock, isDark, isPassword = true)
+            Spacer(modifier = Modifier.height(16.dp))
+            BasketballTextField(valorConfirmPassword.value, { valorConfirmPassword.value = it }, stringResource(R.string.confirm_password), Icons.Default.Lock, isDark, isPassword = true)
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
-                    if (valorPassword.value == valorConfirmPassword.value) {
+                    if (valorPassword.value == valorConfirmPassword.value && valorPassword.value.isNotEmpty() && valorEmail.value.isNotEmpty() && valorUserName.value.isNotEmpty() && valorFullName.value.isNotEmpty()) {
                         coroutineScope.launch {
-                            val result = firebaseManager.signUp(valorEmail.value, valorPassword.value)
+                            val result = firebaseManager.signUp(valorEmail.value, valorPassword.value, valorUserName.value, valorFullName.value)
                             if (result != null) {
                                 onScreenSelected(Ecras.Home)
                             } else {
@@ -115,18 +122,18 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("CADASTRAR", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.register), fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 HorizontalDivider(modifier = Modifier.weight(1f), color = contentColor.copy(alpha = 0.3f))
-                Text("ou cadastre com", modifier = Modifier.padding(horizontal = 8.dp), fontSize = 14.sp, color = contentColor.copy(alpha = 0.6f))
+                Text(stringResource(R.string.or_register_with), modifier = Modifier.padding(horizontal = 8.dp), fontSize = 14.sp, color = contentColor.copy(alpha = 0.6f))
                 HorizontalDivider(modifier = Modifier.weight(1f), color = contentColor.copy(alpha = 0.3f))
             }
             Spacer(modifier = Modifier.height(24.dp))
 
-            SocialButton("Google", isDark, Icons.Default.Person) {
+            SocialButton(stringResource(R.string.google), isDark, Icons.Default.Person) {
                 val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(context.getString(R.string.default_web_client_id))
                     .requestEmail()
@@ -138,7 +145,7 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
             Spacer(modifier = Modifier.height(12.dp))
 
             // 🔥 BOTÃO GITHUB ATUALIZADO
-            SocialButton("GitHub", isDark, Icons.Default.Person) {
+            SocialButton(stringResource(R.string.github), isDark, Icons.Default.Person) {
                 // Verificação limpa e direta
                 if (activity != null) {
                     coroutineScope.launch {
@@ -156,9 +163,9 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
             Spacer(modifier = Modifier.weight(1f))
 
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 24.dp)) {
-                Text("Já tem uma conta? ", color = contentColor.copy(alpha = 0.8f))
+                Text(stringResource(R.string.already_have_an_account), color = contentColor.copy(alpha = 0.8f))
                 TextButton(onClick = { onScreenSelected(Ecras.Login) }) {
-                    Text("Entrar", color = BasketballOrange, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.login), color = BasketballOrange, fontWeight = FontWeight.Bold)
                 }
             }
         }

@@ -20,7 +20,7 @@ fun Setting(
     onScreenSelected: (Ecras) -> Unit,
     isDarkTheme: Boolean,
     onThemeToggle: () -> Unit,
-    onLocaleChange: (Locale) -> Unit
+    onLocaleChange: (Locale?) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var showLanguageDialog by remember { mutableStateOf(false) }
@@ -120,13 +120,18 @@ fun Setting(
 @Composable
 private fun LanguageSelectionDialog(
     onDismiss: () -> Unit,
-    onLocaleChange: (Locale) -> Unit
+    onLocaleChange: (Locale?) -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(id = R.string.choose_language)) },
         text = {
             Column {
+                Text(stringResource(id = R.string.system_default), modifier = Modifier.clickable { 
+                    onLocaleChange(null)
+                    onDismiss()
+                }.fillMaxWidth().padding(vertical = 12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(stringResource(id = R.string.english), modifier = Modifier.clickable { 
                     onLocaleChange(Locale.ENGLISH)
                     onDismiss()

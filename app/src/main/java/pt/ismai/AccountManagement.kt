@@ -6,8 +6,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
@@ -20,8 +20,8 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Excluir Conta") },
-            text = { Text("Tem certeza de que deseja excluir sua conta permanentemente? Esta ação não pode ser desfeita.") },
+            title = { Text(stringResource(id = R.string.delete_account)) },
+            text = { Text(stringResource(id = R.string.delete_account_confirmation)) },
             confirmButton = {
                 Button(
                     onClick = {
@@ -33,12 +33,12 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 ) {
-                    Text("Excluir")
+                    Text(stringResource(id = R.string.delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancelar")
+                    Text(stringResource(id = R.string.cancel))
                 }
             }
         )
@@ -53,42 +53,42 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Perfil Público
-        SettingsGroup("Perfil Público", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.public_profile), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Editar Perfil (Foto, Nome, Bio)",
+                title = stringResource(id = R.string.edit_profile_photo_name_bio),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
         }
 
         // Dados da Conta
-        SettingsGroup("Dados da Conta", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.account_data), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Dados Pessoais (E-mail, Telefone, Nascimento)",
+                title = stringResource(id = R.string.personal_data_email_phone_birth),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             SettingsMenuItem(
-                title = "Contas Vinculadas (Google, Apple, FB)",
+                title = stringResource(id = R.string.linked_accounts_google_apple_fb),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
         }
 
         // Financeiro
-        SettingsGroup("Financeiro", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.financial), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Assinatura/Planos (Status, Pagamento, Histórico)",
+                title = stringResource(id = R.string.subscription_plans),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
         }
 
         // Zona de Perigo
-        SettingsGroup("Zona de Perigo", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.danger_zone), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Excluir Conta",
+                title = stringResource(id = R.string.delete_account),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { showDeleteDialog = true }
             )

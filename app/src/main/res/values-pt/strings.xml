@@ -67,4 +67,66 @@
     <string name="groups">Grupos (%s)</string>
     <string name="default_web_client_id">738736037748</string>
     <string name="loading">Carregando</string>
+    <string name="create_your_account">Crie sua conta</string>
+    <string name="join_the_game_now">Junte-se ao jogo agora mesmo</string>
+    <string name="full_name">Nome Completo</string>
+    <string name="email">Email</string>
+    <string name="password">Palavra-passe</string>
+    <string name="confirm_password">Confirmar Palavra-passe</string>
+    <string name="register">CADASTRAR</string>
+    <string name="or_register_with">ou cadastre com</string>
+    <string name="google">Google</string>
+    <string name="github">GitHub</string>
+    <string name="already_have_an_account">Já tem uma conta? </string>
+    <string name="welcome_back">Bem-vindo de volta</string>
+    <string name="login_to_continue">Inicie sessão na sua conta para continuar</string>
+    <string name="login_button">ENTRAR</string>
+    <string name="or_continue_with">ou continue com</string>
+    <string name="no_account">Não tem uma conta? </string>
+    <string name="sign_up_now">Inscreva-se</string>
+    <string name="system_default">Padrão do Sistema</string>
+
+    <!-- Help and About -->
+    <string name="support">Suporte</string>
+    <string name="faq">FAQ (Perguntas Frequentes)</string>
+    <string name="contact_us">Fale Conosco / Chat</string>
+    <string name="report_a_problem">Relatar um Problema (Bug Report)</string>
+    <string name="legal">Legal</string>
+    <string name="privacy_policy">Política de Privacidade</string>
+    <string name="terms_of_service">Termos de Serviço</string>
+    <string name="open_source_licenses">Licenças de Código Aberto</string>
+    <string name="engagement">Engajamento</string>
+    <string name="rate_the_app">Avalie a App</string>
+    <string name="social_media">Redes Sociais</string>
+
+    <!-- Account Management -->
+    <string name="delete_account">Excluir Conta</string>
+    <string name="delete_account_confirmation">Tem certeza de que deseja excluir sua conta permanentemente? Esta ação não pode ser desfeita.</string>
+    <string name="delete">Excluir</string>
+    <string name="public_profile">Perfil Público</string>
+    <string name="edit_profile_photo_name_bio">Editar Perfil (Foto, Nome, Bio)</string>
+    <string name="account_data">Dados da Conta</string>
+    <string name="personal_data_email_phone_birth">Dados Pessoais (E-mail, Telefone, Nascimento)</string>
+    <string name="linked_accounts_google_apple_fb">Contas Vinculadas (Google, Apple, FB)</string>
+    <string name="financial">Financeiro</string>
+    <string name="subscription_plans">Assinatura/Planos (Status, Pagamento, Histórico)</string>
+    <string name="danger_zone">Zona de Perigo</string>
+
+    <!-- Notifications and Sounds -->
+    <string name="alerts">Alertas</string>
+    <string name="push_notifications">Notificações Push</string>
+    <string name="preferences">Preferências</string>
+    <string name="sound_and_vibration">Som e Vibração</string>
+
+    <!-- Privacy and Security -->
+    <string name="login_and_access">Login e Acesso</string>
+    <string name="two_factor_authentication">Autenticação de Dois Fatores (2FA)</string>
+    <string name="biometric_authentication">Autenticação Biométrica (FaceID/TouchID)</string>
+    <string name="sessions">Sessões</string>
+    <string name="connected_devices">Dispositivos Conectados</string>
+    <string name="social_privacy">Privacidade Social</string>
+    <string name="profile_visibility">Visibilidade do Perfil (Público/Privado)</string>
+    <string name="blocked_users">Usuários Bloqueados</string>
+    <string name="system_permissions">Permissões do Sistema</string>
+    <string name="manage_permissions">Gerir permissões</string>
 </resources>

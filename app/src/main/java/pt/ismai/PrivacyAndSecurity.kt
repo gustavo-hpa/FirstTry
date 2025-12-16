@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -24,22 +25,22 @@ fun PrivacyAndSecurity(isDarkTheme: Boolean) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Login e Acesso
-        SettingsGroup("Login e Acesso", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.login_and_access), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Alterar Senha", 
+                title = stringResource(id = R.string.change_password), 
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             SettingsSwitchItem(
-                title = "Autenticação em Dois Fatores (2FA)",
+                title = stringResource(id = R.string.two_factor_authentication),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 checked = twoFactorAuthEnabled,
                 onCheckedChange = { twoFactorAuthEnabled = it }
             )
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             SettingsSwitchItem(
-                title = "Autenticação Biométrica (FaceID/TouchID)",
+                title = stringResource(id = R.string.biometric_authentication),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 checked = biometricAuthEnabled,
                 onCheckedChange = { biometricAuthEnabled = it }
@@ -47,33 +48,33 @@ fun PrivacyAndSecurity(isDarkTheme: Boolean) {
         }
 
         // Sessões
-        SettingsGroup("Sessões", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.sessions), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Dispositivos Conectados", 
+                title = stringResource(id = R.string.connected_devices), 
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
         }
 
         // Privacidade Social
-        SettingsGroup("Privacidade Social", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.social_privacy), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Visibilidade do Perfil (Público/Privado)", 
+                title = stringResource(id = R.string.profile_visibility), 
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             SettingsMenuItem(
-                title = "Usuários Bloqueados",
+                title = stringResource(id = R.string.blocked_users),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
         }
 
         // Permissões do Sistema
-        SettingsGroup("Permissões do Sistema", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.system_permissions), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Gerir permissões", 
+                title = stringResource(id = R.string.manage_permissions), 
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )

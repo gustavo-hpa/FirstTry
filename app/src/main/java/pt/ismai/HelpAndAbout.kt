@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -21,57 +22,57 @@ fun HelpAndAbout(isDarkTheme: Boolean) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Suporte
-        SettingsGroup("Suporte", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.support), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "FAQ (Perguntas Frequentes)",
+                title = stringResource(id = R.string.faq),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             SettingsMenuItem(
-                title = "Fale Conosco / Chat",
+                title = stringResource(id = R.string.contact_us),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             SettingsMenuItem(
-                title = "Relatar um Problema (Bug Report)",
+                title = stringResource(id = R.string.report_a_problem),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
         }
 
         // Legal
-        SettingsGroup("Legal", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.legal), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Política de Privacidade",
+                title = stringResource(id = R.string.privacy_policy),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             SettingsMenuItem(
-                title = "Termos de Serviço",
+                title = stringResource(id = R.string.terms_of_service),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             SettingsMenuItem(
-                title = "Licenças de Código Aberto",
+                title = stringResource(id = R.string.open_source_licenses),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
         }
 
         // Engajamento
-        SettingsGroup("Engajamento", isDarkTheme = isDarkTheme) {
+        SettingsGroup(stringResource(id = R.string.engagement), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
-                title = "Avalie a App",
+                title = stringResource(id = R.string.rate_the_app),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             SettingsMenuItem(
-                title = "Redes Sociais",
+                title = stringResource(id = R.string.social_media),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )

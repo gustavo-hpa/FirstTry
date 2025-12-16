@@ -80,7 +80,7 @@ fun MainContent(
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean,
     onThemeToggle: () -> Unit,
-    onLocaleChange: (Locale) -> Unit
+    onLocaleChange: (Locale?) -> Unit
 ) {
     val backgroundBrush = if (isDarkTheme) {
         Brush.verticalGradient(listOf(DarkBackgroundStart, DarkBackgroundEnd))

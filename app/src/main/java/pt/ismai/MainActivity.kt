@@ -27,15 +27,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            // ... as tuas variáveis de tema e idioma mantêm-se aqui ...
             val systemDark = isSystemInDarkTheme()
             var isDarkTheme by rememberSaveable { mutableStateOf(systemDark) }
-            var currentLocale by remember { mutableStateOf(getSystemLocale()) }
+            var currentLocale by remember { mutableStateOf(getSystemLocale(this)) }
 
-            // 🔥 AQUI ESTÁ A MUDANÇA: Envolvemos tudo com o LocalActivity
             CompositionLocalProvider(LocalActivity provides this) {
-
-                // O teu LocaleWrapper continua aqui dentro como estava
                 LocaleWrapper(locale = currentLocale) {
                     FirstTryTheme(darkTheme = isDarkTheme) {
                         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -43,7 +39,9 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.padding(innerPadding),
                                 isDarkTheme = isDarkTheme,
                                 onThemeToggle = { isDarkTheme = !isDarkTheme },
-                                onLocaleChange = { newLocale -> currentLocale = newLocale }
+                                onLocaleChange = { newLocale ->
+                                    currentLocale = newLocale ?: getSystemLocale(this)
+                                }
                             )
                         }
                     }
@@ -51,9 +49,14 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
 
-    private fun getSystemLocale(): Locale {
-        return resources.configuration.locales.get(0) ?: Locale.getDefault()
+fun getSystemLocale(activity: Activity): Locale {
+    val systemLocale = activity.resources.configuration.locales.get(0) ?: Locale.getDefault()
+    return if (systemLocale.language == "pt" || systemLocale.language == "en") {
+        systemLocale
+    } else {
+        Locale.ENGLISH
     }
 }
 
@@ -65,14 +68,11 @@ fun LocaleWrapper(locale: Locale, content: @Composable () -> Unit) {
 
     val localizedContext = context.createConfigurationContext(configuration)
 
-    // 1. CAPTURAR OS OWNERS DO CONTEXTO ORIGINAL (A MainActivity)
-    // Isto garante que, mesmo mudando o Contexto, as funcionalidades da Activity se mantêm.
     val lifecycleOwner = LocalLifecycleOwner.current
     val savedStateRegistryOwner = LocalSavedStateRegistryOwner.current
     val activityResultRegistryOwner = LocalActivityResultRegistryOwner.current!!
     val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current!!
 
-    // 2. FORNECER O NOVO CONTEXTO + OS OWNERS ORIGINAIS
     CompositionLocalProvider(
         LocalContext provides localizedContext,
         LocalLifecycleOwner provides lifecycleOwner,
@@ -89,19 +89,16 @@ fun ProgramaPrincipal(
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     onThemeToggle: () -> Unit = {},
-    onLocaleChange: (Locale) -> Unit = {}
+    onLocaleChange: (Locale?) -> Unit = {}
 ) {
     var currentScreen by rememberSaveable { mutableStateOf(Ecras.Loading) }
 
     LaunchedEffect(Unit) {
         val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
-        // Pequeno delay artificial opcional se quiseres mostrar o logo (ex: 500ms)
-        // kotlinx.coroutines.delay(500)
-
         if (user != null) {
-            currentScreen = Ecras.Home // Sessão existe -> Vai para Home
+            currentScreen = Ecras.Home
         } else {
-            currentScreen = Ecras.Login // Ninguém logado -> Vai para Login
+            currentScreen = Ecras.Login
         }
     }
 

@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -84,12 +85,12 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
             verticalArrangement = Arrangement.Center
         ) {
 
-            Text("Bem-vindo", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = contentColor, modifier = Modifier.padding(bottom = 8.dp))
-            Text("Entre na sua conta para continuar", fontSize = 16.sp, color = contentColor.copy(alpha = 0.7f), modifier = Modifier.padding(bottom = 32.dp))
+            Text(stringResource(R.string.welcome_back), fontSize = 32.sp, fontWeight = FontWeight.Bold, color = contentColor, modifier = Modifier.padding(bottom = 8.dp))
+            Text(stringResource(R.string.login_to_continue), fontSize = 16.sp, color = contentColor.copy(alpha = 0.7f), modifier = Modifier.padding(bottom = 32.dp))
 
-            BasketballTextField(valorEmail.value, { valorEmail.value = it }, "Email", Icons.Default.Email, isDark, keyboardType = KeyboardType.Email)
+            BasketballTextField(valorEmail.value, { valorEmail.value = it }, stringResource(R.string.email), Icons.Default.Email, isDark, keyboardType = KeyboardType.Email)
             Spacer(modifier = Modifier.height(16.dp))
-            BasketballTextField(valorPassword.value, { valorPassword.value = it }, "Password", Icons.Default.Lock, isDark, isPassword = true)
+            BasketballTextField(valorPassword.value, { valorPassword.value = it }, stringResource(R.string.password), Icons.Default.Lock, isDark, isPassword = true)
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -114,18 +115,18 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("ENTRAR", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.login_button), fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 HorizontalDivider(modifier = Modifier.weight(1f), color = contentColor.copy(alpha = 0.3f))
-                Text("ou continue com", modifier = Modifier.padding(horizontal = 8.dp), fontSize = 14.sp, color = contentColor.copy(alpha = 0.6f))
+                Text(stringResource(R.string.or_continue_with), modifier = Modifier.padding(horizontal = 8.dp), fontSize = 14.sp, color = contentColor.copy(alpha = 0.6f))
                 HorizontalDivider(modifier = Modifier.weight(1f), color = contentColor.copy(alpha = 0.3f))
             }
             Spacer(modifier = Modifier.height(24.dp))
 
-            SocialButton("Google", isDark, Icons.Default.Person) {
+            SocialButton(stringResource(R.string.google), isDark, Icons.Default.Person) {
                 val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(context.getString(R.string.default_web_client_id))
                     .requestEmail()
@@ -135,7 +136,7 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            SocialButton("GitHub", isDark, Icons.Default.Person) {
+            SocialButton(stringResource(R.string.github), isDark, Icons.Default.Person) {
                 // Já não precisamos do 'context' nem do 'findActivity'
                 if (activity != null) {
                     coroutineScope.launch {
@@ -154,9 +155,9 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
             Spacer(modifier = Modifier.weight(1f))
 
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 24.dp)) {
-                Text("Não tem conta? ", color = contentColor.copy(alpha = 0.8f))
+                Text(stringResource(R.string.no_account), color = contentColor.copy(alpha = 0.8f))
                 TextButton(onClick = { onScreenSelected(Ecras.Signup) }) {
-                    Text("Cadastre-se", color = BasketballOrange, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.sign_up_now), color = BasketballOrange, fontWeight = FontWeight.Bold)
                 }
             }
         }
