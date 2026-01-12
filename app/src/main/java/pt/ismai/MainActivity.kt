@@ -19,6 +19,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import kotlinx.coroutines.tasks.await
+import pt.ismai.components.BasketballOrange
+import pt.ismai.components.Bottombar
+import pt.ismai.components.DarkBackgroundStart
+import pt.ismai.components.MainContent
+import pt.ismai.components.Topbar
+import pt.ismai.data.AuthManager
+import pt.ismai.data.DatabaseManager
 import pt.ismai.ui.theme.FirstTryTheme
 import java.util.Locale
 
@@ -63,22 +71,29 @@ fun getSystemLocale(activity: Activity): Locale {
 @Composable
 fun LocaleWrapper(locale: Locale, content: @Composable () -> Unit) {
     val context = LocalContext.current
-    val configuration = Configuration(context.resources.configuration)
-    configuration.setLocale(locale)
 
+    // Em vez de criar uma nova Configuration do zero, usamos a atual do contexto
+    val configuration = Configuration(context.resources.configuration).apply {
+        setLocale(locale)
+        setLayoutDirection(locale)
+    }
+
+    // Cria o contexto localizado
     val localizedContext = context.createConfigurationContext(configuration)
 
+    // Preservar os donos de estado para que o Compose continue funcionando corretamente
     val lifecycleOwner = LocalLifecycleOwner.current
     val savedStateRegistryOwner = LocalSavedStateRegistryOwner.current
-    val activityResultRegistryOwner = LocalActivityResultRegistryOwner.current!!
-    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current!!
+    val activityResultRegistryOwner = LocalActivityResultRegistryOwner.current
+    val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
 
     CompositionLocalProvider(
         LocalContext provides localizedContext,
         LocalLifecycleOwner provides lifecycleOwner,
         LocalSavedStateRegistryOwner provides savedStateRegistryOwner,
-        LocalActivityResultRegistryOwner provides activityResultRegistryOwner,
-        LocalOnBackPressedDispatcherOwner provides onBackPressedDispatcherOwner
+        // Usamos as verificações de null para segurança
+        LocalActivityResultRegistryOwner provides (activityResultRegistryOwner ?: return),
+        LocalOnBackPressedDispatcherOwner provides (onBackPressedDispatcherOwner ?: return)
     ) {
         content()
     }
@@ -94,15 +109,42 @@ fun ProgramaPrincipal(
     var currentScreen by rememberSaveable { mutableStateOf(Ecras.Loading) }
 
     LaunchedEffect(Unit) {
-        val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+        val authManager = AuthManager()
+        val dbManager = DatabaseManager()
+        val firebaseAuth = com.google.firebase.auth.FirebaseAuth.getInstance()
+        val user = firebaseAuth.currentUser
+
         if (user != null) {
-            currentScreen = Ecras.Home
+            try {
+                // Importante: recarregar o utilizador para obter o estado atualizado do email
+                user.reload().await()
+
+                if (user.isEmailVerified) {
+                    // Caso A: Email verificado, verificar se tem perfil no Firestore
+                    val perfil = dbManager.getUserProfile(user.uid)
+
+                    if (perfil != null) {
+                        currentScreen = Ecras.Home
+                    } else {
+                        // Caso B: Email verificado mas sem perfil -> SignupDetailsScreen
+                        currentScreen = Ecras.SignupDetailsScreen
+                    }
+                } else {
+                    // Caso C: Email não verificado -> Excluir pré-conta e mandar para Login
+                    authManager.cancelarSignupSeguro()
+                    currentScreen = Ecras.Login
+                }
+            } catch (e: Exception) {
+                // Em caso de erro (ex: falta de internet), mandamos para o Login por segurança
+                firebaseAuth.signOut()
+                currentScreen = Ecras.Login
+            }
         } else {
             currentScreen = Ecras.Login
         }
     }
 
-    val fullScreenScreens = listOf(Ecras.Login, Ecras.Signup, Ecras.Loading)
+    val fullScreenScreens = listOf(Ecras.Login, Ecras.SignupDetailsScreen, Ecras.Loading, Ecras.EmailVerificationScreen)
     val isFullScreen = currentScreen in fullScreenScreens
 
     val barColor = if (isDarkTheme) DarkBackgroundStart else Color(0xFFC94C24)
@@ -137,8 +179,8 @@ fun ProgramaPrincipal(
                 currentScreen = currentScreen,
                 onScreenSelected = { newScreen -> currentScreen = newScreen },
                 containerColor = barColor,
-                indicatorColor = if(isDarkTheme) BasketballOrange else Color.White,
-                contentColor = if(isDarkTheme) Color.White else Color(0xFF4E1810)
+                indicatorColor = if (isDarkTheme) BasketballOrange else Color.White,
+                contentColor = if (isDarkTheme) Color.White else Color(0xFF4E1810)
             )
         }
     }

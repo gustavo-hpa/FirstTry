@@ -1,5 +1,6 @@
-package pt.ismai
+package pt.ismai.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,9 +55,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import pt.ismai.settings.AccountManagement
+import pt.ismai.Ecras
+import pt.ismai.settings.HelpAndAbout
+import pt.ismai.Home
+import pt.ismai.settings.NotificationsAndSounds
+import pt.ismai.settings.PrivacyAndSecurity
+import pt.ismai.Profile
+import pt.ismai.R
+import pt.ismai.settings.Setting
+import pt.ismai.Statistics
+import pt.ismai.Workout
+import pt.ismai.auth.Loading
+import pt.ismai.auth.Login
+import pt.ismai.auth.Signup
+import pt.ismai.auth.EmailVerificationScreen
 import java.util.Locale
 
 // light theme
@@ -75,8 +92,8 @@ val MutedWarmGold = Color(0xFFE8B350) // Para títulos de seção e ícones de n
 
 @Composable
 fun MainContent(
-    ecra: Ecras, 
-    onScreenSelected: (Ecras) -> Unit, 
+    ecra: Ecras,
+    onScreenSelected: (Ecras) -> Unit,
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean,
     onThemeToggle: () -> Unit,
@@ -97,10 +114,11 @@ fun MainContent(
         when (ecra) {
             Ecras.Home -> Home(onScreenSelected, isDarkTheme)
             Ecras.Statistic -> Statistics()
-            Ecras.Workout -> Workout()
+            Ecras.Workout -> Workout(isDarkTheme, onScreenSelected)
             Ecras.Setting -> Setting(onScreenSelected, isDarkTheme, onThemeToggle, onLocaleChange)
             Ecras.Login -> Login(onScreenSelected)
-            Ecras.Signup -> Signup(onScreenSelected)
+            Ecras.EmailVerificationScreen -> EmailVerificationScreen(onScreenSelected)
+            Ecras.SignupDetailsScreen -> Signup(onScreenSelected)
             Ecras.Profile -> Profile(isDarkTheme)
             Ecras.AccountManagement -> AccountManagement(isDarkTheme, onScreenSelected)
             Ecras.NotificationsAndSounds -> NotificationsAndSounds(isDarkTheme)
@@ -166,7 +184,8 @@ fun Topbar(
         Ecras.Workout -> stringResource(id = R.string.workout)
         Ecras.Setting -> stringResource(id = R.string.settings)
         Ecras.Login -> stringResource(id = R.string.login)
-        Ecras.Signup -> stringResource(id = R.string.signup)
+        Ecras.EmailVerificationScreen -> stringResource(id = R.string.email_verification_screen)
+        Ecras.SignupDetailsScreen -> stringResource(id = R.string.signup)
         Ecras.Profile -> stringResource(id = R.string.profile)
         Ecras.AccountManagement -> stringResource(id = R.string.settings_account_management)
         Ecras.NotificationsAndSounds -> stringResource(id = R.string.settings_notifications_and_sounds)
@@ -351,7 +370,7 @@ fun SmartTimer(
             defaultElevation = 0.dp
         ),
         // OPCIONAL: Adiciona uma borda sutil apenas quando está editando, para substituir a elevação
-        border = if (isEditing && isDarkTheme) androidx.compose.foundation.BorderStroke(1.dp, BasketballOrange) else null,
+        border = if (isEditing && isDarkTheme) BorderStroke(1.dp, BasketballOrange) else null,
         colors = cardColors
     ) {
         Column(
@@ -628,7 +647,7 @@ fun SmartCounter(
             defaultElevation = 0.dp
         ),
         // OPCIONAL: Borda ao editar
-        border = if (isEditing && isDarkTheme) androidx.compose.foundation.BorderStroke(1.dp, BasketballOrange) else null,
+        border = if (isEditing && isDarkTheme) BorderStroke(1.dp, BasketballOrange) else null,
         colors = cardColors
     ) {
         Column(
@@ -691,24 +710,37 @@ fun BasketballTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    icon: ImageVector,
+    icon: Painter, // Mudamos de ImageVector para Painter
     isDark: Boolean,
+    modifier: Modifier = Modifier,
     isPassword: Boolean = false,
+    enabled: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
+        enabled = enabled, // Aplicado aqui
         label = { Text(label) },
-        leadingIcon = { Icon(icon, contentDescription = null) },
-        modifier = Modifier.fillMaxWidth(),
+        leadingIcon = {
+            Image(
+                painter = icon,
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(if (isDark) Color.White else Color.Gray),
+                modifier = Modifier.size(24.dp)
+            )
+        },
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        visualTransformation = if (isPassword) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = BasketballOrange,
             unfocusedBorderColor = if (isDark) Color.Gray else Color.LightGray,
+            disabledBorderColor = if (isDark) Color.Gray.copy(alpha = 0.3f) else Color.LightGray.copy(alpha = 0.3f),
+            disabledLabelColor = if (isDark) Color.Gray else Color.LightGray,
+            disabledTextColor = if (isDark) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f),
             focusedLabelColor = BasketballOrange,
             cursorColor = BasketballOrange
         )

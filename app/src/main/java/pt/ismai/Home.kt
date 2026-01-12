@@ -1,12 +1,12 @@
 package pt.ismai
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import pt.ismai.components.CustomDropdown
+import pt.ismai.components.SmartCounter
+import pt.ismai.components.SmartTimer
 
 @Composable
 fun Home(onScreenSelected: (Ecras) -> Unit, isDarkTheme: Boolean) {
@@ -18,8 +18,8 @@ fun Home(onScreenSelected: (Ecras) -> Unit, isDarkTheme: Boolean) {
         val selecionada = rememberSaveable { mutableStateOf("") }
         val opcoes = listOf("Eletrônicos", "Roupas", "Livros", "Casa", "Esportes", "paraleolipicoibeubfaibi")
         CustomDropdown("titulo", opcoes, selecionada, isDarkTheme = isDarkTheme)
-        SmartTimer("titulo", h, m, s,false, isDarkTheme = isDarkTheme)
-        SmartCounter("titulo",100, isDarkTheme = isDarkTheme)
+        SmartTimer("titulo", h, m, s, false, isDarkTheme = isDarkTheme)
+        SmartCounter("titulo", 100, isDarkTheme = isDarkTheme)
         SmartCounter("titulo", clikable = false, isDarkTheme = isDarkTheme)
     }
 }

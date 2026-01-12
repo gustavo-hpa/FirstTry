@@ -17,13 +17,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,31 +38,62 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import pt.ismai.components.MutedWarmGold
+import pt.ismai.components.SettingsGroup
+import pt.ismai.components.SettingsMenuItem
+import pt.ismai.data.DatabaseManager
+import pt.ismai.data.AuthManager
 
 @Composable
-fun Profile(isDarkTheme: Boolean) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
-    ) {
-        ProfileHeader(isDarkTheme)
-        PlayerCard(isDarkTheme)
-        PerformanceSummary(isDarkTheme)
-        SocialConnections(isDarkTheme)
-        AccountSettings(isDarkTheme)
+fun Profile(
+    isDarkTheme: Boolean
+) {
+    val databaseManager = DatabaseManager()
+    val authManager = AuthManager()
+    // Estado para guardar os dados do utilizador
+    var userProfile by rememberSaveable { mutableStateOf<User?>(null) }
+    var isLoading by rememberSaveable { mutableStateOf(true) }
+    var uid = authManager.getCurrentUserId()
+
+    // Carregar dados ao iniciar a tela
+    LaunchedEffect(Unit) {
+        userProfile = databaseManager.getUserProfile(uid)
+        isLoading = false
+    }
+
+    if (isLoading) {
+        // Mostra um loading simples enquanto carrega
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = if (isDarkTheme) Color.White else Color.Black)
+        }
+    } else {
+        // Se o userProfile for nulo (erro), mostra um perfil vazio ou mensagem
+        val user = userProfile ?: User(username = "Utilizador", email = "")
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            // Passamos o objeto 'user' para os componentes filhos
+            ProfileHeader(user, isDarkTheme)
+            PlayerCard(user, isDarkTheme)
+            PerformanceSummary(user, isDarkTheme)
+            SocialConnections(isDarkTheme)
+            AccountSettings(isDarkTheme)
+        }
     }
 }
 
 @Composable
-private fun ProfileHeader(isDarkTheme: Boolean) {
+private fun ProfileHeader(user: User, isDarkTheme: Boolean) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
-            painter = painterResource(id = R.drawable.profile), // Replace with user's actual photo
-            contentDescription = stringResource(id = R.string.profile_picture),
+            painter = painterResource(id = R.drawable.profile), // Ainda hardcoded (precisas do Storage para fotos reais)
+            contentDescription = "Foto de perfil",
             modifier = Modifier
                 .size(120.dp)
                 .clip(CircleShape),
@@ -67,20 +101,22 @@ private fun ProfileHeader(isDarkTheme: Boolean) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
+            // Usa o nome completo ou, se for nulo, o username
             Text(
-                text = "Gustavo Sousa", // Replace with dynamic user name
+                text = user.nomeCompleto ?: user.username,
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = if (isDarkTheme) Color.White else Color.Black
             )
             Spacer(modifier = Modifier.width(8.dp))
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
-                    .background(MutedWarmGold)
+                    .background(MutedWarmGold) // Ou Color(0xFFC9A227)
                     .padding(horizontal = 6.dp, vertical = 2.dp)
             ) {
                 Text(
-                    text = stringResource(id = R.string.athlete).uppercase(),
+                    text = user.tipoPerfil.name,
                     color = Color.Black,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold
@@ -88,13 +124,13 @@ private fun ProfileHeader(isDarkTheme: Boolean) {
             }
         }
         Text(
-            text = "@gustavo_baller", // Replace with dynamic user handle
+            text = "@${user.username}",
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "\"Treino duro, jogo fácil\"", // Replace with dynamic bio
+            text = user.biografia ?: "Sem biografia...",
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -103,45 +139,57 @@ private fun ProfileHeader(isDarkTheme: Boolean) {
 }
 
 @Composable
-private fun PlayerCard(isDarkTheme: Boolean) {
-    SettingsGroup(title = stringResource(id = R.string.player_card), isDarkTheme = isDarkTheme) {
-        Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-            InfoChip(stringResource(R.string.position), "Armador")
-            InfoChip(stringResource(R.string.height), "1.85m")
-            InfoChip(stringResource(R.string.weight), "80kg")
+private fun PlayerCard(user: User, isDarkTheme: Boolean) {
+    // Nota: Substitui os stringResource pelos teus R.string reais se existirem
+    SettingsGroup(title = "Cartão de Jogador", isDarkTheme = isDarkTheme) {
+        Row(
+            Modifier.fillMaxWidth().padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            InfoChip("Posição", user.posicao ?: "-")
+            InfoChip("Altura", if (user.altura != null) "${user.altura}m" else "-")
+            InfoChip("Peso", if (user.peso != null) "${user.peso}kg" else "-")
         }
-        Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), modifier = Modifier.padding(horizontal = 16.dp))
-         Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-            InfoChip(stringResource(R.string.jersey_number), "23")
-            InfoChip(stringResource(R.string.dominant_hand), "Destro")
+        Divider(
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Row(
+            Modifier.fillMaxWidth().padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            InfoChip("Número", user.numeroCamisa?.toString() ?: "-")
+            InfoChip("Mão Dom.", user.maoDominante ?: "-")
         }
     }
 }
 
 @Composable
-private fun PerformanceSummary(isDarkTheme: Boolean) {
-    SettingsGroup(title = stringResource(id = R.string.performance_summary), isDarkTheme = isDarkTheme) {
+private fun PerformanceSummary(user: User, isDarkTheme: Boolean) {
+    SettingsGroup(title = "Resumo Performance", isDarkTheme = isDarkTheme) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(8.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            StatItem(label = stringResource(id = R.string.workouts_completed), value = "128")
-            StatItem(label = stringResource(id = R.string.hours_trained), value = "96")
+            StatItem(label = "Treinos", value = user.totalTreinos.toString())
+            StatItem(label = "Horas", value = user.horasTreinadas.toInt().toString())
         }
-        Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), modifier = Modifier.padding(horizontal = 16.dp))
-        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.favorite_exercise), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
-            Text("Arremesso Livre", fontWeight = FontWeight.Bold) // Dynamic data
-        }
+        // ... restante do código (Exercício favorito pode ser mais complexo de buscar, podes manter hardcoded ou criar lógica futura) ...
     }
 }
 
 @Composable
 private fun SocialConnections(isDarkTheme: Boolean) {
     SettingsGroup(title = stringResource(id = R.string.social), isDarkTheme = isDarkTheme) {
-        SettingsMenuItem(title = stringResource(id = R.string.friends, "15"), icon = painterResource(id = R.drawable.outline_add_24), onClick = { /*TODO*/ })
+        SettingsMenuItem(
+            title = stringResource(id = R.string.friends, "15"),
+            icon = painterResource(id = R.drawable.outline_add_24),
+            onClick = { /*TODO*/ })
         Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-        SettingsMenuItem(title = stringResource(id = R.string.groups, "3"), icon = painterResource(id = R.drawable.outline_add_24), onClick = { /*TODO*/ })
+        SettingsMenuItem(
+            title = stringResource(id = R.string.groups, "3"),
+            icon = painterResource(id = R.drawable.outline_add_24),
+            onClick = { /*TODO*/ })
     }
 }
 

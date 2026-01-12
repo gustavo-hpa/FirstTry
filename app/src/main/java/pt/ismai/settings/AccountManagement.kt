@@ -1,4 +1,4 @@
-package pt.ismai
+package pt.ismai.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -6,38 +6,93 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import pt.ismai.Ecras
+import pt.ismai.R
+import pt.ismai.components.SettingsGroup
+import pt.ismai.components.SettingsMenuItem
+import pt.ismai.data.AuthManager
 
 @Composable
 fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
-    val firebaseManager = remember { FirebaseManager() }
+    val authManager = remember { AuthManager() }
+
+    // Estados para controlar o diálogo e erros
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
     if (showDeleteDialog) {
         AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
+            onDismissRequest = {
+                showDeleteDialog = false
+                errorMessage = null // Limpa o erro ao fechar
+            },
             title = { Text(stringResource(id = R.string.delete_account)) },
-            text = { Text(stringResource(id = R.string.delete_account_confirmation)) },
+            text = {
+                Column {
+                    Text(stringResource(id = R.string.delete_account_confirmation))
+
+                    // 🔥 MOSTRA O ERRO SE O LOGIN FOR ANTIGO
+                    if (errorMessage != null) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = errorMessage!!,
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            },
             confirmButton = {
                 Button(
                     onClick = {
                         coroutineScope.launch {
-                            firebaseManager.deleteAccount()
-                            showDeleteDialog = false
-                            onScreenSelected(Ecras.Login)
+                            isLoading = true
+                            errorMessage = null // Limpa erros anteriores
+                            try {
+                                // Tenta apagar. Se o login for antigo, o FirebaseManager lança exceção
+                                authManager.deleteAccount()
+
+                                // Se passou daqui, correu bem:
+                                showDeleteDialog = false
+                                onScreenSelected(Ecras.Login)
+
+                            } catch (e: Exception) {
+                                // Captura "Por segurança, faça Logout e Login..."
+                                errorMessage = e.message
+                            } finally {
+                                isLoading = false
+                            }
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                    enabled = !isLoading
                 ) {
-                    Text(stringResource(id = R.string.delete))
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(stringResource(id = R.string.delete))
+                    }
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
+                TextButton(onClick = {
+                    showDeleteDialog = false
+                    errorMessage = null
+                }) {
                     Text(stringResource(id = R.string.cancel))
                 }
             }
@@ -93,7 +148,7 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
                 onClick = { showDeleteDialog = true }
             )
         }
-        
+
         Spacer(modifier = Modifier.height(16.dp))
     }
 }

@@ -1,4 +1,4 @@
-package pt.ismai
+package pt.ismai.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -8,6 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import pt.ismai.R
+import pt.ismai.components.SettingsGroup
+import pt.ismai.components.SettingsMenuItem
+import pt.ismai.components.SettingsSwitchItem
 
 @Composable
 fun NotificationsAndSounds(isDarkTheme: Boolean) {

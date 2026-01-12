@@ -85,6 +85,7 @@
     <string name="no_account">Don\'t have an account? </string>
     <string name="sign_up_now">Sign up</string>
     <string name="system_default">System Default</string>
+    <string name="email_verification_screen">email verification screen</string>
 
     <!-- Help and About -->
     <string name="support">Support</string>
