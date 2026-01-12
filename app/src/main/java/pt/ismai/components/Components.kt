@@ -746,30 +746,3 @@ fun BasketballTextField(
         )
     )
 }
-
-@Composable
-fun SocialButton(
-    text: String,
-    isDark: Boolean,
-    icon: ImageVector,
-    onClick: () -> Unit
-) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = if (isDark) Color.White else Color.Black
-        )
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = stringResource(id = R.string.login_with, text))
-    }
-}

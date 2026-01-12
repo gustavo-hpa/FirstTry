@@ -1,0 +1,17 @@
+a autentificação desse app foi feita com firebase authentication
+os ficheiros que tem coisas envolvidas com autenticação são: login.kt, signup.kt, firebaseManager.kt, setting.kt e accountManagement.kt.
+
+regras para email
+regras para password
+regras para user name
+regras para full name 
+
+verificações necessarias
+
+verificaçoes implementadas
+
+alertas implementados
+
+alertas necessarios
+
+sugestão de novas verificaçoes ou alertas
