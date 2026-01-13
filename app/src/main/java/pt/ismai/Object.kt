@@ -175,7 +175,8 @@ enum class Ecras {
     Loading,
     EmailVerificationScreen,
     WorkoutDetails,
-    ExerciseDetails
+    ExerciseDetails,
+    AddWorkout
 }
 
 enum class MetodoAvalicao {

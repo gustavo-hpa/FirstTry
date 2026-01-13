@@ -88,6 +88,7 @@
     <string name="email_verification_screen">tela de verificação de email</string>
     <string name="workout_details">Detalhes do treino</string>
     <string name="exercise_details">Detalhes do exercício</string>
+    <string name="add_workout">Adicionar treino</string>
 
     <!-- Help and About -->
     <string name="support">Suporte</string>

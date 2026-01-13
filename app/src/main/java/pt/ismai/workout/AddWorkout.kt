@@ -1,7 +1,9 @@
 package pt.ismai.workout
 
-import androidx.compose.foundation.Image
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,9 +13,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,31 +22,58 @@ import kotlinx.coroutines.launch
 import pt.ismai.*
 import pt.ismai.R
 import pt.ismai.components.*
+import pt.ismai.data.AuthManager
 import pt.ismai.data.DatabaseManager
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun AddWorkout(
     isDarkTheme: Boolean,
-    onWorkoutSaved: () -> Unit,
-    dbManager: DatabaseManager = DatabaseManager(),
-    userId: String
+    onScreenSelected: (Ecras) -> Unit,
 ) {
+    val dbManager = DatabaseManager()
+    val authManager = AuthManager()
+    val userId = authManager.getCurrentUserId()
     val scope = rememberCoroutineScope()
 
     // Estados do Formulário
     var nome by rememberSaveable { mutableStateOf("") }
     var descricao by rememberSaveable { mutableStateOf("") }
-    val nivelSelecionado = remember { mutableStateOf(NivelDificuldade.MEDIA.name) }
-    val exerciciosNoTreino = remember { mutableStateListOf<Exercicio>() }
+    val nivelSelecionado = rememberSaveable { mutableStateOf(NivelDificuldade.MEDIA.name) }
+    val categoriaSelecionada = rememberSaveable { mutableStateOf(Categorias.ARREMESSO.name) }
 
-    // Estados para Seleção de Exercícios
-    var showExerciseDialog by remember { mutableStateOf(false) }
-    var listaExerciciosDisponiveis by remember { mutableStateOf<List<Exercicio>>(emptyList()) }
+    // --- NOVOS ESTADOS PARA FILTROS ---
+    var showFilterDialog by remember { mutableStateOf(false) }
+    var filterCategoria by remember { mutableStateOf<Categorias?>(null) }
+    var filterDificuldade by remember { mutableStateOf<NivelDificuldade?>(null) }
+    var filterMetodo by remember { mutableStateOf<MetodoAvalicao?>(null) }
+    var filterOrigem by remember { mutableStateOf<Boolean?>(null) } // null = Todos, true = Usuário, false = Nativo
+
+    // Estados para o SmartTimer (Duração)
+    val horas = rememberSaveable { mutableStateOf(0) }
+    val minutos = rememberSaveable { mutableStateOf(30) }
+    val segundos = rememberSaveable { mutableStateOf(0) }
+
+    // Estados para Exercícios
+    val exerciciosNoTreino = rememberSaveable { mutableStateListOf<Exercicio>() }
+    var showExerciseDialog by rememberSaveable { mutableStateOf(false) }
+    var listaExerciciosDisponiveis by rememberSaveable { mutableStateOf<List<Exercicio>>(emptyList()) }
 
     // Carregar exercícios existentes ao iniciar
     LaunchedEffect(Unit) {
         listaExerciciosDisponiveis = dbManager.getAllNativeExercises()
+    }
+
+    // Esta lista será passada para o ExerciseSelectionDialog
+    val exerciciosFiltrados = remember(listaExerciciosDisponiveis, filterCategoria, filterDificuldade, filterMetodo, filterOrigem) {
+        listaExerciciosDisponiveis.filter { ex ->
+            (filterCategoria == null || ex.categoria == filterCategoria) &&
+                    (filterDificuldade == null || ex.nivelDificuldade == filterDificuldade) &&
+                    (filterMetodo == null || ex.metodoAvaliacao == filterMetodo) &&
+                    (filterOrigem == null || ex.criadoPorUsuario == filterOrigem)
+        }
     }
 
     Column(
@@ -54,12 +81,6 @@ fun AddWorkout(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = stringResource(id = R.string.workout), // Ou "Criar Treino"
-            style = MaterialTheme.typography.headlineMedium,
-            color = if (isDarkTheme) TextPrimaryOnDark else Color.Black,
-            fontWeight = FontWeight.Bold
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -67,6 +88,7 @@ fun AddWorkout(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            // Nome do Treino
             item {
                 BasketballTextField(
                     value = nome,
@@ -77,54 +99,114 @@ fun AddWorkout(
                 )
             }
 
+            // Descrição (Opcional)
             item {
                 BasketballTextField(
                     value = descricao,
                     onValueChange = { descricao = it },
-                    label = "Descrição",
+                    label = "Descrição (Opcional)",
                     icon = painterResource(id = R.drawable.menu),
                     isDark = isDarkTheme
                 )
             }
 
-            item {
-                CustomDropdown(
-                    titulo = "Dificuldade",
-                    opcoes = NivelDificuldade.entries.map { it.name },
-                    selectedOption = nivelSelecionado,
-                    isDarkTheme = isDarkTheme
-                )
-            }
 
+            // Categoria Principal dificuldade
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    CustomDropdown(
+                        titulo = "Categoria Principal",
+                        opcoes = Categorias.entries.map { it.name },
+                        selectedOption = categoriaSelecionada,
+                        isDarkTheme = isDarkTheme
+                    )
+                    CustomDropdown(
+                        titulo = "Dificuldade",
+                        opcoes = NivelDificuldade.entries.map { it.name },
+                        selectedOption = nivelSelecionado,
+                        isDarkTheme = isDarkTheme
+                    )
+                }
+            }
+
+
+            // Duração com SmartTimer
+            item {
+                Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+                    Text(
+                        text = "Duração Estimada",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (isDarkTheme) TextPrimaryOnDark.copy(alpha = 0.8f) else Color.Black.copy(alpha = 0.8f)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    SmartTimer(
+                        titulo = "Tempo total",
+                        initialHours = horas,
+                        initialMinutes = minutos,
+                        initialSeconds = segundos,
+                        isDarkTheme = isDarkTheme,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateContentSize(),
+                        modifierInitialCard = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+
+            // Cabeçalho da Lista de Exercícios
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Exercícios (${exerciciosNoTreino.size})",
                         color = if (isDarkTheme) TextPrimaryOnDark else Color.Black,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
                     )
 
-                    Button(
-                        onClick = { showExerciseDialog = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.outline_add_24),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(Color.White),
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Adicionar")
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        // --- BOTÃO FILTRO ---
+                        IconButton(
+                            onClick = { showFilterDialog = true }, // Abre o diálogo de filtro
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = if (isDarkTheme) Color.DarkGray else Color.LightGray.copy(alpha = 0.5f)
+                            )
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.menu),
+                                contentDescription = "Filtrar",
+                                tint = if (filterCategoria != null || filterDificuldade != null || filterMetodo != null || filterOrigem != null)
+                                    Color.Cyan else BasketballOrange, // Muda cor se houver filtro ativo
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+
+                        // BOTÃO ADD
+                        Button(
+                            onClick = { showExerciseDialog = true },
+                            colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.outline_add_24),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Add")
+                        }
                     }
                 }
             }
 
-            // Lista de exercícios já adicionados ao novo treino
+            // Lista de exercícios adicionados
             items(exerciciosNoTreino) { ex ->
                 ExerciseItem(
                     exercicio = ex,
@@ -134,45 +216,96 @@ fun AddWorkout(
             }
         }
 
-        // Botão Salvar
-        Button(
-            onClick = {
-                // Criamos o objeto com ID vazio, pois a BD irá gerar o ID real
-                val novoTreino = Treino(
-                    id = "",
-                    nome = nome,
-                    descricao = descricao,
-                    categorias = exerciciosNoTreino.map { it.categoria }.distinct(),
-                    nivelDificuldade = NivelDificuldade.valueOf(nivelSelecionado.value),
-                    duracao = 30.minutes,
-                    exercicios = exerciciosNoTreino.toList(),
-                    criadoPorUsuario = true // Campo adicionado conforme solicitado
-                )
+        Spacer(modifier = Modifier.height(16.dp))
 
-                scope.launch {
-                    // A função saveUserWorkout agora lida com o ID automático do Firestore
-                    dbManager.saveUserWorkout(userId, novoTreino)
-                    onWorkoutSaved()
-                }
-            },
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
-            enabled = nome.isNotEmpty() && exerciciosNoTreino.isNotEmpty()
+        // Botões Cancelar e Salvar (Lado a Lado)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Salvar Treino", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            // Botão Cancelar
+            OutlinedButton(
+                onClick = { onScreenSelected(Ecras.Workout) },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, if (isDarkTheme) Color.Gray else Color.LightGray)
+            ) {
+                Text(
+                    "Cancelar",
+                    color = if (isDarkTheme) Color.White else Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            // Botão Salvar
+            Button(
+                onClick = {
+                    val duracaoTotal = horas.value.hours + minutos.value.minutes + segundos.value.seconds
+
+                    val novoTreino = Treino(
+                        id = "",
+                        nome = nome,
+                        descricao = descricao,
+                        categorias = (exerciciosNoTreino.map { it.categoria } + Categorias.valueOf(categoriaSelecionada.value)).distinct(),
+                        nivelDificuldade = NivelDificuldade.valueOf(nivelSelecionado.value),
+                        duracao = duracaoTotal,
+                        exercicios = exerciciosNoTreino.toList(),
+                        criadoPorUsuario = true
+                    )
+
+                    scope.launch {
+                        if (userId != null) {
+                            dbManager.saveUserWorkout(userId, novoTreino)
+                            onScreenSelected(Ecras.Workout)
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
+                enabled = nome.isNotEmpty() && exerciciosNoTreino.isNotEmpty()
+            ) {
+                Text("Salvar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            }
         }
     }
 
-    // Dialog para escolher exercícios existentes
+    // Dialog para escolher exercícios
     if (showExerciseDialog) {
         ExerciseSelectionDialog(
-            exerciciosDisponiveis = listaExerciciosDisponiveis,
+            exerciciosDisponiveis = exerciciosFiltrados,
             isDarkTheme = isDarkTheme,
             onDismiss = { showExerciseDialog = false },
             onExerciseSelected = { ex ->
                 exerciciosNoTreino.add(ex)
                 showExerciseDialog = false
+            }
+        )
+    }
+    if (showFilterDialog) {
+        FilterSelectionDialog(
+            isDarkTheme = isDarkTheme,
+            currentCategoria = filterCategoria,
+            currentDificuldade = filterDificuldade,
+            currentMetodo = filterMetodo,
+            currentOrigem = filterOrigem,
+            onDismiss = { showFilterDialog = false },
+            onApply = { cat, dif, met, ori ->
+                filterCategoria = cat
+                filterDificuldade = dif
+                filterMetodo = met
+                filterOrigem = ori
+                showFilterDialog = false
+            },
+            onClear = {
+                filterCategoria = null
+                filterDificuldade = null
+                filterMetodo = null
+                filterOrigem = null
             }
         )
     }

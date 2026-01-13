@@ -75,6 +75,7 @@ import pt.ismai.auth.Login
 import pt.ismai.auth.Signup
 import pt.ismai.auth.EmailVerificationScreen
 import pt.ismai.exercise.ExerciseDetails
+import pt.ismai.workout.AddWorkout
 import pt.ismai.workout.WorkoutDetails
 import java.util.Locale
 
@@ -122,6 +123,7 @@ fun MainContent(
             Ecras.Statistic -> Statistics()
             Ecras.Workout -> Workout(isDarkTheme, onScreenSelected, onWorkoutSelected)
             Ecras.WorkoutDetails -> WorkoutDetails(treino = selectedWorkout, isDarkTheme = isDarkTheme, onScreenSelected = onScreenSelected, onExerciseSelected = onExerciseSelected)
+            Ecras.AddWorkout -> AddWorkout(isDarkTheme, onScreenSelected)
             Ecras.ExerciseDetails -> ExerciseDetails(exercicio = selectedExercise, isDarkTheme = isDarkTheme, onScreenSelected = onScreenSelected)
             Ecras.Setting -> Setting(onScreenSelected, isDarkTheme, onThemeToggle, onLocaleChange)
             Ecras.Login -> Login(onScreenSelected)
@@ -192,6 +194,7 @@ fun Topbar(
         Ecras.Workout -> stringResource(id = R.string.workout)
         Ecras.WorkoutDetails -> stringResource(id = R.string.workout_details)
         Ecras.ExerciseDetails -> stringResource(id = R.string.exercise_details)
+        Ecras.AddWorkout -> stringResource(id = R.string.add_workout)
         Ecras.Setting -> stringResource(id = R.string.settings)
         Ecras.Login -> stringResource(id = R.string.login)
         Ecras.EmailVerificationScreen -> stringResource(id = R.string.email_verification_screen)

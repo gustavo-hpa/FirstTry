@@ -5,10 +5,21 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,8 +28,12 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import pt.ismai.Categorias
 import pt.ismai.Exercicio
 import pt.ismai.MetodoAvalicao
+import pt.ismai.NivelDificuldade
 
 @Composable
 fun ExerciseItem(exercicio: Exercicio, isDarkTheme: Boolean, onClick: () -> Unit) {
@@ -120,4 +135,144 @@ fun getAvaliacaoFormatada(exercicio: Exercicio): String {
     exercicio.distanciaFeita?.let { sb.append("Distância Percorrida: ${it}m\n") }
 
     return sb.toString().trim()
+}
+
+@Composable
+fun FilterSelectionDialog(
+    isDarkTheme: Boolean,
+    currentCategoria: Categorias?,
+    currentDificuldade: NivelDificuldade?,
+    currentMetodo: MetodoAvalicao?,
+    currentOrigem: Boolean?,
+    onDismiss: () -> Unit,
+    onApply: (Categorias?, NivelDificuldade?, MetodoAvalicao?, Boolean?) -> Unit,
+    onClear: () -> Unit
+) {
+    // Estados temporários para o diálogo
+    var tempCat by remember { mutableStateOf(currentCategoria) }
+    var tempDif by remember { mutableStateOf(currentDificuldade) }
+    var tempMet by remember { mutableStateOf(currentMetodo) }
+    var tempOri by remember { mutableStateOf(currentOrigem) }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.85f),
+            shape = RoundedCornerShape(16.dp),
+            color = if (isDarkTheme) BackgroundDark else Color.White
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    "Filtrar Exercícios",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = if (isDarkTheme) TextPrimaryOnDark else Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(vertical = 16.dp)
+                ) {
+                    // 1. Filtro de Origem
+                    item {
+                        FilterSectionTitle("Origem", isDarkTheme)
+                        FilterOptionRow("Todos", tempOri == null, isDarkTheme) { tempOri = null }
+                        FilterOptionRow("Nativos", tempOri == false, isDarkTheme) { tempOri = false }
+                        FilterOptionRow("Meus Exercícios", tempOri == true, isDarkTheme) { tempOri = true }
+                    }
+
+                    // 2. Filtro de Dificuldade
+                    item {
+                        FilterSectionTitle("Dificuldade", isDarkTheme)
+                        FilterOptionRow("Qualquer", tempDif == null, isDarkTheme) { tempDif = null }
+                        NivelDificuldade.entries.forEach {
+                            FilterOptionRow(it.name, tempDif == it, isDarkTheme) { tempDif = it }
+                        }
+                    }
+
+                    // 3. Filtro de Categoria
+                    item {
+                        FilterSectionTitle("Categoria", isDarkTheme)
+                        FilterOptionRow("Qualquer", tempCat == null, isDarkTheme) { tempCat = null }
+                        Categorias.entries.forEach {
+                            FilterOptionRow(it.name, tempCat == it, isDarkTheme) { tempCat = it }
+                        }
+                    }
+
+                    // 4. Filtro de Método de Avaliação
+                    item {
+                        FilterSectionTitle("Método de Avaliação", isDarkTheme)
+                        FilterOptionRow("Qualquer", tempMet == null, isDarkTheme) { tempMet = null }
+                        MetodoAvalicao.entries.forEach {
+                            FilterOptionRow(it.name.replace("_", " "), tempMet == it, isDarkTheme) { tempMet = it }
+                        }
+                    }
+                }
+
+                // Botões de Ação
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            onClear()
+                            onDismiss()
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
+                    ) {
+                        Text("Limpar")
+                    }
+
+                    Button(
+                        onClick = { onApply(tempCat, tempDif, tempMet, tempOri) },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange)
+                    ) {
+                        Text("Salvar")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FilterSectionTitle(title: String, isDarkTheme: Boolean) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.labelLarge,
+        color = BasketballOrange,
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
+}
+
+@Composable
+fun FilterOptionRow(
+    label: String,
+    isSelected: Boolean,
+    isDarkTheme: Boolean,
+    onSelect: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(
+            selected = isSelected,
+            onClick = onSelect,
+            colors = RadioButtonDefaults.colors(selectedColor = BasketballOrange)
+        )
+        Text(
+            text = label,
+            color = if (isDarkTheme) Color.White else Color.Black,
+            fontSize = 14.sp,
+            modifier = Modifier.padding(start = 8.dp)
+        )
+    }
 }
