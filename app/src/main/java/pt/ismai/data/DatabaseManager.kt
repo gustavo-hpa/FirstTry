@@ -61,13 +61,45 @@ class DatabaseManager {
                 "nivelDificuldade" to treino.nivelDificuldade.name,
                 "duracao" to treino.duracao.inWholeNanoseconds, // Salva como Long (nanossegundos)
                 "exercicios" to treino.exercicios.map { exercicioToMap(it) }, // Mapeia lista interna
-                "dataCriacao" to treino.dataCriacao
+                "dataCriacao" to treino.dataCriacao,
+                "criadoPorUsuario" to treino.criadoPorUsuario,
             )
 
             db.collection("workouts_native")
                 .document(treino.id.toString())
                 .set(workoutMap)
                 .await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    suspend fun saveUserWorkout(userId: String, treino: Treino) {
+        try {
+            val workoutMap = mutableMapOf(
+                "nome" to treino.nome,
+                "descricao" to treino.descricao,
+                "categorias" to treino.categorias.map { it.name },
+                "nivelDificuldade" to treino.nivelDificuldade.name,
+                "duracao" to treino.duracao.inWholeNanoseconds,
+                "exercicios" to treino.exercicios.map { exercicioToMap(it) },
+                "dataCriacao" to treino.dataCriacao,
+                "criadoPorUsuario" to true
+            )
+
+            // .add() faz com que a BD gere o ID automaticamente
+            val docRef = db.collection("users")
+                .document(userId)
+                .collection("my_workouts")
+                .add(workoutMap)
+                .await()
+
+            // Opcional: Se quiser que o campo 'id' dentro do documento seja igual ao ID gerado pela BD
+            // Note que o ID da BD é uma String. Se o seu modelo exigir Int,
+            // o ideal seria mudar o modelo para String no futuro.
+            docRef.update("id", docRef.id).await()
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -107,7 +139,7 @@ class DatabaseManager {
                 val exerciciosRaw = data["exercicios"] as? List<Map<String, Any>> ?: emptyList()
                 val listaExercicios = exerciciosRaw.map { ex ->
                     Exercicio(
-                        id = (ex["id"] as Long).toInt(),
+                        id = data["id"] as? String ?: "",
                         nome = ex["nome"] as String,
                         descricao = ex["descricao"] as String,
                         categoria = Categorias.valueOf(ex["categoria"] as String),
@@ -119,7 +151,7 @@ class DatabaseManager {
                 }
 
                 Treino(
-                    id = (data["id"] as Long).toInt(),
+                    id = data["id"] as? String ?: "",
                     nome = data["nome"] as String,
                     descricao = data["descricao"] as String,
                     categorias = (data["categorias"] as List<String>).map { Categorias.valueOf(it) },

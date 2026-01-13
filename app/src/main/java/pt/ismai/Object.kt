@@ -4,7 +4,7 @@ import java.util.Date
 import kotlin.time.Duration
 
 data class Exercicio(
-    val id: Int,
+    val id: String,
     val nome: String,
     val descricao: String,
     val categoria: Categorias,
@@ -27,14 +27,15 @@ data class Exercicio(
 )
 
 data class Treino(
-    val id: Int,
+    val id: String,
     val nome: String,
     val descricao: String,
     val categorias: List<Categorias>,
     val nivelDificuldade: NivelDificuldade,
     val duracao: Duration,
     val exercicios: List<Exercicio>,
-    val dataCriacao: Date = Date()
+    val dataCriacao: Date = Date(),
+    val criadoPorUsuario: Boolean = false,
 )
 
 // User,"Armazena dados do usuário, autenticação e preferências."
