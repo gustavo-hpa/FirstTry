@@ -107,6 +107,7 @@ fun ProgramaPrincipal(
     onLocaleChange: (Locale?) -> Unit = {}
 ) {
     var currentScreen by rememberSaveable { mutableStateOf(Ecras.Loading) }
+    var selectedWorkout by remember { mutableStateOf<Treino?>(null) }
 
     LaunchedEffect(Unit) {
         val authManager = AuthManager()
@@ -171,7 +172,9 @@ fun ProgramaPrincipal(
             modifier = Modifier.weight(1f),
             isDarkTheme = isDarkTheme,
             onThemeToggle = onThemeToggle,
-            onLocaleChange = onLocaleChange
+            onLocaleChange = onLocaleChange,
+            selectedWorkout = selectedWorkout,
+            onWorkoutSelected = { selectedWorkout = it }
         )
 
         if (!isFullScreen) {

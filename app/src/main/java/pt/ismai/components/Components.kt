@@ -29,7 +29,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -49,7 +48,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -69,11 +67,13 @@ import pt.ismai.Profile
 import pt.ismai.R
 import pt.ismai.settings.Setting
 import pt.ismai.Statistics
-import pt.ismai.Workout
+import pt.ismai.Treino
+import pt.ismai.workout.Workout
 import pt.ismai.auth.Loading
 import pt.ismai.auth.Login
 import pt.ismai.auth.Signup
 import pt.ismai.auth.EmailVerificationScreen
+import pt.ismai.workout.WorkoutDetails
 import java.util.Locale
 
 // light theme
@@ -97,7 +97,9 @@ fun MainContent(
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean,
     onThemeToggle: () -> Unit,
-    onLocaleChange: (Locale?) -> Unit
+    onLocaleChange: (Locale?) -> Unit,
+    selectedWorkout: Treino? = null,
+    onWorkoutSelected: (Treino) -> Unit
 ) {
     val backgroundBrush = if (isDarkTheme) {
         Brush.verticalGradient(listOf(DarkBackgroundStart, DarkBackgroundEnd))
@@ -114,7 +116,8 @@ fun MainContent(
         when (ecra) {
             Ecras.Home -> Home(onScreenSelected, isDarkTheme)
             Ecras.Statistic -> Statistics()
-            Ecras.Workout -> Workout(isDarkTheme, onScreenSelected)
+            Ecras.Workout -> Workout(isDarkTheme, onScreenSelected, onWorkoutSelected)
+            Ecras.WorkoutDetails -> WorkoutDetails(selectedWorkout, isDarkTheme, onScreenSelected)
             Ecras.Setting -> Setting(onScreenSelected, isDarkTheme, onThemeToggle, onLocaleChange)
             Ecras.Login -> Login(onScreenSelected)
             Ecras.EmailVerificationScreen -> EmailVerificationScreen(onScreenSelected)
@@ -182,6 +185,7 @@ fun Topbar(
         Ecras.Home -> stringResource(id = R.string.home)
         Ecras.Statistic -> stringResource(id = R.string.statistics)
         Ecras.Workout -> stringResource(id = R.string.workout)
+        Ecras.WorkoutDetails -> stringResource(id = R.string.workout_details)
         Ecras.Setting -> stringResource(id = R.string.settings)
         Ecras.Login -> stringResource(id = R.string.login)
         Ecras.EmailVerificationScreen -> stringResource(id = R.string.email_verification_screen)

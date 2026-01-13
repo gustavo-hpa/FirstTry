@@ -86,6 +86,7 @@
     <string name="sign_up_now">Inscreva-se</string>
     <string name="system_default">Padrão do Sistema</string>
     <string name="email_verification_screen">tela de verificação de email</string>
+    <string name="workout_details">Detalhes do treino</string>
 
     <!-- Help and About -->
     <string name="support">Suporte</string>

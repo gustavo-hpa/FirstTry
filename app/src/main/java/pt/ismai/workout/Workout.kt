@@ -1,4 +1,4 @@
-package pt.ismai
+package pt.ismai.workout
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +13,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import pt.ismai.Ecras
+import pt.ismai.R
+import pt.ismai.Treino
 import pt.ismai.components.BasketballOrange
 import pt.ismai.components.MutedWarmGold
 import pt.ismai.components.TabButton
@@ -20,7 +23,11 @@ import pt.ismai.components.WorkoutCard // Importado o card correto
 import pt.ismai.data.DatabaseManager
 
 @Composable
-fun Workout(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
+fun Workout(
+    isDarkTheme: Boolean,
+    onScreenSelected: (Ecras) -> Unit,
+    onWorkoutSelected: (Treino) -> Unit // Recebe o callback
+) {
     val dbManager = remember { DatabaseManager() }
     var nativeWorkouts by rememberSaveable { mutableStateOf<List<Treino>>(emptyList()) }
     var userWorkouts by rememberSaveable { mutableStateOf<List<Treino>>(emptyList()) }
@@ -36,13 +43,12 @@ fun Workout(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
         isLoading = false
     }
 
+    val handleNavigation: (Treino) -> Unit = { treino ->
+        onWorkoutSelected(treino)
+        onScreenSelected(Ecras.WorkoutDetails)
+    }
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(
-            text = stringResource(id = R.string.workout),
-            fontSize = 28.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = if (isDarkTheme) MutedWarmGold else BasketballOrange
-        )
 
         // Abas de Seleção
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
@@ -50,23 +56,16 @@ fun Workout(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
             TabButton("Meus Treinos", selectedTabIndex == 1, { selectedTabIndex = 1 }, isDarkTheme)
         }
 
-        if (isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = BasketballOrange)
-            }
-        } else {
+        if (!isLoading) {
             val displayList = if (selectedTabIndex == 0) nativeWorkouts else userWorkouts
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 80.dp) // Espaço para não ficar atrás de botões
+                contentPadding = PaddingValues(bottom = 80.dp)
             ) {
                 items(displayList) { treino ->
-                    // Usando o WorkoutCard que criamos nos componentes
-                    WorkoutCard(treino = treino, isDarkTheme = isDarkTheme) {
-                        // Ação futura: Navegar para detalhes
-                        // onScreenSelected(Ecras.DetalhesTreino)
-                    }
+                    // CHAMADA APENAS COM PARÂMETROS, SEM CORPO { }
+                    WorkoutCard(treino, isDarkTheme, handleNavigation)
                 }
             }
         }

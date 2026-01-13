@@ -38,7 +38,7 @@ import pt.ismai.Treino
 fun WorkoutCard(
     treino: Treino,
     isDarkTheme: Boolean,
-    onClick: () -> Unit
+    onSelect: (Treino) -> Unit
 ) {
     val cardColors = if (isDarkTheme) {
         CardDefaults.cardColors(containerColor = SurfaceDark.copy(alpha = 0.8f))
@@ -50,7 +50,7 @@ fun WorkoutCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onClick() },
+            .clickable { onSelect(treino) }, // A lógica é executada aqui
         shape = RoundedCornerShape(16.dp),
         colors = cardColors,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)

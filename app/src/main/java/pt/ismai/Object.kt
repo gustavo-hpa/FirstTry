@@ -193,6 +193,7 @@ enum class Ecras {
     HelpAndAbout,
     Loading,
     EmailVerificationScreen,
+    WorkoutDetails
 }
 
 
