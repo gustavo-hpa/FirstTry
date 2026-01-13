@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.ismai.settings.AccountManagement
 import pt.ismai.Ecras
+import pt.ismai.Exercicio
 import pt.ismai.settings.HelpAndAbout
 import pt.ismai.Home
 import pt.ismai.settings.NotificationsAndSounds
@@ -73,6 +74,7 @@ import pt.ismai.auth.Loading
 import pt.ismai.auth.Login
 import pt.ismai.auth.Signup
 import pt.ismai.auth.EmailVerificationScreen
+import pt.ismai.exercise.ExerciseDetails
 import pt.ismai.workout.WorkoutDetails
 import java.util.Locale
 
@@ -99,7 +101,9 @@ fun MainContent(
     onThemeToggle: () -> Unit,
     onLocaleChange: (Locale?) -> Unit,
     selectedWorkout: Treino? = null,
-    onWorkoutSelected: (Treino) -> Unit
+    onWorkoutSelected: (Treino) -> Unit,
+    selectedExercise: Exercicio? = null,
+    onExerciseSelected: (Exercicio) -> Unit
 ) {
     val backgroundBrush = if (isDarkTheme) {
         Brush.verticalGradient(listOf(DarkBackgroundStart, DarkBackgroundEnd))
@@ -117,7 +121,8 @@ fun MainContent(
             Ecras.Home -> Home(onScreenSelected, isDarkTheme)
             Ecras.Statistic -> Statistics()
             Ecras.Workout -> Workout(isDarkTheme, onScreenSelected, onWorkoutSelected)
-            Ecras.WorkoutDetails -> WorkoutDetails(selectedWorkout, isDarkTheme, onScreenSelected)
+            Ecras.WorkoutDetails -> WorkoutDetails(treino = selectedWorkout, isDarkTheme = isDarkTheme, onScreenSelected = onScreenSelected, onExerciseSelected = onExerciseSelected)
+            Ecras.ExerciseDetails -> ExerciseDetails(exercicio = selectedExercise, isDarkTheme = isDarkTheme, onScreenSelected = onScreenSelected)
             Ecras.Setting -> Setting(onScreenSelected, isDarkTheme, onThemeToggle, onLocaleChange)
             Ecras.Login -> Login(onScreenSelected)
             Ecras.EmailVerificationScreen -> EmailVerificationScreen(onScreenSelected)
@@ -179,13 +184,14 @@ fun Topbar(
     containerColor: Color = Color.Transparent,
     contentColor: Color = Color.Black,
     isDarkTheme: Boolean = false,
-    onThemeToggle: () -> Unit = {}
+    onThemeToggle: () -> Unit = {},
 ) {
     val titulo = when (ecraAtual) {
         Ecras.Home -> stringResource(id = R.string.home)
         Ecras.Statistic -> stringResource(id = R.string.statistics)
         Ecras.Workout -> stringResource(id = R.string.workout)
         Ecras.WorkoutDetails -> stringResource(id = R.string.workout_details)
+        Ecras.ExerciseDetails -> stringResource(id = R.string.exercise_details)
         Ecras.Setting -> stringResource(id = R.string.settings)
         Ecras.Login -> stringResource(id = R.string.login)
         Ecras.EmailVerificationScreen -> stringResource(id = R.string.email_verification_screen)

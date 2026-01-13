@@ -1,12 +1,9 @@
 package pt.ismai.workout
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -14,12 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.ismai.Ecras
+import pt.ismai.Exercicio
 import pt.ismai.Treino
 import pt.ismai.components.*
 
@@ -27,7 +23,8 @@ import pt.ismai.components.*
 fun WorkoutDetails(
     treino: Treino?,
     isDarkTheme: Boolean,
-    onScreenSelected: (Ecras) -> Unit
+    onScreenSelected: (Ecras) -> Unit,
+    onExerciseSelected: (Exercicio) -> Unit
 ) {
     if (treino == null) return
 
@@ -105,7 +102,14 @@ fun WorkoutDetails(
         // Lista de Exercícios usando o ExerciseItem atualizado
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(treino.exercicios) { ex ->
-                ExerciseItem(exercicio = ex, isDarkTheme = isDarkTheme)
+                ExerciseItem(
+                    exercicio = ex,
+                    isDarkTheme = isDarkTheme,
+                    onClick = {
+                        onExerciseSelected(ex)
+                        onScreenSelected(Ecras.ExerciseDetails)
+                    }
+                )
             }
         }
     }

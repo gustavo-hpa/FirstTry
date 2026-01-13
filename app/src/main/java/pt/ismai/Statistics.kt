@@ -8,6 +8,6 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Statistics () {
     Column {
-        Text("📊 Statistics Screen", fontSize = 24.sp)
+        Text("Página de Estatísticas Ainda não implementada", fontSize = 24.sp)
     }
 }

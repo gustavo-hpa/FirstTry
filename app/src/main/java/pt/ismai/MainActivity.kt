@@ -108,6 +108,7 @@ fun ProgramaPrincipal(
 ) {
     var currentScreen by rememberSaveable { mutableStateOf(Ecras.Loading) }
     var selectedWorkout by remember { mutableStateOf<Treino?>(null) }
+    var selectedExercise by remember { mutableStateOf<Exercicio?>(null) }
 
     LaunchedEffect(Unit) {
         val authManager = AuthManager()
@@ -174,7 +175,9 @@ fun ProgramaPrincipal(
             onThemeToggle = onThemeToggle,
             onLocaleChange = onLocaleChange,
             selectedWorkout = selectedWorkout,
-            onWorkoutSelected = { selectedWorkout = it }
+            onWorkoutSelected = { selectedWorkout = it },
+            selectedExercise = selectedExercise,
+            onExerciseSelected = { selectedExercise = it }
         )
 
         if (!isFullScreen) {

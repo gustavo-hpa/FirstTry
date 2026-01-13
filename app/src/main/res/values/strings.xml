@@ -87,6 +87,7 @@
     <string name="system_default">System Default</string>
     <string name="email_verification_screen">email verification screen</string>
     <string name="workout_details">Workout details</string>
+    <string name="exercise_details">Exercise details</string>
 
     <!-- Help and About -->
     <string name="support">Support</string>

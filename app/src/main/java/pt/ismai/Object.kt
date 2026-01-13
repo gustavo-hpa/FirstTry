@@ -60,16 +60,12 @@ data class User(
     val horasTreinadas: Double = 0.0
 )
 
-
-
 // Conexao,Gerencia a lista de amigos do usuário.
 data class Conexao(
     val userId: Int,
     val amigoId: Int,
     val dataConexao: Date = Date()
 )
-
-
 
 // HistoricoTreino,Guarda a instância de um treino que foi realizado.
 data class HistoricoTreino(
@@ -80,8 +76,6 @@ data class HistoricoTreino(
     val duracaoReal: Duration,
     val historicoExercicios: List<HistoricoExercicio>
 )
-
-
 
 // HistoricoExercicio,Guarda os resultados brutos de um exercício específico realizado.
 data class HistoricoExercicio(
@@ -94,16 +88,12 @@ data class HistoricoExercicio(
     val observacoes: String? = null
 )
 
-
-
 // DadosSmartwatch,Armazena dados biométricos coletados durante o treino (ligado ao HistoricoTreino).
 data class DadosSmartwatch(
     val historicoTreinoId: Int,
     val bpmMedio: Int,
     val calorias: Double,
     val tempoZonaEsforco: Duration? = null  )
-
-
 
 // Quadra,Define uma quadra de basquete no mapa.
 data class Quadra(
@@ -117,8 +107,6 @@ data class Quadra(
     val adicionadaPorAdmin: Boolean = false
 )
 
-
-
 // Checkin,"Registra quando um usuário está na quadra (para a funcionalidade ""Quem está na quadra?"")."
 data class Checkin(
     val id: Int,
@@ -127,8 +115,6 @@ data class Checkin(
     val dataCheckin: Date = Date(),
     val ativoAte: Date // TTL de algumas horas
 )
-
-
 
 // RachaEvento,Objeto principal para organizar jogos.
 data class RachaEvento(
@@ -141,8 +127,6 @@ data class RachaEvento(
     val participantes: List<Int> // Lista de IDs de usuários
 )
 
-
-
 // Grupo,Define um grupo de chat.
 data class Grupo(
     val id: Int,
@@ -150,8 +134,6 @@ data class Grupo(
     val membros: List<Int>,
     val administradorId: Int
 )
-
-
 
 // Mensagem,Objeto genérico para mensagens de chat (individual ou grupo).
 data class Mensagem(
@@ -163,8 +145,6 @@ data class Mensagem(
     val dataEnvio: Date = Date(),
     val dataExpiracao: Date // 7 dias depois
 )
-
-
 
 // Noticia,Armazena dados do feed de notícias.
 data class Noticia(
@@ -193,10 +173,9 @@ enum class Ecras {
     HelpAndAbout,
     Loading,
     EmailVerificationScreen,
-    WorkoutDetails
+    WorkoutDetails,
+    ExerciseDetails
 }
-
-
 
 enum class MetodoAvalicao {
     POR_TEMPO_MAXIMO, // tempoFeito
@@ -211,15 +190,11 @@ enum class MetodoAvalicao {
     POR_DISTANCIA_TEMPO, // tempoDefinido, distanciaFeita
 }
 
-
-
 enum class NivelDificuldade {
     DIFICIO,
     MEDIA,
     FACIL,
 }
-
-
 
 enum class Categorias {
     CARDIO,
@@ -229,9 +204,6 @@ enum class Categorias {
     ARREMESSO
 }
 
-
-
-// TipoMensagem,Enumeração para o conteúdo da mensagem.
 enum class TipoMensagem {
     TEXTO,
     AUDIO,
@@ -240,8 +212,6 @@ enum class TipoMensagem {
     TREINO_COMPARTILHADO
 }
 
-
-
 // QualidadePiso,Enum para avaliação do piso da quadra.
 enum class QualidadePiso {
     EXCELENTE,
@@ -249,8 +219,6 @@ enum class QualidadePiso {
     REGULAR,
     RUIM
 }
-
-
 
 // TipoPerfil,Enumeração para diferenciar o usuário (para o Modo Treinador).
 enum class TipoPerfil {
