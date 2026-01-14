@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -100,7 +101,7 @@ fun AddWorkout(
                 BasketballTextField(
                     value = nome,
                     onValueChange = { nome = it },
-                    label = "Nome do Treino",
+                    label = stringResource(id = R.string.add_workout_name_label),
                     icon = painterResource(id = R.drawable.workout),
                     isDark = isDarkTheme
                 )
@@ -111,7 +112,7 @@ fun AddWorkout(
                 BasketballTextField(
                     value = descricao,
                     onValueChange = { descricao = it },
-                    label = "Descrição (Opcional)",
+                    label = stringResource(id = R.string.add_workout_description_label),
                     icon = painterResource(id = R.drawable.menu),
                     isDark = isDarkTheme
                 )
@@ -125,13 +126,13 @@ fun AddWorkout(
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     CustomDropdown(
-                        titulo = "Categoria Principal",
+                        titulo = stringResource(id = R.string.add_workout_main_category_dropdown),
                         opcoes = Categorias.entries.map { it.name },
                         selectedOption = categoriaSelecionada,
                         isDarkTheme = isDarkTheme
                     )
                     CustomDropdown(
-                        titulo = "Dificuldade",
+                        titulo = stringResource(id = R.string.add_workout_difficulty_dropdown),
                         opcoes = NivelDificuldade.entries.map { it.name },
                         selectedOption = nivelSelecionado,
                         isDarkTheme = isDarkTheme
@@ -144,13 +145,13 @@ fun AddWorkout(
             item {
                 Column(modifier = Modifier.padding(horizontal = 8.dp)) {
                     Text(
-                        text = "Duração Estimada",
+                        text = stringResource(id = R.string.add_workout_estimated_duration),
                         style = MaterialTheme.typography.bodyMedium,
                         color = if (isDarkTheme) TextPrimaryOnDark.copy(alpha = 0.8f) else Color.Black.copy(alpha = 0.8f)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     SmartTimer(
-                        titulo = "Tempo total",
+                        titulo = stringResource(id = R.string.add_workout_total_time),
                         initialHours = horas,
                         initialMinutes = minutos,
                         initialSeconds = segundos,
@@ -171,7 +172,7 @@ fun AddWorkout(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Exercícios (${exerciciosNoTreino.size})",
+                        text = stringResource(id = R.string.add_workout_exercises_header, exerciciosNoTreino.size),
                         color = if (isDarkTheme) TextPrimaryOnDark else Color.Black,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
@@ -187,7 +188,7 @@ fun AddWorkout(
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.filter_list),
-                                contentDescription = "Filtrar",
+                                contentDescription = stringResource(id = R.string.add_workout_filter_button),
                                 colorFilter = ColorFilter.tint(activeFilterColor),
                                 modifier = Modifier.size(20.dp)
                             )
@@ -206,7 +207,7 @@ fun AddWorkout(
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Add")
+                            Text(stringResource(id = R.string.add_workout_add_button))
                         }
                     }
                 }
@@ -239,7 +240,7 @@ fun AddWorkout(
                 border = BorderStroke(1.dp, if (isDarkTheme) Color.Gray else Color.LightGray)
             ) {
                 Text(
-                    "Cancelar",
+                    stringResource(id = R.string.cancel),
                     color = if (isDarkTheme) Color.White else Color.Black,
                     fontWeight = FontWeight.Bold
                 )
@@ -275,7 +276,7 @@ fun AddWorkout(
                 colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
                 enabled = nome.isNotEmpty() && exerciciosNoTreino.isNotEmpty()
             ) {
-                Text("Salvar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(stringResource(id = R.string.add_workout_save_button), fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         }
     }
@@ -332,7 +333,7 @@ fun ExerciseSelectionDialog(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    "Selecionar Exercício",
+                    stringResource(id = R.string.add_workout_exercise_selection_dialog_title),
                     style = MaterialTheme.typography.titleLarge,
                     color = if (isDarkTheme) TextPrimaryOnDark else Color.Black
                 )

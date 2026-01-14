@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +34,7 @@ import pt.ismai.Categorias
 import pt.ismai.Exercicio
 import pt.ismai.MetodoAvalicao
 import pt.ismai.NivelDificuldade
+import pt.ismai.R
 
 @Composable
 fun ExerciseItem(exercicio: Exercicio, isDarkTheme: Boolean, onClick: () -> Unit) {
@@ -47,7 +49,7 @@ fun ExerciseItem(exercicio: Exercicio, isDarkTheme: Boolean, onClick: () -> Unit
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = pt.ismai.R.drawable.workout),
+            painter = painterResource(id = R.drawable.workout),
             contentDescription = null,
             modifier = Modifier.size(32.dp),
             colorFilter = ColorFilter.tint(BasketballOrange)
@@ -154,7 +156,7 @@ fun FilterSelectionDialog(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    "Filtrar Exercícios",
+                    stringResource(id = R.string.add_workout_filter_dialog_title),
                     style = MaterialTheme.typography.headlineSmall,
                     color = if (isDarkTheme) TextPrimaryOnDark else Color.Black,
                     fontWeight = FontWeight.Bold
@@ -167,16 +169,16 @@ fun FilterSelectionDialog(
                 ) {
                     // 1. Filtro de Origem
                     item {
-                        FilterSectionTitle("Origem", isDarkTheme)
-                        FilterOptionRow("Todos", tempOri == null, isDarkTheme) { tempOri = null }
-                        FilterOptionRow("Nativos", tempOri == false, isDarkTheme) { tempOri = false }
-                        FilterOptionRow("Meus Exercícios", tempOri == true, isDarkTheme) { tempOri = true }
+                        FilterSectionTitle(stringResource(id = R.string.add_workout_filter_dialog_origin), isDarkTheme)
+                        FilterOptionRow(stringResource(id = R.string.add_workout_filter_dialog_origin_all), tempOri == null, isDarkTheme) { tempOri = null }
+                        FilterOptionRow(stringResource(id = R.string.add_workout_filter_dialog_origin_native), tempOri == false, isDarkTheme) { tempOri = false }
+                        FilterOptionRow(stringResource(id = R.string.add_workout_filter_dialog_origin_user), tempOri == true, isDarkTheme) { tempOri = true }
                     }
 
                     // 2. Filtro de Dificuldade
                     item {
-                        FilterSectionTitle("Dificuldade", isDarkTheme)
-                        FilterOptionRow("Qualquer", tempDif == null, isDarkTheme) { tempDif = null }
+                        FilterSectionTitle(stringResource(id = R.string.add_workout_filter_dialog_difficulty), isDarkTheme)
+                        FilterOptionRow(stringResource(id = R.string.add_workout_filter_dialog_others_all), tempDif == null, isDarkTheme) { tempDif = null }
                         NivelDificuldade.entries.forEach {
                             FilterOptionRow(it.name, tempDif == it, isDarkTheme) { tempDif = it }
                         }
@@ -184,8 +186,8 @@ fun FilterSelectionDialog(
 
                     // 3. Filtro de Categoria
                     item {
-                        FilterSectionTitle("Categoria", isDarkTheme)
-                        FilterOptionRow("Qualquer", tempCat == null, isDarkTheme) { tempCat = null }
+                        FilterSectionTitle(stringResource(id = R.string.add_workout_filter_dialog_category), isDarkTheme)
+                        FilterOptionRow(stringResource(id = R.string.add_workout_filter_dialog_others_all), tempCat == null, isDarkTheme) { tempCat = null }
                         Categorias.entries.forEach {
                             FilterOptionRow(it.name, tempCat == it, isDarkTheme) { tempCat = it }
                         }
@@ -193,8 +195,8 @@ fun FilterSelectionDialog(
 
                     // 4. Filtro de Metodo de Avaliação
                     item {
-                        FilterSectionTitle("Método de Avaliação", isDarkTheme)
-                        FilterOptionRow("Qualquer", tempMet == null, isDarkTheme) { tempMet = null }
+                        FilterSectionTitle(stringResource(id = R.string.add_workout_filter_dialog_method), isDarkTheme)
+                        FilterOptionRow(stringResource(id = R.string.add_workout_filter_dialog_others_all), tempMet == null, isDarkTheme) { tempMet = null }
                         MetodoAvalicao.entries.forEach {
                             FilterOptionRow(it.name.replace("_", " "), tempMet == it, isDarkTheme) { tempMet = it }
                         }
@@ -214,7 +216,7 @@ fun FilterSelectionDialog(
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
                     ) {
-                        Text("Limpar")
+                        Text(stringResource(id = R.string.add_workout_filter_dialog_clear_button))
                     }
 
                     Button(
@@ -222,7 +224,7 @@ fun FilterSelectionDialog(
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange)
                     ) {
-                        Text("Salvar")
+                        Text(stringResource(id = R.string.add_workout_filter_dialog_apply_button))
                     }
                 }
             }
@@ -230,6 +232,7 @@ fun FilterSelectionDialog(
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun FilterSectionTitle(title: String, isDarkTheme: Boolean) {
     Text(

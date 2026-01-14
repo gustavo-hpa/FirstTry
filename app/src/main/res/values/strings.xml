@@ -7,7 +7,6 @@
     <string name="settings">Settings</string>
     <string name="login">Login</string>
     <string name="signup">Signup</string>
-    <string name="profile">Profile</string>
     <string name="menu">Menu</string>
     <string name="toggle_theme">Toggle Theme</string>
     <string name="select">Select...</string>
@@ -35,7 +34,6 @@
     <string name="choose_language">Choose Language</string>
     <string name="english">English</string>
     <string name="portuguese">Portuguese</string>
-    <string name="cancel">Cancel</string>
     <string name="dark_theme">Dark Theme</string>
     <string name="search_settings">Search settings</string>
     <string name="user_name_placeholder">User Name</string>
@@ -50,8 +48,6 @@
     <string name="account">Account</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="change_password">Change Password</string>
-    <string name="workouts_completed">Workouts</string>
-    <string name="hours_trained">Hours</string>
     <string name="points_scored">Points</string>
     <string name="athlete">Athlete</string>
     <string name="player_card">Player Card</string>
@@ -82,7 +78,7 @@
     <string name="login_to_continue">Login to your account to continue</string>
     <string name="login_button">LOGIN</string>
     <string name="or_continue_with">or continue with</string>
-    <string name="no_account">Don\'t have an account? </string>
+    <string name="no_account">"Don't have an account?"</string>
     <string name="sign_up_now">Sign up</string>
     <string name="system_default">System Default</string>
     <string name="email_verification_screen">email verification screen</string>
@@ -135,4 +131,50 @@
     <string name="blocked_users">Blocked Users</string>
     <string name="system_permissions">System Permissions</string>
     <string name="manage_permissions">Manage permissions</string>
+
+    <!-- Profile -->
+    <string name="profile">Profile</string>
+    <string name="profile_picture_description">Profile picture</string>
+    <string name="no_bio">No biography...</string>
+    <string name="player_card_title">Player Card</string>
+    <string name="performance_summary_title">Performance Summary</string>
+    <string name="unit_meter">%1$s m</string>
+    <string name="unit_kg">%1$s kg</string>
+    <string name="dominant_hand_short">Dom. Hand</string>
+    <string name="workouts_completed">Workouts</string>
+    <string name="hours_trained">Hours</string>
+
+    <!-- Workout Details -->
+    <string name="list_title">List of Exercises</string>
+
+    <!-- Workout -->
+    <string name="workout_library">Library</string>
+    <string name="workout_my_workouts">My Workouts</string>
+    <string name="workout_create_new">Create new workout</string>
+
+    <!-- Add/Edit Workout -->
+    <string name="add_workout_name_label">Workout Name</string>
+    <string name="add_workout_description_label">Description (Optional)</string>
+    <string name="add_workout_main_category_dropdown">Main Category</string>
+    <string name="add_workout_difficulty_dropdown">Difficulty</string>
+    <string name="add_workout_estimated_duration">Estimated Duration</string>
+    <string name="add_workout_total_time">Total time</string>
+    <string name="add_workout_exercises_header">Exercises (%d)</string>
+    <string name="add_workout_filter_button">Filter</string>
+    <string name="add_workout_add_button">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_workout_save_button">Save</string>
+    <string name="add_workout_exercise_selection_dialog_title">Select Exercises</string>
+    <string name="add_workout_no_exercises_found">No exercises found.</string>
+    <string name="add_workout_filter_dialog_title">Filter Exercises</string>
+    <string name="add_workout_filter_dialog_category">Category</string>
+    <string name="add_workout_filter_dialog_difficulty">Difficulty</string>
+    <string name="add_workout_filter_dialog_method">Evaluation Method</string>
+    <string name="add_workout_filter_dialog_origin">Origin</string>
+    <string name="add_workout_filter_dialog_origin_all">All</string>
+    <string name="add_workout_filter_dialog_others_all">Any</string>
+    <string name="add_workout_filter_dialog_origin_user">My Exercises</string>
+    <string name="add_workout_filter_dialog_origin_native">Default</string>
+    <string name="add_workout_filter_dialog_clear_button">Clear Filters</string>
+    <string name="add_workout_filter_dialog_apply_button">Apply</string>
 </resources>

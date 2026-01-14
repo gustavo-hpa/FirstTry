@@ -93,7 +93,7 @@ private fun ProfileHeader(user: User, isDarkTheme: Boolean) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             painter = painterResource(id = R.drawable.profile), // Ainda hardcoded (precisas do Storage para fotos reais)
-            contentDescription = "Foto de perfil",
+            contentDescription = stringResource(id = R.string.profile_picture_description),
             modifier = Modifier
                 .size(120.dp)
                 .clip(CircleShape),
@@ -130,7 +130,7 @@ private fun ProfileHeader(user: User, isDarkTheme: Boolean) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = user.biografia ?: "Sem biografia...",
+            text = user.biografia ?: stringResource(id = R.string.no_bio),
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -141,35 +141,35 @@ private fun ProfileHeader(user: User, isDarkTheme: Boolean) {
 @Composable
 private fun PlayerCard(user: User, isDarkTheme: Boolean) {
     // Nota: Substitui os stringResource pelos teus R.string reais se existirem
-    SettingsGroup(title = "Cartão de Jogador", isDarkTheme = isDarkTheme) {
+    SettingsGroup(stringResource(id = R.string.player_card), isDarkTheme = isDarkTheme) {
         Row(
             Modifier.fillMaxWidth().padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            InfoChip("Posição", user.posicao ?: "-")
-            InfoChip("Altura", if (user.altura != null) "${user.altura}m" else "-")
-            InfoChip("Peso", if (user.peso != null) "${user.peso}kg" else "-")
+            InfoChip(stringResource(id = R.string.position), user.posicao ?: "-")
+            InfoChip(stringResource(id = R.string.height), if (user.altura != null) "${user.altura}m" else "-")
+            InfoChip(stringResource(id = R.string.weight), if (user.peso != null) "${user.peso}kg" else "-")
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
         Row(
             Modifier.fillMaxWidth().padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            InfoChip("Número", user.numeroCamisa?.toString() ?: "-")
-            InfoChip("Mão Dom.", user.maoDominante ?: "-")
+            InfoChip(stringResource(id = R.string.jersey_number), user.numeroCamisa?.toString() ?: "-")
+            InfoChip(stringResource(id = R.string.dominant_hand), user.maoDominante ?: "-")
         }
     }
 }
 
 @Composable
 private fun PerformanceSummary(user: User, isDarkTheme: Boolean) {
-    SettingsGroup(title = "Resumo Performance", isDarkTheme = isDarkTheme) {
+    SettingsGroup(title = stringResource(id = R.string.performance_summary), isDarkTheme = isDarkTheme) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(8.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            StatItem(label = "Treinos", value = user.totalTreinos.toString())
-            StatItem(label = "Horas", value = user.horasTreinadas.toInt().toString())
+            StatItem(label = stringResource(id = R.string.workouts_completed), value = user.totalTreinos.toString())
+            StatItem(label = stringResource(id = R.string.hours_trained), value = user.horasTreinadas.toInt().toString())
         }
         // ... restante do código (Exercício favorito pode ser mais complexo de buscar, podes manter hardcoded ou criar lógica futura) ...
     }
