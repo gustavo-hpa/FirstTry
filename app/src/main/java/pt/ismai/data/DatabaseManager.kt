@@ -57,10 +57,10 @@ class DatabaseManager {
                 "id" to treino.id,
                 "nome" to treino.nome,
                 "descricao" to treino.descricao,
-                "categorias" to treino.categorias.map { it.name }, // Salva nomes dos enums
+                "categorias" to treino.categorias.map { it.name },
                 "nivelDificuldade" to treino.nivelDificuldade.name,
-                "duracao" to treino.duracao.inWholeNanoseconds, // Salva como Long (nanossegundos)
-                "exercicios" to treino.exercicios.map { exercicioToMap(it) }, // Mapeia lista interna
+                "duracao" to treino.duracao.inWholeNanoseconds,
+                "exercicios" to treino.exercicios.map { exercicioToMap(it) },
                 "dataCriacao" to treino.dataCriacao,
                 "criadoPorUsuario" to treino.criadoPorUsuario,
             )
@@ -98,9 +98,6 @@ class DatabaseManager {
                 .add(workoutMap)
                 .await()
 
-            // Opcional: Se quiser que o campo 'id' dentro do documento seja igual ao ID gerado pela BD
-            // Note que o ID da BD é uma String. Se o seu modelo exigir Int,
-            // o ideal seria mudar o modelo para String no futuro.
             docRef.update("id", docRef.id).await()
 
         } catch (e: Exception) {
@@ -125,7 +122,6 @@ class DatabaseManager {
         }
     }
 
-    // Função auxiliar para limpar os nomes do Exercício
     private fun exercicioToMap(ex: Exercicio): Map<String, Any?> {
         return mapOf(
             "id" to ex.id,
@@ -137,7 +133,7 @@ class DatabaseManager {
             "fotoUrl" to ex.fotoUrl,
             "criadoPorUsuario" to ex.criadoPorUsuario,
             "dataCriacao" to ex.dataCriacao,
-            "tempoDefinido" to ex.tempoDefinido?.inWholeNanoseconds, // Nomes limpos aqui
+            "tempoDefinido" to ex.tempoDefinido?.inWholeNanoseconds,
             "tempoFeito" to ex.tempoFeito?.inWholeNanoseconds,
             "objetivo" to ex.objetivo,
             "acertos" to ex.acertos,
@@ -167,8 +163,7 @@ class DatabaseManager {
                         categoria = Categorias.valueOf(ex["categoria"] as String),
                         metodoAvaliacao = MetodoAvalicao.valueOf(ex["metodoAvaliacao"] as String),
                         nivelDificuldade = NivelDificuldade.valueOf(ex["nivelDificuldade"] as String),
-                        tempoDefinido = (ex["tempoDefinido"] as? Long)?.nanoseconds, // Lê o nome limpo
-                        // ... preencher os outros campos opcionais se necessário ...
+                        tempoDefinido = (ex["tempoDefinido"] as? Long)?.nanoseconds,
                     )
                 }
 
@@ -202,7 +197,6 @@ class DatabaseManager {
             snapshot.documents.mapNotNull { doc ->
                 val data = doc.data ?: return@mapNotNull null
 
-                // 1. Mapear a lista interna de exercícios
                 val exerciciosRaw = (data["exercicios"] as? List<*>)?.filterIsInstance<Map<String, Any>>() ?: emptyList()
                 val listaExercicios = exerciciosRaw.map { ex ->
                     Exercicio(
@@ -224,9 +218,8 @@ class DatabaseManager {
                     )
                 }
 
-                // 2. Mapear o objeto Treino principal
                 Treino(
-                    id = doc.id, // Usa o ID do documento do Firestore
+                    id = doc.id,
                     nome = data["nome"] as? String ?: "",
                     descricao = data["descricao"] as? String ?: "",
                     categorias = (data["categorias"] as? List<*>)?.filterIsInstance<String>()?.map {
@@ -251,7 +244,6 @@ class DatabaseManager {
             snapshot.documents.mapNotNull { doc ->
                 val data = doc.data ?: return@mapNotNull null
 
-                // Mapeamento direto e simples como em getNativeWorkouts
                 Exercicio(
                     id = doc.id,
                     nome = data["nome"] as? String ?: "",
@@ -263,11 +255,9 @@ class DatabaseManager {
                     criadoPorUsuario = data["criadoPorUsuario"] as? Boolean ?: false,
                     dataCriacao = (data["dataCriacao"] as? com.google.firebase.Timestamp)?.toDate() ?: java.util.Date(),
 
-                    // Campos de tempo (Duration)
                     tempoDefinido = (data["tempoDefinido"] as? Long)?.nanoseconds,
                     tempoFeito = (data["tempoFeito"] as? Long)?.nanoseconds,
 
-                    // Campos numéricos (Conversão de Long para Int/Double)
                     objetivo = (data["objetivo"] as? Long)?.toInt(),
                     acertos = (data["acertos"] as? Long)?.toInt(),
                     tentativas = (data["tentativas"] as? Long)?.toInt(),

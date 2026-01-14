@@ -31,7 +31,6 @@ fun WorkoutDetails(
     if (treino == null) return
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        // Cabeçalho: Botão Voltar e Título
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = treino.nome,
@@ -43,7 +42,6 @@ fun WorkoutDetails(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // BLOCO DE INFORMAÇÕES DO TREINO
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -51,7 +49,6 @@ fun WorkoutDetails(
                 .background(if (isDarkTheme) SurfaceDark.copy(alpha = 0.3f) else Color.White.copy(alpha = 0.4f))
                 .padding(16.dp)
         ) {
-            // Linha 1: Dificuldade e Duração
             Row(verticalAlignment = Alignment.CenterVertically) {
                 DifficultyIndicator(nivel = treino.nivelDificuldade)
                 Spacer(modifier = Modifier.width(8.dp))
@@ -71,7 +68,6 @@ fun WorkoutDetails(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Linha 2: Categorias (Chips)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 treino.categorias.forEach { cat ->
                     CategoryChip(categoria = cat, isDarkTheme = isDarkTheme)
@@ -80,7 +76,6 @@ fun WorkoutDetails(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Linha 3: Descrição
             Text(
                 text = treino.descricao,
                 style = MaterialTheme.typography.bodySmall,
@@ -99,7 +94,6 @@ fun WorkoutDetails(
             modifier = Modifier.padding(bottom = 12.dp)
         )
 
-        // Lista de Exercícios usando o ExerciseItem atualizado
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(treino.exercicios) { ex ->
                 ExerciseItem(

@@ -81,14 +81,14 @@ fun EmailVerificationScreen(onVerified: (Ecras) -> Unit) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // O TextField agora fica sempre visível, mas muda o estado 'enabled'
+        // O TextField muda o estado 'enabled', Fica inclicável e claro se enviado
         BasketballTextField(
             value = email,
             onValueChange = { email = it; erroEmail = null },
             label = "Seu e-mail",
             icon = painterResource(R.drawable.email_icon),
             isDark = isDark,
-            enabled = !isEmailSent, // Fica inclicável e claro se enviado
+            enabled = !isEmailSent,
             keyboardType = KeyboardType.Email
         )
 
@@ -102,21 +102,17 @@ fun EmailVerificationScreen(onVerified: (Ecras) -> Unit) {
         }
 
         if (!isEmailSent) {
-            // Botão Principal de Envio
             Button(
                 onClick = {
                     scope.launch {
                         isVerificando = true
                         try {
-                            // 1. Validação de Formato (Mantemos para evitar erros de sintaxe)
+                            // 1. Validação de Formato para evitar erros de sintaxe
                             val erroFormato = authManager.validarFormatoEmail(email)
                             if (erroFormato != null) {
                                 erroEmail = erroFormato
                                 return@launch
                             }
-
-                            // LOGICA REMOVIDA: Não verificamos mais se o e-mail existe aqui
-                            // para evitar dar informações desnecessárias e não travar o processo.
 
                             // 2. Tenta criar a pré-conta e enviar o e-mail
                             authManager.startEmailVerification(email)
@@ -161,15 +157,12 @@ fun EmailVerificationScreen(onVerified: (Ecras) -> Unit) {
                 onClick = {
                     scope.launch {
                         try {
-                            // Chama a nova função segura do AuthManager
                             val foiApagada = authManager.cancelarSignupSeguro()
 
                             if (!foiApagada) {
-                                // Opcional: Mostrar um aviso de que a conta já existe e não foi removida
                                 erroEmail = "Esta conta já está finalizada. Por favor, faça login."
                             }
 
-                            // Em ambos os casos, voltamos ao estado inicial para permitir novo e-mail
                             isEmailSent = false
                             timerSeconds = 0
                         } catch (e: Exception) {
@@ -178,7 +171,7 @@ fun EmailVerificationScreen(onVerified: (Ecras) -> Unit) {
                     }
                 }
             ) {
-                Text("Alterar e-mail", color = BasketballOrange) // Cor definida em Components.kt
+                Text("Alterar e-mail", color = BasketballOrange)
             }
 
             TextButton(

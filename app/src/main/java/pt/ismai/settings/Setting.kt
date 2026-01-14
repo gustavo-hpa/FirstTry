@@ -52,14 +52,13 @@ fun Setting(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Barra de Busca
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
             label = { Text(stringResource(id = R.string.search_settings)) },
             leadingIcon = {
                 Image(
-                    painter = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                    painter = painterResource(id = R.drawable.outline_add_24), 
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
                 )
@@ -73,17 +72,15 @@ fun Setting(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Seção 1: Perfil
         SettingsProfileCard(onNavigate = { onScreenSelected(Ecras.AccountManagement) })
 
-        // Seção 2: Preferências do App
         SettingsGroup(
             title = stringResource(id = R.string.app_preferences),
             isDarkTheme = isDarkTheme
         ) {
             SettingsSwitchItem(
                 title = stringResource(id = R.string.dark_theme),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24), 
                 checked = isDarkTheme,
                 onCheckedChange = { onThemeToggle() }
             )
@@ -93,16 +90,15 @@ fun Setting(
             )
             SettingsMenuItem(
                 title = stringResource(id = R.string.language),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24), 
                 onClick = { showLanguageDialog = true }
             )
         }
 
-        // Seção 3: Geral
         SettingsGroup(title = stringResource(id = R.string.general), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.settings_notifications_and_sounds),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24), 
                 onClick = { onScreenSelected(Ecras.NotificationsAndSounds) }
             )
             HorizontalDivider(
@@ -111,26 +107,24 @@ fun Setting(
             )
             SettingsMenuItem(
                 title = stringResource(id = R.string.settings_privacy_and_security),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24), 
                 onClick = { onScreenSelected(Ecras.PrivacyAndSecurity) }
             )
         }
 
-        // Seção 4: Informações e Suporte
         SettingsGroup(
             title = stringResource(id = R.string.information_and_support),
             isDarkTheme = isDarkTheme
         ) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.settings_help_and_about),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24), 
                 onClick = { onScreenSelected(Ecras.HelpAndAbout) }
             )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Rodapé
         LogoutAndVersion(onLogout = {
             authManager.logout(context, context.getString(R.string.default_web_client_id))
             onScreenSelected(Ecras.Login)

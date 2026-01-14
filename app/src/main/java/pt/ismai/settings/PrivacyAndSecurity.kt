@@ -28,11 +28,10 @@ fun PrivacyAndSecurity(isDarkTheme: Boolean) {
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Login e Acesso
         SettingsGroup(stringResource(id = R.string.login_and_access), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.change_password),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
             HorizontalDivider(
@@ -41,7 +40,7 @@ fun PrivacyAndSecurity(isDarkTheme: Boolean) {
             )
             SettingsSwitchItem(
                 title = stringResource(id = R.string.two_factor_authentication),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 checked = twoFactorAuthEnabled,
                 onCheckedChange = { twoFactorAuthEnabled = it }
             )
@@ -51,26 +50,24 @@ fun PrivacyAndSecurity(isDarkTheme: Boolean) {
             )
             SettingsSwitchItem(
                 title = stringResource(id = R.string.biometric_authentication),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 checked = biometricAuthEnabled,
                 onCheckedChange = { biometricAuthEnabled = it }
             )
         }
 
-        // Sessões
         SettingsGroup(stringResource(id = R.string.sessions), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.connected_devices),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
         }
 
-        // Privacidade Social
         SettingsGroup(stringResource(id = R.string.social_privacy), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.profile_visibility),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
             HorizontalDivider(
@@ -79,16 +76,15 @@ fun PrivacyAndSecurity(isDarkTheme: Boolean) {
             )
             SettingsMenuItem(
                 title = stringResource(id = R.string.blocked_users),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
         }
 
-        // Permissões do Sistema
         SettingsGroup(stringResource(id = R.string.system_permissions), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.manage_permissions),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
         }

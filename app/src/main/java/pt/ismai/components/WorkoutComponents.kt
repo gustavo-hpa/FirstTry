@@ -50,7 +50,7 @@ fun WorkoutCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onSelect(treino) }, // A lógica é executada aqui
+            .clickable { onSelect(treino) },
         shape = RoundedCornerShape(16.dp),
         colors = cardColors,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -59,7 +59,6 @@ fun WorkoutCard(
             modifier = Modifier.padding(12.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Imagem Principal do Treino (Substitui Icon)
             Box(
                 modifier = Modifier
                     .size(60.dp)

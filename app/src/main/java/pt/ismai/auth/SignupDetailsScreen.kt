@@ -54,10 +54,9 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
     )
     val contentColor = if (isDark) Color.White else Color(0xFF4E1810)
 
-    // A estrutura Box garante que o fundo cubra todo o ecrã como no Login/EmailVerification
     Box(modifier = Modifier.fillMaxSize().background(backgroundBrush)) {
         Scaffold(
-            containerColor = Color.Transparent, // Importante para ver o gradiente por baixo
+            containerColor = Color.Transparent,
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
         ) { paddingValues ->
             Column(
@@ -72,7 +71,6 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
                 Text("Completar Perfil", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = contentColor)
                 Text("Define os teus dados de acesso", fontSize = 16.sp, color = contentColor.copy(alpha = 0.7f), modifier = Modifier.padding(bottom = 32.dp))
 
-                // --- Campo Username ---
                 BasketballTextField(
                     value = username,
                     onValueChange = { username = it.lowercase() },
@@ -88,7 +86,6 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // --- Campo Nome Completo ---
                 BasketballTextField(
                     value = fullName,
                     onValueChange = { fullName = it },
@@ -104,7 +101,6 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // --- Campo Password ---
                 BasketballTextField(
                     value = password,
                     onValueChange = { password = it },
@@ -123,7 +119,6 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // --- Confirmar Password ---
                 BasketballTextField(
                     value = confirmPassword,
                     onValueChange = { confirmPassword = it },
@@ -138,7 +133,6 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // --- BOTÃO REGISTAR (Igual ao EmailVerification e Login) ---
                 val isFormValid = username.length in 3..20 &&
                         authManager.checkUsernameFormat(username) &&
                         authManager.checkFullNameValid(fullName) &&
@@ -165,9 +159,9 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
                         }
                     },
                     enabled = !isLoading && isFormValid,
-                    modifier = Modifier.fillMaxWidth().height(50.dp), // Altura e largura padronizadas
-                    colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange), // Cor da bola
-                    shape = RoundedCornerShape(12.dp) // Cantos arredondados padronizados
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
@@ -181,7 +175,7 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
                     onClick = {
                         scope.launch {
                             try {
-                                // Se o utilizador desistir aqui, apagamos a conta Auth
+                                // Se o utilizador desistir aqui, a conta Auth é apagada
                                 authManager.deleteAccount()
                                 onScreenSelected(Ecras.Login)
                             } catch (e: Exception) {

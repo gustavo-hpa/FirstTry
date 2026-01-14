@@ -50,24 +50,22 @@ fun Profile(
 ) {
     val databaseManager = DatabaseManager()
     val authManager = AuthManager()
+
     // Estado para guardar os dados do utilizador
     var userProfile by rememberSaveable { mutableStateOf<User?>(null) }
     var isLoading by rememberSaveable { mutableStateOf(true) }
     val uid = authManager.getCurrentUserId()
 
-    // Carregar dados ao iniciar a tela
     LaunchedEffect(Unit) {
         userProfile = databaseManager.getUserProfile(uid)
         isLoading = false
     }
 
     if (isLoading) {
-        // Mostra um loading simples enquanto carrega
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(color = if (isDarkTheme) Color.White else Color.Black)
         }
     } else {
-        // Se o userProfile for nulo (erro), mostra um perfil vazio ou mensagem
         val user = userProfile ?: User(username = "Utilizador", email = "")
 
         Column(
@@ -78,7 +76,6 @@ fun Profile(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            // Passamos o objeto 'user' para os componentes filhos
             ProfileHeader(user, isDarkTheme)
             PlayerCard(user, isDarkTheme)
             PerformanceSummary(user, isDarkTheme)
@@ -92,7 +89,7 @@ fun Profile(
 private fun ProfileHeader(user: User, isDarkTheme: Boolean) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
-            painter = painterResource(id = R.drawable.profile), // Ainda hardcoded (precisas do Storage para fotos reais)
+            painter = painterResource(id = R.drawable.profile),
             contentDescription = stringResource(id = R.string.profile_picture_description),
             modifier = Modifier
                 .size(120.dp)
@@ -101,7 +98,6 @@ private fun ProfileHeader(user: User, isDarkTheme: Boolean) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // Usa o nome completo ou, se for nulo, o username
             Text(
                 text = user.nomeCompleto ?: user.username,
                 fontSize = 24.sp,
@@ -112,7 +108,7 @@ private fun ProfileHeader(user: User, isDarkTheme: Boolean) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
-                    .background(MutedWarmGold) // Ou Color(0xFFC9A227)
+                    .background(MutedWarmGold)
                     .padding(horizontal = 6.dp, vertical = 2.dp)
             ) {
                 Text(
@@ -140,7 +136,6 @@ private fun ProfileHeader(user: User, isDarkTheme: Boolean) {
 
 @Composable
 private fun PlayerCard(user: User, isDarkTheme: Boolean) {
-    // Nota: Substitui os stringResource pelos teus R.string reais se existirem
     SettingsGroup(stringResource(id = R.string.player_card), isDarkTheme = isDarkTheme) {
         Row(
             Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -171,7 +166,6 @@ private fun PerformanceSummary(user: User, isDarkTheme: Boolean) {
             StatItem(label = stringResource(id = R.string.workouts_completed), value = user.totalTreinos.toString())
             StatItem(label = stringResource(id = R.string.hours_trained), value = user.horasTreinadas.toInt().toString())
         }
-        // ... restante do código (Exercício favorito pode ser mais complexo de buscar, podes manter hardcoded ou criar lógica futura) ...
     }
 }
 

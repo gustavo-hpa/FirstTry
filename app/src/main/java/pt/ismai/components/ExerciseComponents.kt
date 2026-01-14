@@ -65,7 +65,6 @@ fun ExerciseItem(exercicio: Exercicio, isDarkTheme: Boolean, onClick: () -> Unit
                     color = if (isDarkTheme) TextPrimaryOnDark else Color.Black
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                // Dificuldade do exercício
                 DifficultyIndicator(nivel = exercicio.nivelDificuldade)
             }
             Text(
@@ -77,13 +76,11 @@ fun ExerciseItem(exercicio: Exercicio, isDarkTheme: Boolean, onClick: () -> Unit
     }
 }
 
-// No ExerciseComponents.kt
-
 @Composable
 fun getAvaliacaoFormatada(exercicio: Exercicio): String {
     val sb = StringBuilder()
 
-    // Switch case (when) para descrição do método baseado no seu Enum
+    // Switch case (when) para descrição do metodo baseado no seu Enum
     val descricaoMetodo = when (exercicio.metodoAvaliacao) {
         MetodoAvalicao.POR_TEMPO_MAXIMO -> "Resistência máxima: o objetivo é aguentar o maior tempo possível na execução."
         MetodoAvalicao.POR_TEMPO_ACERTOS -> "Eficiência temporal: realizar os acertos definidos e registrar o tempo gasto."
@@ -99,7 +96,6 @@ fun getAvaliacaoFormatada(exercicio: Exercicio): String {
 
     sb.append("$descricaoMetodo\n\n")
 
-    // Exposição dos campos opcionais (apenas se preenchidos)
     // Séries e Repetições
     if (exercicio.series != null && exercicio.series > 0) {
         sb.append("Volume: ${exercicio.series} séries")
@@ -140,7 +136,6 @@ fun FilterSelectionDialog(
     onApply: (Categorias?, NivelDificuldade?, MetodoAvalicao?, Boolean?) -> Unit,
     onClear: () -> Unit
 ) {
-    // Estados temporários para o diálogo
     var tempCat by remember { mutableStateOf(currentCategoria) }
     var tempDif by remember { mutableStateOf(currentDificuldade) }
     var tempMet by remember { mutableStateOf(currentMetodo) }
@@ -203,7 +198,6 @@ fun FilterSelectionDialog(
                     }
                 }
 
-                // Botões de Ação
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)

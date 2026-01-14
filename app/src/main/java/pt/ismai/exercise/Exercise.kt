@@ -47,7 +47,6 @@ fun Exercise(
         if (userId != null) {
             isLoading = true
             nativeExercises = dbManager.getAllNativeExercises()
-            // Agora utiliza a função real do DatabaseManager
             userExercises = dbManager.getUserExercises(userId)
             isLoading = false
         }
@@ -56,7 +55,6 @@ fun Exercise(
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
-            // Abas de Seleção
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.Center
@@ -75,7 +73,6 @@ fun Exercise(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(displayList) { exercicio ->
-                        // Ação de clique para o item
                         val onSelect = {
                             onExerciseSelected(exercicio)
                             onScreenSelected(Ecras.ExerciseDetails)
@@ -90,7 +87,6 @@ fun Exercise(
             }
         }
 
-        // Botão "Criar novo exercício"
         Button(
             onClick = onCreateExercise,
             modifier = Modifier

@@ -107,7 +107,6 @@ fun AddWorkout(
                 )
             }
 
-            // Descrição (Opcional)
             item {
                 BasketballTextField(
                     value = descricao,
@@ -118,8 +117,6 @@ fun AddWorkout(
                 )
             }
 
-
-            // Categoria Principal dificuldade
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -140,8 +137,6 @@ fun AddWorkout(
                 }
             }
 
-
-            // Duração com SmartTimer
             item {
                 Column(modifier = Modifier.padding(horizontal = 8.dp)) {
                     Text(
@@ -164,7 +159,6 @@ fun AddWorkout(
                 }
             }
 
-            // Cabeçalho da Lista de Exercícios
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
@@ -179,7 +173,6 @@ fun AddWorkout(
                     )
 
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        // --- BOTÃO FILTRO ---
                         IconButton(
                             onClick = { showFilterDialog = true },
                             colors = IconButtonDefaults.iconButtonColors(
@@ -194,7 +187,6 @@ fun AddWorkout(
                             )
                         }
 
-                        // BOTÃO ADD
                         Button(
                             onClick = { showExerciseDialog = true },
                             colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
@@ -213,7 +205,6 @@ fun AddWorkout(
                 }
             }
 
-            // Lista de exercícios adicionados
             items(exerciciosNoTreino) { ex ->
                 ExerciseItem(
                     exercicio = ex,
@@ -225,12 +216,10 @@ fun AddWorkout(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botões Cancelar e Salvar (Lado a Lado)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Botão Cancelar
             OutlinedButton(
                 onClick = { onScreenSelected(Ecras.Workout) },
                 modifier = Modifier
@@ -246,7 +235,6 @@ fun AddWorkout(
                 )
             }
 
-            // Botão Salvar
             Button(
                 onClick = {
                     val duracaoTotal = horas.value.hours + minutos.value.minutes + segundos.value.seconds

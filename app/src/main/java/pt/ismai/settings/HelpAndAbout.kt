@@ -24,11 +24,10 @@ fun HelpAndAbout(isDarkTheme: Boolean) {
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Suporte
         SettingsGroup(stringResource(id = R.string.support), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.faq),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
             HorizontalDivider(
@@ -37,7 +36,7 @@ fun HelpAndAbout(isDarkTheme: Boolean) {
             )
             SettingsMenuItem(
                 title = stringResource(id = R.string.contact_us),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
             HorizontalDivider(
@@ -46,16 +45,15 @@ fun HelpAndAbout(isDarkTheme: Boolean) {
             )
             SettingsMenuItem(
                 title = stringResource(id = R.string.report_a_problem),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
         }
 
-        // Legal
         SettingsGroup(stringResource(id = R.string.legal), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.privacy_policy),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
             HorizontalDivider(
@@ -64,7 +62,7 @@ fun HelpAndAbout(isDarkTheme: Boolean) {
             )
             SettingsMenuItem(
                 title = stringResource(id = R.string.terms_of_service),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
             HorizontalDivider(
@@ -73,7 +71,7 @@ fun HelpAndAbout(isDarkTheme: Boolean) {
             )
             SettingsMenuItem(
                 title = stringResource(id = R.string.open_source_licenses),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
         }
@@ -82,7 +80,7 @@ fun HelpAndAbout(isDarkTheme: Boolean) {
         SettingsGroup(stringResource(id = R.string.engagement), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.rate_the_app),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
             HorizontalDivider(
@@ -91,7 +89,7 @@ fun HelpAndAbout(isDarkTheme: Boolean) {
             )
             SettingsMenuItem(
                 title = stringResource(id = R.string.social_media),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
         }

@@ -34,7 +34,7 @@ import pt.ismai.data.AuthManager
 fun Login(onScreenSelected: (Ecras) -> Unit) {
     val isDark = isSystemInDarkTheme()
     val scope = rememberCoroutineScope()
-    val authManager = AuthManager() // Instância para gerir a autenticação
+    val authManager = AuthManager()
 
     val backgroundBrush = Brush.verticalGradient(
         colors = if (isDark) listOf(DarkBackgroundStart, DarkBackgroundEnd) else listOf(
@@ -71,7 +71,6 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo de Password
             BasketballTextField(
                 value = valorPassword.value,
                 onValueChange = { valorPassword.value = it; erroLogin = null },
@@ -81,7 +80,6 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
                 isPassword = true
             )
 
-            // Exibição de Erros
             if (erroLogin != null) {
                 Text(
                     text = erroLogin!!,
@@ -93,7 +91,6 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botão de Login com lógica integrada
             Button(
                 onClick = {
                     scope.launch {
@@ -101,7 +98,7 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
                         try {
                             val result = authManager.login(valorEmail.value, valorPassword.value)
                             if (result != null) {
-                                onScreenSelected(Ecras.Home) // Navega para a Home em caso de sucesso
+                                onScreenSelected(Ecras.Home)
                             }
                         } catch (e: Exception) {
                             erroLogin = e.localizedMessage ?: "Erro ao iniciar sessão"

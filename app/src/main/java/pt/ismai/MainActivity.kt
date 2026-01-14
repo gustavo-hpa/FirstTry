@@ -72,7 +72,7 @@ fun getSystemLocale(activity: Activity): Locale {
 fun LocaleWrapper(locale: Locale, content: @Composable () -> Unit) {
     val context = LocalContext.current
 
-    // Em vez de criar uma nova Configuration do zero, usamos a atual do contexto
+    // Em vez de criar uma nova Configuration do zero, vou usar a atual do contexto
     val configuration = Configuration(context.resources.configuration).apply {
         setLocale(locale)
         setLayoutDirection(locale)
@@ -119,21 +119,17 @@ fun ProgramaPrincipal(
 
         if (user != null) {
             try {
-                // Importante: recarregar o utilizador para obter o estado atualizado do email
                 user.reload().await()
 
                 if (user.isEmailVerified) {
-                    // Caso A: Email verificado, verificar se tem perfil no Firestore
                     val perfil = dbManager.getUserProfile(user.uid)
 
                     currentScreen = if (perfil != null) Ecras.Home else Ecras.SignupDetailsScreen
                 } else {
-                    // Caso C: Email não verificado -> Excluir pré-conta e mandar para Login
                     authManager.cancelarSignupSeguro()
                     currentScreen = Ecras.Login
                 }
             } catch (_: Exception) {
-                // Em caso de erro (ex: falta de internet), mandamos para o Login por segurança
                 firebaseAuth.signOut()
                 currentScreen = Ecras.Login
             }

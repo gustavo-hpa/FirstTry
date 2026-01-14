@@ -36,7 +36,6 @@ fun ExerciseDetails(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Cabeçalho: Apenas texto (casinha removida conforme pedido)
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -51,7 +50,6 @@ fun ExerciseDetails(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Card de Ilustração
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -70,7 +68,6 @@ fun ExerciseDetails(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Informações Principais
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -83,7 +80,6 @@ fun ExerciseDetails(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Lado Esquerdo: Intensidade
                 Column {
                     Text(
                         text = "Intensidade",
@@ -101,7 +97,6 @@ fun ExerciseDetails(
                     }
                 }
 
-                // Lado Direito: Categoria (Alterado de Volume para Categoria)
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = "Categoria",
@@ -118,7 +113,6 @@ fun ExerciseDetails(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Avaliação Detalhada (Campos Opcionais Expostos)
             Text(
                 text = "Avaliação e Metas",
                 style = MaterialTheme.typography.titleSmall,
@@ -126,14 +120,13 @@ fun ExerciseDetails(
                 color = if (isDarkTheme) MutedWarmGold else BasketballOrange
             )
             Text(
-                text = getAvaliacaoFormatada(exercicio), // Chama a nova função do componente
+                text = getAvaliacaoFormatada(exercicio),
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (isDarkTheme) TextPrimaryOnDark else Color.Black
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Descrição Técnica
             Text(
                 text = "Instruções",
                 style = MaterialTheme.typography.titleSmall,
@@ -150,7 +143,6 @@ fun ExerciseDetails(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Rodapé com Data de Criação e Foco
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,

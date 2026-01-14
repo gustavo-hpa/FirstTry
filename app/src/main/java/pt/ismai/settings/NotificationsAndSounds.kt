@@ -29,7 +29,7 @@ fun NotificationsAndSounds(isDarkTheme: Boolean) {
         SettingsGroup(stringResource(id = R.string.alerts), isDarkTheme = isDarkTheme) {
             SettingsSwitchItem(
                 title = stringResource(id = R.string.push_notifications),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 checked = pushNotificationsEnabled,
                 onCheckedChange = { pushNotificationsEnabled = it }
             )
@@ -39,7 +39,7 @@ fun NotificationsAndSounds(isDarkTheme: Boolean) {
         SettingsGroup(stringResource(id = R.string.preferences), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.sound_and_vibration),
-                icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
+                icon = painterResource(id = R.drawable.outline_add_24),
                 onClick = { /* TODO */ }
             )
         }

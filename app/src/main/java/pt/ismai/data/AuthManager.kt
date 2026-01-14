@@ -13,7 +13,7 @@ import java.util.UUID
 
 class AuthManager {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val dbManager = DatabaseManager() // Instância para gerir os dados
+    private val dbManager = DatabaseManager()
     private val tempPassword = UUID.randomUUID().toString()
 
     suspend fun login(email: String, password: String): AuthResult? {
@@ -74,8 +74,6 @@ class AuthManager {
         user?.reload()?.await()
         return user?.isEmailVerified ?: false
     }
-
-    // O reenvio não deve tentar criar o utilizador de novo
     suspend fun resendVerificationEmail() {
         try {
             val user = auth.currentUser
@@ -100,19 +98,15 @@ class AuthManager {
         val uid = user.uid
 
         return try {
-            // 1. Verifica se já existe um perfil no Firestore
             val perfilExistente = dbManager.getUserProfile(uid)
 
             if (perfilExistente != null) {
-                // Se o perfil existe, é uma conta finalizada.
-                // Não apagamos, apenas fazemos logout por segurança.
                 auth.signOut()
-                return false // Indica que a conta NÃO foi apagada por ser finalizada
+                return false
             }
 
-            // 2. Se não existe perfil, é uma conta temporária. Apaga da Auth.
             user.delete().await()
-            true // Indica que a pré-conta foi apagada com sucesso
+            true
         } catch (e: Exception) {
             auth.signOut()
             throw e
@@ -140,16 +134,11 @@ class AuthManager {
     fun checkPasswordHasUpper(pass: String) = pass.any { it.isUpperCase() }
     fun checkPasswordHasNumber(pass: String) = pass.any { it.isDigit() }
     fun checkPasswordHasLower(pass: String) = pass.any { it.isLowerCase() }
-
-    // Validação de Username por requisitos
     fun checkUsernameFormat(user: String) = user.matches("^[a-z0-9_]*$".toRegex())
-
-    // Validação de Nome
     fun checkFullNameValid(name: String): Boolean {
         val words = name.trim().split("\\s+".toRegex())
         if (words.size < 2) return false
 
-        // Regex: Apenas letras (incluindo acentuadas), mínimo 3 caracteres
         val onlyLettersRegex = """^[a-zA-ZÀ-ÿ]{3,}$""".toRegex()
 
         return words.all { it.matches(onlyLettersRegex) }

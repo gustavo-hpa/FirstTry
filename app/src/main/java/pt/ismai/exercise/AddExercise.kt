@@ -52,7 +52,7 @@ fun AddExercise(
     val segsDef = rememberSaveable { mutableStateOf(0) }
 
     // Handlers de Ação
-    val onCancel = { onScreenSelected(Ecras.Exercise) } // Ou para a lista de exercícios
+    val onCancel = { onScreenSelected(Ecras.Exercise) }
     val onSave = {
         val tempoTotal = horasDef.value.hours + minsDef.value.minutes + segsDef.value.seconds
         val metodoEnum = MetodoAvalicao.valueOf(metodo.value)
@@ -77,7 +77,7 @@ fun AddExercise(
         scope.launch {
             if (userId != null) {
                 dbManager.saveUserExercise(userId, novoExercicio)
-                onScreenSelected(Ecras.Exercise) // Retorna após salvar
+                onScreenSelected(Ecras.Exercise)
             }
         }
         Unit
@@ -152,7 +152,6 @@ fun AddExercise(
             }
         }
 
-        // BOTOES DE AÇÃO
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)

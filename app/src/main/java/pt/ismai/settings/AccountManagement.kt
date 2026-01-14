@@ -33,14 +33,13 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
         AlertDialog(
             onDismissRequest = {
                 showDeleteDialog = false
-                errorMessage = null // Limpa o erro ao fechar
+                errorMessage = null
             },
             title = { Text(stringResource(id = R.string.delete_account)) },
             text = {
                 Column {
                     Text(stringResource(id = R.string.delete_account_confirmation))
 
-                    // 🔥 MOSTRA O ERRO SE O LOGIN FOR ANTIGO
                     if (errorMessage != null) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -57,17 +56,14 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
                     onClick = {
                         coroutineScope.launch {
                             isLoading = true
-                            errorMessage = null // Limpa erros anteriores
+                            errorMessage = null
                             try {
-                                // Tenta apagar. Se o login for antigo, o FirebaseManager lança exceção
                                 authManager.deleteAccount()
 
-                                // Se passou daqui, correu bem:
                                 showDeleteDialog = false
                                 onScreenSelected(Ecras.Login)
 
                             } catch (e: Exception) {
-                                // Captura "Por segurança, faça Logout e Login..."
                                 errorMessage = e.message
                             } finally {
                                 isLoading = false
@@ -107,7 +103,6 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Perfil Público
         SettingsGroup(stringResource(id = R.string.public_profile), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.edit_profile_photo_name_bio),
@@ -116,7 +111,6 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
             )
         }
 
-        // Dados da Conta
         SettingsGroup(stringResource(id = R.string.account_data), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.personal_data_email_phone_birth),
@@ -134,7 +128,6 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
             )
         }
 
-        // Financeiro
         SettingsGroup(stringResource(id = R.string.financial), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.subscription_plans),
@@ -143,7 +136,6 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
             )
         }
 
-        // Zona de Perigo
         SettingsGroup(stringResource(id = R.string.danger_zone), isDarkTheme = isDarkTheme) {
             SettingsMenuItem(
                 title = stringResource(id = R.string.delete_account),

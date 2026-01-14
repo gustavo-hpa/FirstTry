@@ -82,17 +82,17 @@ import pt.ismai.workout.WorkoutDetails
 import java.util.Locale
 
 // light theme
-val BasketballOrange = Color(0xFFC94C24) // Cor da bola (Vinho/Laranja escuro)
+val BasketballOrange = Color(0xFFC94C24)
 val DarkBackgroundStart = Color(0xFF1A1A1A)
-val DarkBackgroundEnd = Color(0xFF4E1810) // Vinho escuro
+val DarkBackgroundEnd = Color(0xFF4E1810)
 val LightBackgroundStart = Color(0xFFFFF5E6)
 val LightBackgroundEnd = Color(0xFFFFCCBC)
 
 // dark theme
-val BackgroundDark = Color(0xFF1C1C1E) // Fundo geral da tela
-val SurfaceDark = Color(0xFF2C2C2E)    // Fundo dos elementos (cards)
-val TextPrimaryOnDark = Color(0xFFE5E5EA) // Branco suave para texto principal
-val MutedWarmGold = Color(0xFFE8B350) // Para títulos de seção e ícones de navegação
+val BackgroundDark = Color(0xFF1C1C1E)
+val SurfaceDark = Color(0xFF2C2C2E)
+val TextPrimaryOnDark = Color(0xFFE5E5EA)
+val MutedWarmGold = Color(0xFFE8B350)
 
 @Composable
 fun MainContent(
@@ -388,7 +388,6 @@ fun SmartTimer(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 0.dp
         ),
-        // OPCIONAL: Adiciona uma borda sutil apenas quando está editando, para substituir a elevação
         border = if (isEditing && isDarkTheme) BorderStroke(1.dp, BasketballOrange) else null,
         colors = cardColors
     ) {
@@ -510,7 +509,7 @@ fun CustomDropdown(
             modifier = modifierSurface,
             color = backgroundColor,
             shape = MaterialTheme.shapes.medium,
-            tonalElevation = 0.dp // ALTERAÇÃO AQUI: Era 2.dp, mudamos para 0.dp
+            tonalElevation = 0.dp
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -620,7 +619,7 @@ private fun DropdownMenuCustom(
 @Composable
 fun SmartCounter(
     titulo: String,
-    numeroAtual: MutableState<Int>, // Alterado para MutableState para persistência de dados
+    numeroAtual: MutableState<Int>,
     clikable: Boolean = true,
     isDarkTheme: Boolean,
     modifierCard: Modifier = Modifier,
@@ -725,7 +724,7 @@ fun BasketballTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    icon: Painter, // Mudamos de ImageVector para Painter
+    icon: Painter,
     isDark: Boolean,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
@@ -735,7 +734,7 @@ fun BasketballTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        enabled = enabled, // Aplicado aqui
+        enabled = enabled,
         label = { Text(label) },
         leadingIcon = {
             Image(

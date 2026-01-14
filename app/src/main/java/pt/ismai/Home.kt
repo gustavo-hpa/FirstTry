@@ -18,12 +18,10 @@ fun Home() {
         val scope = rememberCoroutineScope()
         val dbManager = DatabaseManager()
 
-        // Estado para dar feedback visual do upload
         val isUploading = rememberSaveable { mutableStateOf(false) }
 
         Button(
             onClick = {
-                // Inicia o processo de seeding em segundo plano
                 scope.launch {
                     isUploading.value = true
 
@@ -36,7 +34,7 @@ fun Home() {
                     isUploading.value = false
                 }
             },
-            enabled = !isUploading.value // Desativa o botão enquanto processa
+            enabled = !isUploading.value
         ) {
             androidx.compose.material3.Text(
                 if (isUploading.value) "A popular Firebase..." else "Popular Base de Dados"

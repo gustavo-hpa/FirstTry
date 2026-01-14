@@ -44,11 +44,9 @@ fun Workout(
     }
 
 
-    // Carregar dados ao iniciar
     LaunchedEffect(Unit) {
         isLoading = true
         nativeWorkouts = dbManager.getNativeWorkouts()
-        // Nota: Futuramente substituir pelo ID real do Auth
         userWorkouts = dbManager.getUserWorkouts(userId)
         isLoading = false
     }
@@ -58,7 +56,6 @@ fun Workout(
         onScreenSelected(Ecras.WorkoutDetails)
     }
 
-    // Usamos um Box para permitir que o botão fique sobreposto à lista no fundo da tela
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
@@ -77,7 +74,7 @@ fun Workout(
 
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 80.dp) // Espaço para o botão não tapar o último item
+                    contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
                     items(displayList) { treino ->
                         WorkoutCard(treino, isDarkTheme, handleNavigation)
@@ -90,7 +87,6 @@ fun Workout(
             }
         }
 
-        // Botão "Criar novo treino" fixo na parte inferior
         Button(
             onClick = { onScreenSelected(Ecras.AddWorkout) }, // Direciona para AddWorkout
             modifier = Modifier
@@ -102,7 +98,6 @@ fun Workout(
             colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
         ) {
-            // Uso de Image em vez de Icon para evitar mistura de bibliotecas
             Image(
                 painter = painterResource(id = R.drawable.outline_add_24),
                 contentDescription = null,
