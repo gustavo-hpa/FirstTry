@@ -39,6 +39,8 @@ class DatabaseManager {
         db.collection("users").document(uid).delete().await()
     }
 
+    // ------------ Saves ------------
+
     suspend fun saveNativeExercise(exercicio: Exercicio) {
         try {
             val exMap = exercicioToMap(exercicio)
@@ -74,7 +76,6 @@ class DatabaseManager {
         }
     }
 
-
     suspend fun saveUserWorkout(userId: String?, treino: Treino) {
         try {
             if (userId == null) {
@@ -109,6 +110,23 @@ class DatabaseManager {
         }
     }
 
+    suspend fun saveUserExercise(userId: String, exercicio: Exercicio) {
+        try {
+            val exMap = exercicioToMap(exercicio).toMutableMap()
+            exMap["criadoPorUsuario"] = true
+
+            val docRef = db.collection("users")
+                .document(userId)
+                .collection("my_exercises")
+                .add(exMap)
+                .await()
+
+            docRef.update("id", docRef.id).await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     // Função auxiliar para limpar os nomes do Exercício
     private fun exercicioToMap(ex: Exercicio): Map<String, Any?> {
         return mapOf(
@@ -132,6 +150,8 @@ class DatabaseManager {
             "distanciaFeita" to ex.distanciaFeita
         )
     }
+
+    // ------------ Gets ------------
 
     suspend fun getNativeWorkouts(): List<Treino> {
         return try {
@@ -261,5 +281,46 @@ class DatabaseManager {
             e.printStackTrace()
             emptyList()
         }
+    }
+
+    suspend fun getUserExercises(userId: String): List<Exercicio> {
+        return try {
+            val snapshot = db.collection("users")
+                .document(userId)
+                .collection("my_exercises")
+                .get()
+                .await()
+
+            snapshot.documents.mapNotNull { doc ->
+                val data = doc.data ?: return@mapNotNull null
+                mapToExercicio(doc.id, data)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    private fun mapToExercicio(id: String, data: Map<String, Any?>): Exercicio {
+        return Exercicio(
+            id = id,
+            nome = data["nome"] as? String ?: "",
+            descricao = data["descricao"] as? String ?: "",
+            categoria = Categorias.valueOf(data["categoria"] as? String ?: "ARREMESSO"),
+            metodoAvaliacao = MetodoAvalicao.valueOf(data["metodoAvaliacao"] as? String ?: "POR_REPETICOES"),
+            nivelDificuldade = NivelDificuldade.valueOf(data["nivelDificuldade"] as? String ?: "MEDIA"),
+            fotoUrl = data["fotoUrl"] as? String,
+            criadoPorUsuario = data["criadoPorUsuario"] as? Boolean ?: false,
+            dataCriacao = (data["dataCriacao"] as? com.google.firebase.Timestamp)?.toDate() ?: java.util.Date(),
+            tempoDefinido = (data["tempoDefinido"] as? Long)?.nanoseconds,
+            tempoFeito = (data["tempoFeito"] as? Long)?.nanoseconds,
+            objetivo = (data["objetivo"] as? Long)?.toInt(),
+            acertos = (data["acertos"] as? Long)?.toInt(),
+            tentativas = (data["tentativas"] as? Long)?.toInt(),
+            series = (data["series"] as? Long)?.toInt(),
+            repeticoes = (data["repeticoes"] as? Long)?.toInt(),
+            distanciaDefinida = (data["distanciaDefinida"] as? Number)?.toDouble(),
+            distanciaFeita = (data["distanciaFeita"] as? Number)?.toDouble()
+        )
     }
 }

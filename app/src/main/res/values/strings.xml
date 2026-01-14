@@ -89,6 +89,8 @@
     <string name="workout_details">Workout details</string>
     <string name="exercise_details">Exercise details</string>
     <string name="add_workout">Add workout</string>
+    <string name="exercise">Exercise</string>
+    <string name="add_exercise">Add exercise</string>
 
     <!-- Help and About -->
     <string name="support">Support</string>

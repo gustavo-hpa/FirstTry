@@ -74,6 +74,8 @@ import pt.ismai.auth.Loading
 import pt.ismai.auth.Login
 import pt.ismai.auth.Signup
 import pt.ismai.auth.EmailVerificationScreen
+import pt.ismai.exercise.AddExercise
+import pt.ismai.exercise.Exercise
 import pt.ismai.exercise.ExerciseDetails
 import pt.ismai.workout.AddWorkout
 import pt.ismai.workout.WorkoutDetails
@@ -119,21 +121,23 @@ fun MainContent(
         contentAlignment = Alignment.Center,
     ) {
         when (ecra) {
-            Ecras.Home -> Home(onScreenSelected, isDarkTheme)
+            Ecras.Home -> Home(onScreenSelected = onScreenSelected,isDarkTheme = isDarkTheme)
             Ecras.Statistic -> Statistics()
-            Ecras.Workout -> Workout(isDarkTheme, onScreenSelected, onWorkoutSelected)
+            Ecras.Workout -> Workout(isDarkTheme = isDarkTheme,onScreenSelected = onScreenSelected,onWorkoutSelected = onWorkoutSelected)
             Ecras.WorkoutDetails -> WorkoutDetails(treino = selectedWorkout, isDarkTheme = isDarkTheme, onScreenSelected = onScreenSelected, onExerciseSelected = onExerciseSelected)
-            Ecras.AddWorkout -> AddWorkout(isDarkTheme, onScreenSelected)
+            Ecras.AddWorkout -> AddWorkout(isDarkTheme = isDarkTheme,onScreenSelected = onScreenSelected)
+            Ecras.Exercise -> Exercise(isDarkTheme = isDarkTheme, onScreenSelected = onScreenSelected, onExerciseSelected = onExerciseSelected)
             Ecras.ExerciseDetails -> ExerciseDetails(exercicio = selectedExercise, isDarkTheme = isDarkTheme, onScreenSelected = onScreenSelected)
-            Ecras.Setting -> Setting(onScreenSelected, isDarkTheme, onThemeToggle, onLocaleChange)
-            Ecras.Login -> Login(onScreenSelected)
-            Ecras.EmailVerificationScreen -> EmailVerificationScreen(onScreenSelected)
-            Ecras.SignupDetailsScreen -> Signup(onScreenSelected)
-            Ecras.Profile -> Profile(isDarkTheme)
-            Ecras.AccountManagement -> AccountManagement(isDarkTheme, onScreenSelected)
-            Ecras.NotificationsAndSounds -> NotificationsAndSounds(isDarkTheme)
-            Ecras.PrivacyAndSecurity -> PrivacyAndSecurity(isDarkTheme)
-            Ecras.HelpAndAbout -> HelpAndAbout(isDarkTheme)
+            Ecras.AddExercise -> AddExercise(isDarkTheme = isDarkTheme,onScreenSelected = onScreenSelected)
+            Ecras.Setting -> Setting(onScreenSelected = onScreenSelected,isDarkTheme = isDarkTheme, onThemeToggle, onLocaleChange)
+            Ecras.Login -> Login(onScreenSelected = onScreenSelected)
+            Ecras.EmailVerificationScreen -> EmailVerificationScreen(onVerified = onScreenSelected)
+            Ecras.SignupDetailsScreen -> Signup(onScreenSelected = onScreenSelected)
+            Ecras.Profile -> Profile(isDarkTheme = isDarkTheme)
+            Ecras.AccountManagement -> AccountManagement(isDarkTheme = isDarkTheme,onScreenSelected = onScreenSelected)
+            Ecras.NotificationsAndSounds -> NotificationsAndSounds(isDarkTheme = isDarkTheme)
+            Ecras.PrivacyAndSecurity -> PrivacyAndSecurity(isDarkTheme = isDarkTheme)
+            Ecras.HelpAndAbout -> HelpAndAbout(isDarkTheme = isDarkTheme)
             Ecras.Loading -> Loading()
         }
     }
@@ -159,6 +163,7 @@ fun Bottombar(
             Triple(Ecras.Home, stringResource(id = R.string.home), R.drawable.home),
             Triple(Ecras.Statistic, stringResource(id = R.string.statistics), R.drawable.statistics),
             Triple(Ecras.Workout, stringResource(id = R.string.workout), R.drawable.workout),
+            Triple(Ecras.Exercise, stringResource(id = R.string.exercise), R.drawable.exercise),
             Triple(Ecras.Setting, stringResource(id = R.string.setting), R.drawable.settings)
         )
 
@@ -193,8 +198,10 @@ fun Topbar(
         Ecras.Statistic -> stringResource(id = R.string.statistics)
         Ecras.Workout -> stringResource(id = R.string.workout)
         Ecras.WorkoutDetails -> stringResource(id = R.string.workout_details)
-        Ecras.ExerciseDetails -> stringResource(id = R.string.exercise_details)
         Ecras.AddWorkout -> stringResource(id = R.string.add_workout)
+        Ecras.Exercise -> stringResource(id = R.string.exercise)
+        Ecras.ExerciseDetails -> stringResource(id = R.string.exercise_details)
+        Ecras.AddExercise -> stringResource(id = R.string.add_exercise)
         Ecras.Setting -> stringResource(id = R.string.settings)
         Ecras.Login -> stringResource(id = R.string.login)
         Ecras.EmailVerificationScreen -> stringResource(id = R.string.email_verification_screen)
@@ -614,7 +621,7 @@ private fun DropdownMenuCustom(
 @Composable
 fun SmartCounter(
     titulo: String,
-    numeroAtual: Int = 0,
+    numeroAtual: MutableState<Int>, // Alterado para MutableState para persistência de dados
     clikable: Boolean = true,
     isDarkTheme: Boolean,
     modifierCard: Modifier = Modifier,
@@ -626,7 +633,6 @@ fun SmartCounter(
     modifierTextButtons: Modifier = Modifier,
 ) {
     var isEditing by rememberSaveable { mutableStateOf(false) }
-    var numeroAtualState by rememberSaveable { mutableStateOf(numeroAtual) }
 
     val cardColors = if (isDarkTheme) {
         CardDefaults.cardColors(
@@ -649,24 +655,20 @@ fun SmartCounter(
             contentColor = BasketballOrange
         )
     }
+
     Card(
         modifier = if (clikable) {
             modifierCard.clickable { isEditing = !isEditing }
         } else {
             modifierCard
         },
-        // ALTERAÇÃO AQUI: Elevação 0.dp para ficar flat igual ao Settings
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 0.dp
-        ),
-        // OPCIONAL: Borda ao editar
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         border = if (isEditing && isDarkTheme) BorderStroke(1.dp, BasketballOrange) else null,
         colors = cardColors
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifierColumn
-                .padding(8.dp)
+            modifier = modifierColumn.padding(8.dp)
         ) {
             Text(
                 text = titulo,
@@ -675,11 +677,12 @@ fun SmartCounter(
             )
 
             Row(
-                verticalAlignment = Alignment.CenterVertically, modifier = modifierRow
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = modifierRow
             ) {
                 if (isEditing) {
                     TextButton(
-                        onClick = { if (numeroAtualState > 0) numeroAtualState-- },
+                        onClick = { if (numeroAtual.value > 0) numeroAtual.value-- },
                         colors = buttonColors,
                         modifier = modifierButtons
                     ) {
@@ -693,7 +696,7 @@ fun SmartCounter(
                 }
 
                 Text(
-                    text = "$numeroAtualState",
+                    text = "${numeroAtual.value}",
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
                     modifier = modifierNumber
@@ -701,7 +704,7 @@ fun SmartCounter(
 
                 if (isEditing) {
                     TextButton(
-                        onClick = { numeroAtualState++ },
+                        onClick = { numeroAtual.value++ },
                         colors = buttonColors,
                         modifier = modifierButtons
                     ) {

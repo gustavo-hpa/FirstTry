@@ -82,7 +82,7 @@ data class HistoricoTreino(
 data class HistoricoExercicio(
     val id: Int,
     val exercicioId: Int,
-    val seriesFeitas: Int,
+    val seriesFeitas: Int? = null,
     val acertosFeitos: Int? = null,
     val tentativasFeitas: Int? = null,
     val tempoRealizado: Duration? = null,
@@ -176,7 +176,9 @@ enum class Ecras {
     EmailVerificationScreen,
     WorkoutDetails,
     ExerciseDetails,
-    AddWorkout
+    AddWorkout,
+    Exercise,
+    AddExercise
 }
 
 enum class MetodoAvalicao {

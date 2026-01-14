@@ -201,7 +201,7 @@ fun FilterSelectionDialog(
                         }
                     }
 
-                    // 4. Filtro de Método de Avaliação
+                    // 4. Filtro de Metodo de Avaliação
                     item {
                         FilterSectionTitle("Método de Avaliação", isDarkTheme)
                         FilterOptionRow("Qualquer", tempMet == null, isDarkTheme) { tempMet = null }

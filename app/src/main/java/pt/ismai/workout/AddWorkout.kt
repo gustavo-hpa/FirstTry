@@ -2,6 +2,7 @@ package pt.ismai.workout
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,11 +47,11 @@ fun AddWorkout(
     val categoriaSelecionada = rememberSaveable { mutableStateOf(Categorias.ARREMESSO.name) }
 
     // --- NOVOS ESTADOS PARA FILTROS ---
-    var showFilterDialog by remember { mutableStateOf(false) }
-    var filterCategoria by remember { mutableStateOf<Categorias?>(null) }
-    var filterDificuldade by remember { mutableStateOf<NivelDificuldade?>(null) }
-    var filterMetodo by remember { mutableStateOf<MetodoAvalicao?>(null) }
-    var filterOrigem by remember { mutableStateOf<Boolean?>(null) } // null = Todos, true = Usuário, false = Nativo
+    var showFilterDialog by rememberSaveable { mutableStateOf(false) }
+    var filterCategoria by rememberSaveable { mutableStateOf<Categorias?>(null) }
+    var filterDificuldade by rememberSaveable { mutableStateOf<NivelDificuldade?>(null) }
+    var filterMetodo by rememberSaveable { mutableStateOf<MetodoAvalicao?>(null) }
+    var filterOrigem by rememberSaveable { mutableStateOf<Boolean?>(null) } // null = Todos, true = Usuário, false = Nativo
 
     // Estados para o SmartTimer (Duração)
     val horas = rememberSaveable { mutableStateOf(0) }
@@ -64,6 +66,8 @@ fun AddWorkout(
     // Carregar exercícios existentes ao iniciar
     LaunchedEffect(Unit) {
         listaExerciciosDisponiveis = dbManager.getAllNativeExercises()
+        if (userId != null)
+            listaExerciciosDisponiveis += dbManager.getUserExercises(userId)
     }
 
     // Esta lista será passada para o ExerciseSelectionDialog
@@ -75,6 +79,9 @@ fun AddWorkout(
                     (filterOrigem == null || ex.criadoPorUsuario == filterOrigem)
         }
     }
+
+    val activeFilterColor = if (listaExerciciosDisponiveis != exerciciosFiltrados)
+        Color.Red else BasketballOrange
 
     Column(
         modifier = Modifier
@@ -173,16 +180,15 @@ fun AddWorkout(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         // --- BOTÃO FILTRO ---
                         IconButton(
-                            onClick = { showFilterDialog = true }, // Abre o diálogo de filtro
+                            onClick = { showFilterDialog = true },
                             colors = IconButtonDefaults.iconButtonColors(
                                 containerColor = if (isDarkTheme) Color.DarkGray else Color.LightGray.copy(alpha = 0.5f)
                             )
                         ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.menu),
+                            Image(
+                                painter = painterResource(id = R.drawable.filter_list),
                                 contentDescription = "Filtrar",
-                                tint = if (filterCategoria != null || filterDificuldade != null || filterMetodo != null || filterOrigem != null)
-                                    Color.Cyan else BasketballOrange, // Muda cor se houver filtro ativo
+                                colorFilter = ColorFilter.tint(activeFilterColor),
                                 modifier = Modifier.size(20.dp)
                             )
                         }

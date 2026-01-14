@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val systemDark = isSystemInDarkTheme()
             var isDarkTheme by rememberSaveable { mutableStateOf(systemDark) }
-            var currentLocale by remember { mutableStateOf(getSystemLocale(this)) }
+            var currentLocale by rememberSaveable { mutableStateOf(getSystemLocale(this)) }
 
             CompositionLocalProvider(LocalActivity provides this) {
                 LocaleWrapper(locale = currentLocale) {
