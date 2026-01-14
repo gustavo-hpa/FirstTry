@@ -185,14 +185,14 @@ fun Bottombar(
 
 @Composable
 fun Topbar(
-    ecraAtual: Ecras,
+    currentScreen: Ecras,
     onScreenSelected: (Ecras) -> Unit,
     containerColor: Color = Color.Transparent,
     contentColor: Color = Color.Black,
     isDarkTheme: Boolean = false,
     onThemeToggle: () -> Unit = {},
 ) {
-    val titulo = when (ecraAtual) {
+    val screenTitle = when (currentScreen) {
         Ecras.Home -> stringResource(id = R.string.home)
         Ecras.Statistic -> stringResource(id = R.string.statistics)
         Ecras.Workout -> stringResource(id = R.string.workout)
@@ -232,7 +232,7 @@ fun Topbar(
 
         TextButton(onClick = {}) {
             Text(
-                text = titulo,
+                text = screenTitle,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = contentColor
@@ -309,7 +309,7 @@ fun IconTextButton(
 
 @Composable
 fun SmartTimer(
-    titulo: String,
+    title: String,
     initialHours: MutableState<Int>,
     initialMinutes: MutableState<Int>,
     initialSeconds: MutableState<Int>,
@@ -396,7 +396,7 @@ fun SmartTimer(
             modifier = modifierInitialCard
         ) {
             Text(
-                text = titulo,
+                text = title,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = modifierTitle.padding(top = 8.dp, end = 8.dp, start = 8.dp)
             )
@@ -476,8 +476,8 @@ fun SmartTimer(
 
 @Composable
 fun CustomDropdown(
-    titulo: String,
-    opcoes: List<String>,
+    title: String,
+    options: List<String>,
     selectedOption: MutableState<String>,
     isDarkTheme: Boolean,
     modifierColumn: Modifier = Modifier,
@@ -498,7 +498,7 @@ fun CustomDropdown(
 
     Column(modifier = modifierColumn.padding(8.dp)) {
         Text(
-            text = titulo,
+            text = title,
             style = MaterialTheme.typography.bodyMedium,
             color = textColor.copy(alpha = 0.8f),
             modifier = modifierTitle.padding(start = 4.dp)
@@ -542,7 +542,7 @@ fun CustomDropdown(
         if (expanded) {
             Spacer(modifier = Modifier.height(8.dp))
             DropdownMenuCustom(
-                opcoes = opcoes,
+                options = options,
                 selectedOption = selectedOption,
                 onDismiss = { expanded = false },
                 isDarkTheme = isDarkTheme,
@@ -557,7 +557,7 @@ fun CustomDropdown(
 
 @Composable
 private fun DropdownMenuCustom(
-    opcoes: List<String>,
+    options: List<String>,
     selectedOption: MutableState<String>,
     onDismiss: () -> Unit,
     isDarkTheme: Boolean,
@@ -586,7 +586,7 @@ private fun DropdownMenuCustom(
                 .background(backgroundColor)
                 .verticalScroll(rememberScrollState())
         ) {
-            opcoes.forEach { opcao ->
+            options.forEach { opcao ->
                 Surface(
                     onClick = {
                         selectedOption.value = opcao
@@ -618,8 +618,8 @@ private fun DropdownMenuCustom(
 
 @Composable
 fun SmartCounter(
-    titulo: String,
-    numeroAtual: MutableState<Int>,
+    title: String,
+    currentCount: MutableState<Int>,
     clikable: Boolean = true,
     isDarkTheme: Boolean,
     modifierCard: Modifier = Modifier,
@@ -669,7 +669,7 @@ fun SmartCounter(
             modifier = modifierColumn.padding(8.dp)
         ) {
             Text(
-                text = titulo,
+                text = title,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = modifierTitle
             )
@@ -680,7 +680,7 @@ fun SmartCounter(
             ) {
                 if (isEditing) {
                     TextButton(
-                        onClick = { if (numeroAtual.value > 0) numeroAtual.value-- },
+                        onClick = { if (currentCount.value > 0) currentCount.value-- },
                         colors = buttonColors,
                         modifier = modifierButtons
                     ) {
@@ -694,7 +694,7 @@ fun SmartCounter(
                 }
 
                 Text(
-                    text = "${numeroAtual.value}",
+                    text = "${currentCount.value}",
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
                     modifier = modifierNumber
@@ -702,7 +702,7 @@ fun SmartCounter(
 
                 if (isEditing) {
                     TextButton(
-                        onClick = { numeroAtual.value++ },
+                        onClick = { currentCount.value++ },
                         colors = buttonColors,
                         modifier = modifierButtons
                     ) {

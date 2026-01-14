@@ -45,8 +45,8 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
     val contentColor = if (isDark) Color.White else Color(0xFF4E1810)
 
     // Estados para os campos e feedback ao utilizador
-    val valorEmail = rememberSaveable { mutableStateOf("") }
-    val valorPassword = rememberSaveable { mutableStateOf("") }
+    val valueEmail = rememberSaveable { mutableStateOf("") }
+    val valuePassword = rememberSaveable { mutableStateOf("") }
     var erroLogin by rememberSaveable { mutableStateOf<String?>(null) }
     var isLoading by rememberSaveable { mutableStateOf(false) }
 
@@ -61,8 +61,8 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
 
             // Campo de Email
             BasketballTextField(
-                value = valorEmail.value,
-                onValueChange = { valorEmail.value = it; erroLogin = null },
+                value = valueEmail.value,
+                onValueChange = { valueEmail.value = it; erroLogin = null },
                 label = stringResource(R.string.email),
                 icon = painterResource(R.drawable.email_icon),
                 isDark = isDark,
@@ -72,8 +72,8 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             BasketballTextField(
-                value = valorPassword.value,
-                onValueChange = { valorPassword.value = it; erroLogin = null },
+                value = valuePassword.value,
+                onValueChange = { valuePassword.value = it; erroLogin = null },
                 label = stringResource(R.string.password),
                 icon = painterResource(R.drawable.lock),
                 isDark = isDark,
@@ -96,7 +96,7 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
                     scope.launch {
                         isLoading = true
                         try {
-                            val result = authManager.login(valorEmail.value, valorPassword.value)
+                            val result = authManager.login(valueEmail.value, valuePassword.value)
                             if (result != null) {
                                 onScreenSelected(Ecras.Home)
                             }
@@ -107,7 +107,7 @@ fun Login(onScreenSelected: (Ecras) -> Unit) {
                         }
                     }
                 },
-                enabled = !isLoading && valorEmail.value.isNotEmpty() && valorPassword.value.isNotEmpty(),
+                enabled = !isLoading && valueEmail.value.isNotEmpty() && valuePassword.value.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = BasketballOrange),
                 shape = RoundedCornerShape(12.dp)

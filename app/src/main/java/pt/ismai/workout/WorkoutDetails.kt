@@ -97,7 +97,7 @@ fun WorkoutDetails(
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(treino.exercicios) { ex ->
                 ExerciseItem(
-                    exercicio = ex,
+                    exercise = ex,
                     isDarkTheme = isDarkTheme,
                     onClick = {
                         onExerciseSelected(ex)

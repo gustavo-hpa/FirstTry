@@ -123,14 +123,14 @@ fun AddWorkout(
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     CustomDropdown(
-                        titulo = stringResource(id = R.string.add_workout_main_category_dropdown),
-                        opcoes = Categorias.entries.map { it.name },
+                        title = stringResource(id = R.string.add_workout_main_category_dropdown),
+                        options = Categorias.entries.map { it.name },
                         selectedOption = categoriaSelecionada,
                         isDarkTheme = isDarkTheme
                     )
                     CustomDropdown(
-                        titulo = stringResource(id = R.string.add_workout_difficulty_dropdown),
-                        opcoes = NivelDificuldade.entries.map { it.name },
+                        title = stringResource(id = R.string.add_workout_difficulty_dropdown),
+                        options = NivelDificuldade.entries.map { it.name },
                         selectedOption = nivelSelecionado,
                         isDarkTheme = isDarkTheme
                     )
@@ -146,7 +146,7 @@ fun AddWorkout(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     SmartTimer(
-                        titulo = stringResource(id = R.string.add_workout_total_time),
+                        title = stringResource(id = R.string.add_workout_total_time),
                         initialHours = horas,
                         initialMinutes = minutos,
                         initialSeconds = segundos,
@@ -207,7 +207,7 @@ fun AddWorkout(
 
             items(exerciciosNoTreino) { ex ->
                 ExerciseItem(
-                    exercicio = ex,
+                    exercise = ex,
                     isDarkTheme = isDarkTheme,
                     onClick = { exerciciosNoTreino.remove(ex) }
                 )
@@ -329,7 +329,7 @@ fun ExerciseSelectionDialog(
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(exerciciosDisponiveis) { ex ->
                         ExerciseItem(
-                            exercicio = ex,
+                            exercise = ex,
                             isDarkTheme = isDarkTheme,
                             onClick = { onExerciseSelected(ex) }
                         )

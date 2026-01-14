@@ -37,7 +37,7 @@ import pt.ismai.NivelDificuldade
 import pt.ismai.R
 
 @Composable
-fun ExerciseItem(exercicio: Exercicio, isDarkTheme: Boolean, onClick: () -> Unit) {
+fun ExerciseItem(exercise: Exercicio, isDarkTheme: Boolean, onClick: () -> Unit) {
 
     Row(
         modifier = Modifier
@@ -60,15 +60,15 @@ fun ExerciseItem(exercicio: Exercicio, isDarkTheme: Boolean, onClick: () -> Unit
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = exercicio.nome,
+                    text = exercise.nome,
                     fontWeight = FontWeight.Bold,
                     color = if (isDarkTheme) TextPrimaryOnDark else Color.Black
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                DifficultyIndicator(nivel = exercicio.nivelDificuldade)
+                DifficultyIndicator(nivel = exercise.nivelDificuldade)
             }
             Text(
-                text = exercicio.descricao,
+                text = exercise.descricao,
                 style = MaterialTheme.typography.bodySmall,
                 color = if (isDarkTheme) Color.LightGray else Color.Gray
             )

@@ -150,7 +150,7 @@ fun ProgramaPrincipal(
     ) {
         if (!isFullScreen) {
             Topbar(
-                ecraAtual = currentScreen,
+                currentScreen = currentScreen,
                 onScreenSelected = { newScreen -> currentScreen = newScreen },
                 containerColor = barColor,
                 contentColor = contentColor,
