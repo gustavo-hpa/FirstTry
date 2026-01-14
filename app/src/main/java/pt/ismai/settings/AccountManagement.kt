@@ -123,7 +123,10 @@ fun AccountManagement(isDarkTheme: Boolean, onScreenSelected: (Ecras) -> Unit) {
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
-            Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            )
             SettingsMenuItem(
                 title = stringResource(id = R.string.linked_accounts_google_apple_fb),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder

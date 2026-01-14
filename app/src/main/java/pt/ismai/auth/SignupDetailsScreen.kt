@@ -197,6 +197,7 @@ fun Signup(onScreenSelected: (Ecras) -> Unit) {
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun ValidationItem(text: String, isValid: Boolean, contentColor: Color) {
     Row(

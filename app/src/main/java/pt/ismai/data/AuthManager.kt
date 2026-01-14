@@ -6,7 +6,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.tasks.await
 import pt.ismai.TipoPerfil
 import pt.ismai.User
@@ -31,6 +30,7 @@ class AuthManager {
         }
     }
 
+    @Suppress("DEPRECATION")
     fun logout(context: Context, webClientId: String) {
         auth.signOut()
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -50,7 +50,7 @@ class AuthManager {
             user.delete().await()
 
             true
-        } catch (e: FirebaseAuthRecentLoginRequiredException) {
+        } catch (_: FirebaseAuthRecentLoginRequiredException) {
             throw Exception("Por segurança, faça Logout e Login novamente para concluir a exclusão.")
         } catch (e: Exception) {
             throw e
@@ -87,22 +87,11 @@ class AuthManager {
     }
 
     fun validarFormatoEmail(email: String): String? {
-        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
+        val emailRegex = """^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$""".toRegex()
         return when {
             email.isBlank() -> "O e-mail não pode estar vazio."
             !email.matches(emailRegex) -> "Introduza um formato de e-mail válido (ex: nome@email.com)."
             else -> null
-        }
-    }
-
-    // Melhore esta função para não lançar exceções fatais
-    suspend fun verificarEmailExiste(email: String): Boolean {
-        return try {
-            val result = auth.fetchSignInMethodsForEmail(email).await()
-            result.signInMethods?.isNotEmpty() ?: false
-        } catch (e: Exception) {
-            // Se der erro de colisão, o e-mail existe
-            e is com.google.firebase.auth.FirebaseAuthUserCollisionException
         }
     }
 
@@ -161,7 +150,7 @@ class AuthManager {
         if (words.size < 2) return false
 
         // Regex: Apenas letras (incluindo acentuadas), mínimo 3 caracteres
-        val onlyLettersRegex = "^[a-zA-ZÀ-ÿ]{3,}\$".toRegex()
+        val onlyLettersRegex = """^[a-zA-ZÀ-ÿ]{3,}$""".toRegex()
 
         return words.all { it.matches(onlyLettersRegex) }
     }

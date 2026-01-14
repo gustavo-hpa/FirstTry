@@ -48,7 +48,7 @@ fun Workout(
         isLoading = true
         nativeWorkouts = dbManager.getNativeWorkouts()
         // Nota: Futuramente substituir pelo ID real do Auth
-        userWorkouts = dbManager.getUserWorkouts(userId) ?: emptyList()
+        userWorkouts = dbManager.getUserWorkouts(userId)
         isLoading = false
     }
 

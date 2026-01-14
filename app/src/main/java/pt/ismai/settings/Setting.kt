@@ -24,6 +24,7 @@ import pt.ismai.components.SettingsSwitchItem
 import pt.ismai.data.AuthManager
 import java.util.Locale
 
+
 @Composable
 fun Setting(
     onScreenSelected: (Ecras) -> Unit,
@@ -86,7 +87,10 @@ fun Setting(
                 checked = isDarkTheme,
                 onCheckedChange = { onThemeToggle() }
             )
-            Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            )
             SettingsMenuItem(
                 title = stringResource(id = R.string.language),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -101,7 +105,10 @@ fun Setting(
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { onScreenSelected(Ecras.NotificationsAndSounds) }
             )
-            Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            )
             SettingsMenuItem(
                 title = stringResource(id = R.string.settings_privacy_and_security),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -153,7 +160,7 @@ private fun LanguageSelectionDialog(
                 }.fillMaxWidth().padding(vertical = 12.dp))
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(stringResource(id = R.string.portuguese), modifier = Modifier.clickable {
-                    onLocaleChange(Locale("pt"))
+                    onLocaleChange(Locale.forLanguageTag("pt"))
                     onDismiss()
                 }.fillMaxWidth().padding(vertical = 12.dp))
             }

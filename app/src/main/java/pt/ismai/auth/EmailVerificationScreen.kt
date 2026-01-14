@@ -122,10 +122,7 @@ fun EmailVerificationScreen(onVerified: (Ecras) -> Unit) {
                             authManager.startEmailVerification(email)
                             isEmailSent = true
                             timerSeconds = 60
-                        } catch (e: Exception) {
-                            // Se o e-mail já existir, o Firebase lançará uma exceção.
-                            // Para não dar "informação desnecessária", podemos dar uma mensagem genérica
-                            // ou simplesmente prosseguir para o estado de "E-mail Enviado".
+                        } catch (_: Exception) {
                             isEmailSent = true
                             timerSeconds = 60
                         } finally {
@@ -187,7 +184,7 @@ fun EmailVerificationScreen(onVerified: (Ecras) -> Unit) {
             TextButton(
                 onClick = {
                     scope.launch {
-                        try { authManager.resendVerificationEmail() } catch (e: Exception) {}
+                        try { authManager.resendVerificationEmail() } catch (_: Exception) {}
                         timerSeconds = 60
                     }
                 },

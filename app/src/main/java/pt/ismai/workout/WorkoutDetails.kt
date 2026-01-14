@@ -28,8 +28,6 @@ fun WorkoutDetails(
 ) {
     if (treino == null) return
 
-    val backAction = { onScreenSelected(Ecras.Workout) }
-
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         // Cabeçalho: Botão Voltar e Título
         Row(verticalAlignment = Alignment.CenterVertically) {

@@ -1,6 +1,5 @@
 package pt.ismai.data
 
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import pt.ismai.Categorias
@@ -9,7 +8,6 @@ import pt.ismai.MetodoAvalicao
 import pt.ismai.NivelDificuldade
 import pt.ismai.Treino
 import pt.ismai.User
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.nanoseconds
 
 class DatabaseManager {
@@ -45,7 +43,7 @@ class DatabaseManager {
         try {
             val exMap = exercicioToMap(exercicio)
             db.collection("exercises_native")
-                .document(exercicio.id.toString())
+                .document(exercicio.id)
                 .set(exMap)
                 .await()
         } catch (e: Exception) {
@@ -68,7 +66,7 @@ class DatabaseManager {
             )
 
             db.collection("workouts_native")
-                .document(treino.id.toString())
+                .document(treino.id)
                 .set(workoutMap)
                 .await()
         } catch (e: Exception) {
@@ -160,7 +158,7 @@ class DatabaseManager {
                 val data = doc.data ?: return@mapNotNull null
 
                 // Mapear exercícios da lista
-                val exerciciosRaw = data["exercicios"] as? List<Map<String, Any>> ?: emptyList()
+                val exerciciosRaw = (data["exercicios"] as? List<*>)?.filterIsInstance<Map<String, Any>>() ?: emptyList()
                 val listaExercicios = exerciciosRaw.map { ex ->
                     Exercicio(
                         id = data["id"] as? String ?: "",
@@ -178,7 +176,9 @@ class DatabaseManager {
                     id = data["id"] as? String ?: "",
                     nome = data["nome"] as String,
                     descricao = data["descricao"] as String,
-                    categorias = (data["categorias"] as List<String>).map { Categorias.valueOf(it) },
+                    categorias = (data["categorias"] as? List<*>)?.filterIsInstance<String>()?.map {
+                        Categorias.valueOf(it)
+                    } ?: emptyList(),
                     nivelDificuldade = NivelDificuldade.valueOf(data["nivelDificuldade"] as String),
                     duracao = (data["duracao"] as Long).nanoseconds, // Lê o nome limpo "duracao"
                     exercicios = listaExercicios,
@@ -203,7 +203,7 @@ class DatabaseManager {
                 val data = doc.data ?: return@mapNotNull null
 
                 // 1. Mapear a lista interna de exercícios
-                val exerciciosRaw = data["exercicios"] as? List<Map<String, Any>> ?: emptyList()
+                val exerciciosRaw = (data["exercicios"] as? List<*>)?.filterIsInstance<Map<String, Any>>() ?: emptyList()
                 val listaExercicios = exerciciosRaw.map { ex ->
                     Exercicio(
                         id = ex["id"] as? String ?: "",
@@ -229,7 +229,7 @@ class DatabaseManager {
                     id = doc.id, // Usa o ID do documento do Firestore
                     nome = data["nome"] as? String ?: "",
                     descricao = data["descricao"] as? String ?: "",
-                    categorias = (data["categorias"] as? List<String>)?.map {
+                    categorias = (data["categorias"] as? List<*>)?.filterIsInstance<String>()?.map {
                         Categorias.valueOf(it)
                     } ?: emptyList(),
                     nivelDificuldade = NivelDificuldade.valueOf(data["nivelDificuldade"] as? String ?: "MEDIA"),

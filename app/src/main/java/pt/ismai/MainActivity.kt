@@ -99,6 +99,7 @@ fun LocaleWrapper(locale: Locale, content: @Composable () -> Unit) {
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun ProgramaPrincipal(
     modifier: Modifier = Modifier,
@@ -125,18 +126,13 @@ fun ProgramaPrincipal(
                     // Caso A: Email verificado, verificar se tem perfil no Firestore
                     val perfil = dbManager.getUserProfile(user.uid)
 
-                    if (perfil != null) {
-                        currentScreen = Ecras.Home
-                    } else {
-                        // Caso B: Email verificado mas sem perfil -> SignupDetailsScreen
-                        currentScreen = Ecras.SignupDetailsScreen
-                    }
+                    currentScreen = if (perfil != null) Ecras.Home else Ecras.SignupDetailsScreen
                 } else {
                     // Caso C: Email não verificado -> Excluir pré-conta e mandar para Login
                     authManager.cancelarSignupSeguro()
                     currentScreen = Ecras.Login
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Em caso de erro (ex: falta de internet), mandamos para o Login por segurança
                 firebaseAuth.signOut()
                 currentScreen = Ecras.Login

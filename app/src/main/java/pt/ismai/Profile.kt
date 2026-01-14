@@ -18,7 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,7 +53,7 @@ fun Profile(
     // Estado para guardar os dados do utilizador
     var userProfile by rememberSaveable { mutableStateOf<User?>(null) }
     var isLoading by rememberSaveable { mutableStateOf(true) }
-    var uid = authManager.getCurrentUserId()
+    val uid = authManager.getCurrentUserId()
 
     // Carregar dados ao iniciar a tela
     LaunchedEffect(Unit) {
@@ -150,10 +150,7 @@ private fun PlayerCard(user: User, isDarkTheme: Boolean) {
             InfoChip("Altura", if (user.altura != null) "${user.altura}m" else "-")
             InfoChip("Peso", if (user.peso != null) "${user.peso}kg" else "-")
         }
-        Divider(
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
         Row(
             Modifier.fillMaxWidth().padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -185,7 +182,7 @@ private fun SocialConnections(isDarkTheme: Boolean) {
             title = stringResource(id = R.string.friends, "15"),
             icon = painterResource(id = R.drawable.outline_add_24),
             onClick = { /*TODO*/ })
-        Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
         SettingsMenuItem(
             title = stringResource(id = R.string.groups, "3"),
             icon = painterResource(id = R.drawable.outline_add_24),
@@ -201,7 +198,7 @@ private fun AccountSettings(isDarkTheme: Boolean) {
             icon = painterResource(id = R.drawable.profile),
             onClick = { /* Navigate to edit profile screen */ }
         )
-        Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
         SettingsMenuItem(
             title = stringResource(id = R.string.change_password),
             icon = painterResource(id = R.drawable.outline_add_24), // Placeholder icon

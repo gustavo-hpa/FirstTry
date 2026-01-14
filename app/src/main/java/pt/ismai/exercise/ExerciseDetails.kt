@@ -15,7 +15,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import pt.ismai.Ecras
 import pt.ismai.Exercicio
 import pt.ismai.R
 import pt.ismai.components.*
@@ -26,12 +25,11 @@ import java.util.Locale
 fun ExerciseDetails(
     exercicio: Exercicio?,
     isDarkTheme: Boolean,
-    onScreenSelected: (Ecras) -> Unit
 ) {
     if (exercicio == null) return
 
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    val dataTexto = exercicio.dataCriacao?.let { dateFormat.format(it) } ?: "N/A"
+    val dataTexto = dateFormat.format(exercicio.dataCriacao)
 
     Column(
         modifier = Modifier

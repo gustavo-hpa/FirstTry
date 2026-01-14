@@ -92,7 +92,6 @@ val LightBackgroundEnd = Color(0xFFFFCCBC)
 val BackgroundDark = Color(0xFF1C1C1E) // Fundo geral da tela
 val SurfaceDark = Color(0xFF2C2C2E)    // Fundo dos elementos (cards)
 val TextPrimaryOnDark = Color(0xFFE5E5EA) // Branco suave para texto principal
-val SoftBasketballOrange = Color(0xFFD87451) // Para elementos ativos (switches) e ícones '+'
 val MutedWarmGold = Color(0xFFE8B350) // Para títulos de seção e ícones de navegação
 
 @Composable
@@ -121,13 +120,13 @@ fun MainContent(
         contentAlignment = Alignment.Center,
     ) {
         when (ecra) {
-            Ecras.Home -> Home(onScreenSelected = onScreenSelected,isDarkTheme = isDarkTheme)
+            Ecras.Home -> Home()
             Ecras.Statistic -> Statistics()
             Ecras.Workout -> Workout(isDarkTheme = isDarkTheme,onScreenSelected = onScreenSelected,onWorkoutSelected = onWorkoutSelected)
             Ecras.WorkoutDetails -> WorkoutDetails(treino = selectedWorkout, isDarkTheme = isDarkTheme, onScreenSelected = onScreenSelected, onExerciseSelected = onExerciseSelected)
             Ecras.AddWorkout -> AddWorkout(isDarkTheme = isDarkTheme,onScreenSelected = onScreenSelected)
             Ecras.Exercise -> Exercise(isDarkTheme = isDarkTheme, onScreenSelected = onScreenSelected, onExerciseSelected = onExerciseSelected)
-            Ecras.ExerciseDetails -> ExerciseDetails(exercicio = selectedExercise, isDarkTheme = isDarkTheme, onScreenSelected = onScreenSelected)
+            Ecras.ExerciseDetails -> ExerciseDetails(exercicio = selectedExercise, isDarkTheme = isDarkTheme)
             Ecras.AddExercise -> AddExercise(isDarkTheme = isDarkTheme,onScreenSelected = onScreenSelected)
             Ecras.Setting -> Setting(onScreenSelected = onScreenSelected,isDarkTheme = isDarkTheme, onThemeToggle, onLocaleChange)
             Ecras.Login -> Login(onScreenSelected = onScreenSelected)

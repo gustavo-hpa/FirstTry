@@ -1,6 +1,5 @@
 package pt.ismai.components
 
-import android.R.attr.onClick
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,15 +36,6 @@ import pt.ismai.NivelDificuldade
 
 @Composable
 fun ExerciseItem(exercicio: Exercicio, isDarkTheme: Boolean, onClick: () -> Unit) {
-    val reps = exercicio.repeticoes ?: 0
-    val series = exercicio.series ?: 0
-    val tempo = exercicio.tempoDefinido?.inWholeMinutes ?: 0
-
-    val detalhe = if (reps > 0) {
-        "$series x $reps reps"
-    } else {
-        "$tempo min"
-    }
 
     Row(
         modifier = Modifier

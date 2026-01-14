@@ -3,7 +3,7 @@ package pt.ismai.settings
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -35,14 +35,20 @@ fun PrivacyAndSecurity(isDarkTheme: Boolean) {
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
-            Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            )
             SettingsSwitchItem(
                 title = stringResource(id = R.string.two_factor_authentication),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 checked = twoFactorAuthEnabled,
                 onCheckedChange = { twoFactorAuthEnabled = it }
             )
-            Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            )
             SettingsSwitchItem(
                 title = stringResource(id = R.string.biometric_authentication),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
@@ -67,7 +73,10 @@ fun PrivacyAndSecurity(isDarkTheme: Boolean) {
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
                 onClick = { /* TODO */ }
             )
-            Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            )
             SettingsMenuItem(
                 title = stringResource(id = R.string.blocked_users),
                 icon = painterResource(id = R.drawable.outline_add_24), // Placeholder
